@@ -38,11 +38,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    ingredients: {
+    archive: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    recipe: {
+    itemPrice: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    itemImage: {
       type: DataTypes.STRING,
       allowNull: false,
     },

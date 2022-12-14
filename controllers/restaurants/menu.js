@@ -1,6 +1,6 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken")
-const bcrypt = require("bcrypt")
+const aws = require("aws-sdk")
+const { uploadFile } = require("../../aws/aws")
 const db = require("../../models");
 const { Restaurant } = db
 
@@ -78,11 +78,36 @@ const destroy = async function (req, res) {
     }
 }
 
+//========================================UPLOAD/UPLOAD-A-ITEM-IMAGE==========================================================//
+
+const upload = async function (req, res) {
+    try {
+        let files = req.files
+        if (files && files.length > 0) {
+            let uploadedFileURL = await uploadFile(files[0])
+
+            let uploadedImage = {
+                itemImageURL: uploadedFileURL
+            }
+
+            return res.status(201).send({ status: 1010, message: "The itemImage for menu has been uploaded succesfully", data: uploadedImage })
+        }
+        else {
+            return res.status(422).send({ status: 1006, message: "No itemImage for menu found to upload..." })
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
 
 
 module.exports = {
     create,
     update,
     index,
-    destroy
+    destroy,
+    upload
 }

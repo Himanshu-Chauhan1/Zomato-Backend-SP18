@@ -5,18 +5,36 @@ module.exports = {
     await queryInterface.createTable('menus', {
       id: {
         allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        primaryKey: true
       },
-      firstName: {
-        type: Sequelize.STRING
+      categoryId: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
-      lastName: {
-        type: Sequelize.STRING
+      itemName: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING
+      itemDescription: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      archive: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      itemPrice: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      itemImage: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

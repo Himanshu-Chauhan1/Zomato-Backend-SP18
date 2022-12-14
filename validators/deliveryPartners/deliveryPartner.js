@@ -1,6 +1,5 @@
 const isvalidBirthdate = require("is-valid-birthdate")
 const validateDate = require("validate-date")
-const { isIND } = require("indian-language-checker")
 const db = require("../../models")
 const bcrypt = require("bcrypt")
 const e = require("express")
