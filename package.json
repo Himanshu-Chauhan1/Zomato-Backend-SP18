@@ -1,0 +1,30 @@
+{
+  "name": "zomato",
+  "version": "1.0.0",
+  "description": "Zomato is an online and mobile restaurant search and discovery service, providing in-depth information for over 1 million restaurants across 22 countries. Zomato's core content features include menus, photos, and geocoded coordinates for restaurants. Users can rate and review restaurants, as well as create their own network of foodies.So, we are going to build backend system of zomato with NodeJS, Javascript, Postman, AWS S3, Redis, and PostgreSQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon app/index.js",
+    "make-model": "npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string",
+    "down": "npx sequelize-cli db:migrate:undo",
+    "migrate": "npx sequelize-cli db:migrate"
+  },
+  "author": "Ankit Sathiya,Himanshu Chauhan",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "indian-language-checker": "^1.0.0",
+    "is-valid-birthdate": "^0.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.26.0",
+    "sequelize-cli": "^6.5.2",
+    "uuid": "^9.0.0",
+    "validate-date": "^2.0.0"
+  }
+}
