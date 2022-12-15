@@ -2,10 +2,11 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('menus', {
+    await queryInterface.createTable('foodItems', {
       id: {
-        allowNull: false,
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
         primaryKey: true
       },
       categoryId: {
@@ -31,6 +32,7 @@ module.exports = {
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
+        default: true
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +45,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('menus');
+    await queryInterface.dropTable('foodItems');
   }
 };

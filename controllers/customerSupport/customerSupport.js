@@ -122,7 +122,7 @@ const index = async function (req, res) {
 
         let customerSupport = await CustomerSupport.findAll()
 
-        if (!customerSupport) {
+        if (customerSupport === 0) {
             return res.status(404).send({ status: 1008, msg: "No Customer Supports Executives found....." })
         }
 

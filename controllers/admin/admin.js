@@ -149,7 +149,7 @@ const index = async function (req, res) {
           
         let admins = await Admin.findAll()
 
-        if (!admins) {
+        if (admins.length === 0) {
             return res.status(404).send({ status: 1008, msg: "No Admins found....." })
         }
 

@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Restaurant } = db
+const { FoodItem } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -24,9 +24,9 @@ const isValidRestaurantName = (name) => {
     return /^[A-Za-z\s.\(\)0-9]{3,}$/.test(name);
 };
 
-//========================================Create-A-Restaurant==========================================================//
+//========================================Create-A-FoodItem==========================================================//
 
-const createMenu = async function (req, res, next) {
+const createFoodItem = async function (req, res, next) {
     try {
         const data = req.body
 
@@ -52,26 +52,25 @@ const createMenu = async function (req, res, next) {
     }
 }
 
-//========================================Update-A-Restaurant==========================================================//
+//========================================Update-A-FoodItem==========================================================//
 
-const updateMenu = async function (req, res, next) {
+const updateFoodItem = async function (req, res, next) {
     try {
-
 
         const enteredId = req.params.id;
 
-        let checkMenuId = enteredId.split('').length
+        let checkFoodItemId = enteredId.split('').length
 
-        if (checkMenuId != 36) {
-            return res.status(422).send({ status: 1003, message: "Menu-Id is not valid" })
+        if (checkFoodItemId != 36) {
+            return res.status(422).send({ status: 1003, message: "FoodItem-Id is not valid" })
         }
 
-        let menuId = enteredId
+        let foodItemId = enteredId
 
-        const enteredMenuId = await Restaurant.findOne({ where: { id: menuId } })
+        const enteredFoodItemId = await FoodItem.findOne({ where: { id: foodItemId } })
 
-        if (!enteredMenuId) {
-            return res.status(422).send({ status: 1006, message: "Provided Menu-ID does not exists" })
+        if (!enteredFoodItemId) {
+            return res.status(422).send({ status: 1006, message: "Provided FoodItem-ID does not exists" })
         }
 
         const data = req.body
@@ -107,26 +106,25 @@ const updateMenu = async function (req, res, next) {
     }
 }
 
-//========================================Delete-A-Restaurant==========================================================//
+//========================================Delete-A-FoodItem==========================================================//
 
-const deleteMenu = async function (req, res, next) {
+const deleteFoodItem = async function (req, res, next) {
     try {
-
 
         const enteredId = req.params.id;
 
-        let checkMenuId = enteredId.split('').length
+        let checkFoodItemId = enteredId.split('').length
 
-        if (checkMenuId != 36) {
-            return res.status(422).send({ status: 1003, message: "Menu-Id is not valid" })
+        if (checkFoodItemId != 36) {
+            return res.status(422).send({ status: 1003, message: "FoodItem-Id is not valid" })
         }
 
-        let menuId = enteredId
+        let foodItemId = enteredId
 
-        const enteredMenuId = await Restaurant.findOne({ where: { id: menuId } })
+        const enteredFoodItemId = await FoodItem.findOne({ where: { id: foodItemId } })
 
-        if (!enteredMenuId) {
-            return res.status(422).send({ status: 1006, message: "Provided Menu-ID does not exists" })
+        if (!enteredFoodItemId) {
+            return res.status(422).send({ status: 1006, message: "Provided FoodItem-ID does not exists" })
         }
 
         next()
@@ -135,9 +133,9 @@ const deleteMenu = async function (req, res, next) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
-//========================================Delete-A-Restaurant==========================================================//
+//========================================Upload-A-ItemImage==========================================================//
 
-const uploadImage = async function (req, res, next) {
+const uploadItemImage = async function (req, res, next) {
     try {
 
         // const data = req.body
@@ -152,20 +150,19 @@ const uploadImage = async function (req, res, next) {
         //     return res.status(422).send({ status: 1002, message: "itemImage is required" })
         // }
 
-        // next()
+        next()
     }
     catch (err) {
-
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
 
 
 module.exports = {
-    createMenu,
-    updateMenu,
-    deleteMenu,
-    uploadImage
+    createFoodItem,
+    updateFoodItem,
+    deleteFoodItem,
+    uploadItemImage
 }
 
 

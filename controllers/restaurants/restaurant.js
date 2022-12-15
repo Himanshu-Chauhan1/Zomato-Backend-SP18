@@ -149,7 +149,7 @@ const index = async function (req, res) {
 
         let restaurant = await Restaurant.findAll()
 
-        if (!restaurant) {
+        if (restaurant.length === 0) {
             return res.status(404).send({ status: 1008, msg: "No Restaurants found....." })
         }
 

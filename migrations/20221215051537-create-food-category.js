@@ -2,35 +2,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('menus', {
+    await queryInterface.createTable('foodCategories', {
       id: {
-        allowNull: false,
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
         primaryKey: true
       },
-      categoryId: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      itemName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      itemDescription: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      itemPrice: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      itemImage: {
+      categoryName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
+        default: true
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +29,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('menus');
+    await queryInterface.dropTable('foodCategories');
   }
 };

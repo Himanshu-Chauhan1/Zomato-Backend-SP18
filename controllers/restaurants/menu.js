@@ -1,8 +1,6 @@
 require("dotenv").config();
-const aws = require("aws-sdk")
-const { uploadFile } = require("../../aws/aws")
 const db = require("../../models");
-const { Restaurant } = db
+const { Menu } = db
 
 
 //========================================POST /CREATE-A-MENU==========================================================//
@@ -10,9 +8,9 @@ const { Restaurant } = db
 const create = async function (req, res) {
     try {
 
-        const accountCreated = await Restaurant.create(req.body)
+        const menuCreated = await Menu.create(req.body)
 
-        res.status(201).send({ status: 1009, message: "You have been registered successfully", data: accountCreated })
+        res.status(201).send({ status: 1009, message: "A new menu has been created successfully", data: menuCreated })
 
     } catch (err) {
         console.log(err.message);
@@ -25,16 +23,16 @@ const create = async function (req, res) {
 
 const update = async function (req, res) {
     try {
-        const restaurantId = req.params.id;
+        const menuId = req.params.id;
         let data = req.body
 
         const values = data;
-        const condition = { where: { id: restaurantId } };
+        const condition = { where: { id: menuId } };
         const options = { multi: true };
 
-        const updateDetails = await Restaurant.update(values, condition, options)
+        const updateDetails = await Menu.update(values, condition, options)
 
-        return res.status(200).send({ status: 1010, message: "The entered details has been Updated Succesfully", updatedData: values })
+        return res.status(200).send({ status: 1010, message: "The entered Menu details has been Updated Succesfully", updatedData: values })
     }
     catch (err) {
         console.log(err.message)
@@ -47,13 +45,13 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
 
-        let restaurant = await Restaurant.findAll()
+        let menu = await Menu.findAll()
 
-        if (!restaurant) {
-            return res.status(404).send({ status: 1008, msg: "No Restaurants found....." })
+        if (menu.length === 0) {
+            return res.status(404).send({ status: 1008, msg: "No Menu found....." })
         }
 
-        return res.status(200).send({ status: 1010, message: 'All Restaurants:', data: restaurant })
+        return res.status(200).send({ status: 1010, message: 'All Menu,s:', data: restaurant })
     }
     catch (err) {
         console.log(err.message)
@@ -66,35 +64,11 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let restaurantId = req.params.id
+        let menuId = req.params.id
 
-        let deleteRestaurant = await Restaurant.destroy({ where: { id: restaurantId } })
+        let deleteMenu = await Menu.destroy({ where: { id: menuId } })
 
-        return res.status(200).send({ status: 1010, message: "The Customer has been deleted Successfully", data: deleteRestaurant })
-    }
-    catch (err) {
-        console.log(err.message);
-        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-    }
-}
-
-//========================================UPLOAD/UPLOAD-A-ITEM-IMAGE==========================================================//
-
-const upload = async function (req, res) {
-    try {
-        let files = req.files
-        if (files && files.length > 0) {
-            let uploadedFileURL = await uploadFile(files[0])
-
-            let uploadedImage = {
-                itemImageURL: uploadedFileURL
-            }
-
-            return res.status(201).send({ status: 1010, message: "The itemImage for menu has been uploaded succesfully", data: uploadedImage })
-        }
-        else {
-            return res.status(422).send({ status: 1006, message: "No itemImage for menu found to upload..." })
-        }
+        return res.status(200).send({ status: 1010, message: "The Menu has been deleted Successfully", data: deleteMenu })
     }
     catch (err) {
         console.log(err.message);
@@ -108,6 +82,5 @@ module.exports = {
     create,
     update,
     index,
-    destroy,
-    upload
+    destroy
 }

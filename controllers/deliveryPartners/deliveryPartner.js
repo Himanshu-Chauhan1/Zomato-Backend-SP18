@@ -123,7 +123,7 @@ const index = async function (req, res) {
 
         let deliveryPartner = await DeliveryPartner.findAll()
 
-        if (!deliveryPartner) {
+        if (deliveryPartner.lenght === 0) {
             return res.status(404).send({ status: 1008, msg: "No Delivery Partners found....." })
         }
 
