@@ -9,7 +9,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
-      categoryId: {
+      categoryName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -26,6 +26,10 @@ module.exports = {
         allowNull: false,
       },
       itemImage: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      dateCreated: {
         type: Sequelize.STRING,
         allowNull: false,
       },

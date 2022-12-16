@@ -82,6 +82,8 @@ const destroy = async function (req, res) {
 const upload = async function (req, res) {
     try {
         let files = req.files
+       
+
         if (files && files.length > 0) {
 
             let uploadedFileURL = await uploadFile(files[0])

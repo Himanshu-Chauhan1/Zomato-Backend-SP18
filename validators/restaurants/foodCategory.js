@@ -15,13 +15,13 @@ const isValidRequestBody = function (requestBody) {
 };
 
 //////////////// -FOR FULLNAME- ///////////////////////
-const isValidFullName = (fullName) => {
-    return /^[a-zA-Z ]+$/.test(fullName);
+const isValidCategoryName = (categoryName) => {
+    return /^[a-zA-Z ]+$/.test(categoryName);
 };
 
-//////////////// -FOR RESTAURANTNAME- ///////////////////////
-const isValidRestaurantName = (name) => {
-    return /^[A-Za-z\s.\(\)0-9]{3,}$/.test(name);
+//////////////// -FOR CATEGORYAVILABLE- ///////////////////////
+const isActiveCategory = (isActive) => {
+    return /^(true|false|True|False)$/.test(isActive);
 };
 
 //========================================Create-A-FoodCategory==========================================================//
@@ -30,12 +30,12 @@ const createFoodCategory = async function (req, res, next) {
     try {
         const data = req.body
 
-        const { categoryName, isActive} = req.body
+        const { categoryName, isActive } = req.body
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
-        
+
         if (!isValid(categoryName)) {
             return res.status(422).send({ status: 1002, message: "categoryName is required" })
         }
@@ -44,10 +44,19 @@ const createFoodCategory = async function (req, res, next) {
             return res.status(422).send({ status: 1003, message: "Please provide a valid categoryName" })
         }
 
+        const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName } });
+
+        if (isRegisteredCategory) {
+            return res.status(422).send({ status: 1008, message: "This category is already registered, Please enter a new one" })
+        }
+
         if (!isValid(isActive)) {
             return res.status(422).send({ status: 1002, message: "isActive is required" })
         }
 
+        if (!isActiveCategory(isActive)) {
+            return res.status(422).send({ status: 1003, message: "Please provide a category isActive like True or false etc" })
+        }
 
         next()
 
@@ -80,7 +89,7 @@ const updateFoodCategory = async function (req, res, next) {
 
         const data = req.body
 
-        const { name, email, phone, landline, ownerFullName, ownerEmail, oldPassword, newPassword } = req.body
+        const { categoryName, isActive } = req.body
 
         const dataObject = {};
 
@@ -88,22 +97,40 @@ const updateFoodCategory = async function (req, res, next) {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
         }
 
-        if ("name" in data) {
+        if ("categoryName" in data) {
 
-            if (!isValid(name)) {
-                return res.status(422).send({ status: 1002, message: "restaurantName is required" })
+            if (!isValid(categoryName)) {
+                return res.status(422).send({ status: 1002, message: "categoryName is required" })
             }
 
-            if (!isValidRestaurantName(name)) {
-                return res.status(422).send({ status: 1003, message: "Please provide a valid restaurantName" })
+            if (!isValidCategoryName(categoryName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid categoryName" })
             }
 
-            dataObject['email'] = email
+            const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName } });
+
+            if (isRegisteredCategory) {
+                return res.status(422).send({ status: 1008, message: "This category is already registered, Please enter a new one to update" })
+            }
+
+            dataObject['categoryName'] = categoryName
+        }
+
+        if ("isActive" in data) {
+
+            if (!isValid(isActive)) {
+                return res.status(422).send({ status: 1002, message: "isActive is required" })
+            }
+
+            if (!isActiveCategory(isActive)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a category isActive like True or false etc" })
+            }
+
+            dataObject['isActive'] = isActive
         }
 
 
         next()
-
 
     } catch (error) {
         console.log(error.message);

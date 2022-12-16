@@ -4,8 +4,9 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('customerSupports', {
       id: {
-        allowNull: false,
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
         primaryKey: true
       },
       firstName: {
@@ -24,7 +25,6 @@ module.exports = {
       },
       dob: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       email: {
@@ -43,7 +43,6 @@ module.exports = {
       },
       bloodGroup: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       joiningDate: {

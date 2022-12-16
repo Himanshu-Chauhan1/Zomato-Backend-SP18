@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true
     },
-    categoryId: {
+    categoryName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     itemImage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    dateCreated: {
       type: DataTypes.STRING,
       allowNull: false,
     },

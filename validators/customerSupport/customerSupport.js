@@ -169,7 +169,7 @@ const createCustomerSupport = async function (req, res, next) {
         next()
 
     } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
@@ -338,7 +338,7 @@ const updateCustomerSupport = async function (req, res, next) {
             if (!isValid(bloodGroup)) {
                 return res.status(422).send({ status: 1002, message: "lastName is required" })
             }
-    
+
             if (!isValidBloodGroup(bloodGroup)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid bloodGroup" })
             }
@@ -361,7 +361,7 @@ const updateCustomerSupport = async function (req, res, next) {
 
         if ("departmentName" in data) {
             if
-             (!isValid(departmentName)) {
+                (!isValid(departmentName)) {
                 return res.status(422).send({ status: 1002, message: "departmentName is required" })
             }
 

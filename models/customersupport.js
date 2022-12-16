@@ -35,7 +35,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     dob: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
     },
     email: {
@@ -56,11 +55,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     bloodGroup: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
     },
     joiningDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     departmentName: {

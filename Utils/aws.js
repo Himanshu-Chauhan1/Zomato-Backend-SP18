@@ -18,8 +18,6 @@ const uploadFile = async (file) => {
             Bucket: process.env.AWS_BUCKET,
             Key: "Himanshu/" + file.originalname,
             Body: file.buffer,
-            ContentEncoding: 'base64',
-            ContentDisposition: 'inline',
             ContentType: contenttype,
         }
 
