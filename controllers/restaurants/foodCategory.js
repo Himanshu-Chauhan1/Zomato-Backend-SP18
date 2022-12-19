@@ -18,7 +18,6 @@ const create = async function (req, res) {
     }
 }
 
-
 //========================================POST/UPDATE-A-FOOD-CATEGORY==========================================================//
 
 const update = async function (req, res) {

@@ -1,5 +1,4 @@
 const db = require("../../models")
-const isValidDate = require("is-valid-birthdate")
 const validUrl = require('valid-url')
 const { FoodItem, FoodCategory } = db
 
@@ -16,12 +15,12 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-//////////////// -FOR FULLNAME- ///////////////////////
+//////////////// -FOR FULL NAME- ///////////////////////
 const isValidFullName = (fullName) => {
     return /^[a-zA-Z ]+$/.test(fullName);
 };
 
-//////////////// -FOR ITEMDESCRIPTION- ///////////////////////
+//////////////// -FOR ITEM-DESCRIPTION- ///////////////////////
 const isValidItemDescription = (itemDescription) => {
     return /^[A-Za-z\s.\(\)0-9]{3,}$/.test(itemDescription);
 };
@@ -31,9 +30,13 @@ const isValidItemPrice = (itemPrice) => {
     return /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(itemPrice);
 };
 
-//////////////// -FOR CATEGORYAVILABLE- ///////////////////////
+//////////////// -FOR CATEGORY-AVILABLE- ///////////////////////
 const isActiveItem = (isActive) => {
     return /^(true|false|True|False)$/.test(isActive);
+};
+//////////////// -FOR CATEGORY-AVAILABLE- ///////////////////////
+const isValidFutureDate = (dateCreated) => {
+    return /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/.test(dateCreated);
 };
 
 //========================================Create-A-FoodItem==========================================================//
@@ -88,13 +91,31 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "itemImage is required" })
         }
 
+        const isRegisteredItemImage = await FoodItem.findOne({ where: { itemImage: itemImage } });
+
+        if (isRegisteredItemImage) {
+            return res.status(422).send({ status: 1008, message: "This itemImage is already registered, Please enter a new one" })
+        }
+
         if (!(validUrl.isWebUri(data.itemImage.trim()))) return res.status(400).send({ status: 1003, message: "Please Provide a valid itemImage Url" })
 
         if (!isValid(dateCreated)) {
             return res.status(422).send({ status: 1002, message: "Date Created is Required" })
         }
 
-        if (!isValidDate(dateCreated)) {
+        if (!isValidFutureDate(dateCreated)) {
+            return res.status(422).send({ status: 1002, message: "Please enter a valid dateCreated format like dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy" })
+        }
+
+        function isFutureDate(idate) {
+            var today = new Date().getTime(),
+                idate = idate.split("/");
+
+            idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
+            return (today - idate) <= 0;
+        }
+
+        if (!isFutureDate(dateCreated)) {
             return res.status(422).send({ status: 1003, message: "Please enter date created from the today onwards or date from the future" })
         }
 
@@ -137,7 +158,7 @@ const updateFoodItem = async function (req, res, next) {
 
         const data = req.body
 
-        const { name, email, phone, landline, ownerFullName, ownerEmail, oldPassword, newPassword } = req.body
+        const { categoryName, itemName, itemDescription, itemPrice, itemImage, dateCreated, isActive } = req.body
 
         const dataObject = {};
 
@@ -145,19 +166,116 @@ const updateFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
         }
 
-        if ("name" in data) {
+        if ("categoryName" in data) {
 
-            if (!isValid(name)) {
-                return res.status(422).send({ status: 1002, message: "restaurantName is required" })
+            if (!isValid(categoryName)) {
+                return res.status(422).send({ status: 1002, message: "categoryId is required" })
             }
 
-            if (!isValidRestaurantName(name)) {
-                return res.status(422).send({ status: 1003, message: "Please provide a valid restaurantName" })
+            const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName } });
+
+            if (!isRegisteredCategory) {
+                return res.status(422).send({ status: 1008, message: "This category is not registered, Please enter a registered category" })
             }
 
-            dataObject['email'] = email
+            dataObject['categoryName'] = categoryName
         }
 
+        if ("itemName" in data) {
+
+            if (!isValid(itemName)) {
+                return res.status(422).send({ status: 1002, message: "itemName is required" })
+            }
+
+            const isRegisteredItemName = await FoodItem.findOne({ where: { itemName: itemName } });
+
+            if (isRegisteredItemName) {
+                return res.status(422).send({ status: 1008, message: "This itemName is already registered, Please enter a new one" })
+            }
+
+            dataObject['itemName'] = itemName
+        }
+
+        if ("itemDescription" in data) {
+
+            if (!isValid(itemDescription)) {
+                return res.status(422).send({ status: 1002, message: "itemName is required" })
+            }
+
+            if (!isValidItemDescription(itemDescription)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid itemDescription" })
+            }
+
+            dataObject['itemDescription'] = itemDescription
+        }
+
+        if ("itemPrice" in data) {
+
+            if (!isValid(itemPrice)) {
+                return res.status(422).send({ status: 1002, message: "itemPrice is required" })
+            }
+
+            if (!isValidItemPrice(itemPrice)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })
+            }
+
+            dataObject['itemPrice'] = itemPrice
+        }
+
+        if ("itemImage" in data) {
+
+            if (!isValid(itemImage)) {
+                return res.status(422).send({ status: 1002, message: "itemImage is required" })
+            }
+
+            if (!(validUrl.isWebUri(data.itemImage.trim()))) return res.status(400).send({ status: 1003, message: "Please Provide a valid itemImage Url" })
+
+            const isRegisteredItemImage = await FoodItem.findOne({ where: { itemImage: itemImage } });
+
+            if (isRegisteredItemImage) {
+                return res.status(422).send({ status: 1008, message: "This itemImage is already registered, Please enter a new one" })
+            }
+
+            dataObject['itemImage'] = itemPrice
+        }
+
+        if ("dateCreated" in data) {
+
+            if (!isValid(dateCreated)) {
+                return res.status(422).send({ status: 1002, message: "Date Created is Required" })
+            }
+
+            if (!isValidFutureDate(dateCreated)) {
+                return res.status(422).send({ status: 1002, message: "Please enter a valid dateCreated format like dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy" })
+            }
+
+            function isFutureDate(idate) {
+                var today = new Date().getTime(),
+                    idate = idate.split("/");
+
+                idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
+                return (today - idate) <= 0;
+            }
+
+            if (!isFutureDate(dateCreated)) {
+                return res.status(422).send({ status: 1003, message: "Please enter date created from the today onwards or date from the future" })
+            }
+
+            dataObject['dateCreated'] = dateCreated
+        }
+
+        if ("isActive" in data) {
+
+            if (!isValid(isActive)) {
+                return res.status(422).send({ status: 1002, message: "isActive is required" })
+            }
+
+            if (!isActiveItem(isActive)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a item isActive like True or false etc" })
+            }
+
+            dataObject['isActive'] = isActive
+        }
 
         next()
 
@@ -195,6 +313,7 @@ const deleteFoodItem = async function (req, res, next) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
+
 //========================================Upload-A-ItemImage==========================================================//
 
 const uploadItemImage = async function (req, res, next) {
