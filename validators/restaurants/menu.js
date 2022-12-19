@@ -1,5 +1,6 @@
 const db = require("../../models")
-const { Restaurant } = db
+const validUrl = require('valid-url')
+const { FoodCategory, FoodItem } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -14,120 +15,25 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-//////////////// -FOR FULLNAME- ///////////////////////
-const isValidFullName = (fullName) => {
-    return /^[a-zA-Z ]+$/.test(fullName);
+//////////////// -FOR ITEM-DESCRIPTION- ///////////////////////
+const isValidItemDescription = (itemDescription) => {
+    return /^[A-Za-z\s.\(\)0-9]{3,}$/.test(itemDescription);
 };
 
-//////////////// -FOR RESTAURANTNAME- ///////////////////////
-const isValidRestaurantName = (name) => {
-    return /^[A-Za-z\s.\(\)0-9]{3,}$/.test(name);
+//////////////// -FOR ITEMPRICE- ///////////////////////
+const isValidItemPrice = (itemPrice) => {
+    return /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(itemPrice);
 };
 
-//========================================Create-A-Restaurant==========================================================//
-
-const createMenu = async function (req, res, next) {
-    try {
-        const data = req.body
-
-        const { name, email, phone, landline, ownerFullName, ownerEmail, confirmPassword, password } = req.body
-
-        if (!isValidRequestBody(data)) {
-            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
-        }
-
-        if (!isValid(name)) {
-            return res.status(422).send({ status: 1002, message: "restaurantName is required" })
-        }
-
-        if (!isValidRestaurantName(name)) {
-            return res.status(422).send({ status: 1003, message: "Please provide a valid restaurantName" })
-        }
-
-        next()
-
-    } catch (error) {
-        console.log(error.message);
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-}
-
-//========================================Update-A-Restaurant==========================================================//
-
-const updateMenu = async function (req, res, next) {
-    try {
-
-
-        const enteredId = req.params.id;
-
-        let checkMenuId = enteredId.split('').length
-
-        if (checkMenuId != 36) {
-            return res.status(422).send({ status: 1003, message: "Menu-Id is not valid" })
-        }
-
-        let menuId = enteredId
-
-        const enteredMenuId = await Restaurant.findOne({ where: { id: menuId } })
-
-        if (!enteredMenuId) {
-            return res.status(422).send({ status: 1006, message: "Provided Menu-ID does not exists" })
-        }
-
-        const data = req.body
-
-        const { name, email, phone, landline, ownerFullName, ownerEmail, oldPassword, newPassword } = req.body
-
-        const dataObject = {};
-
-        if (!Object.keys(data).length && typeof files === 'undefined') {
-            return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
-        }
-
-        if ("name" in data) {
-
-            if (!isValid(name)) {
-                return res.status(422).send({ status: 1002, message: "restaurantName is required" })
-            }
-
-            if (!isValidRestaurantName(name)) {
-                return res.status(422).send({ status: 1003, message: "Please provide a valid restaurantName" })
-            }
-
-            dataObject['email'] = email
-        }
-
-
-        next()
-
-
-    } catch (error) {
-        console.log(error.message);
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-}
+//////////////// -FOR MENU-AVILABLE- ///////////////////////
+const isActiveItem = (isActive) => {
+    return /^(true|false|True|False)$/.test(isActive);
+};
 
 //========================================Delete-A-Restaurant==========================================================//
 
-const deleteMenu = async function (req, res, next) {
+const getMenu = async function (req, res, next) {
     try {
-
-
-        const enteredId = req.params.id;
-
-        let checkMenuId = enteredId.split('').length
-
-        if (checkMenuId != 36) {
-            return res.status(422).send({ status: 1003, message: "Menu-Id is not valid" })
-        }
-
-        let menuId = enteredId
-
-        const enteredMenuId = await Restaurant.findOne({ where: { id: menuId } })
-
-        if (!enteredMenuId) {
-            return res.status(422).send({ status: 1006, message: "Provided Menu-ID does not exists" })
-        }
 
         next()
     }
@@ -135,37 +41,11 @@ const deleteMenu = async function (req, res, next) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
-//========================================Delete-A-Restaurant==========================================================//
 
-const uploadImage = async function (req, res, next) {
-    try {
-
-        // const data = req.body
-
-        // const { itemImage } = data
-
-        // if (!isValidRequestBody(data)) {
-        //     return res.status(422).send({ status: 1002, message: "Please Provide Details" })
-        // }
-
-        // if (!isValid(itemImage)) {
-        //     return res.status(422).send({ status: 1002, message: "itemImage is required" })
-        // }
-
-        // next()
-    }
-    catch (err) {
-
-        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-    }
-};
 
 
 module.exports = {
-    createMenu,
-    updateMenu,
-    deleteMenu,
-    uploadImage
+    getMenu
 }
 
 

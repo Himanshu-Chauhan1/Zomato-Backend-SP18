@@ -1,5 +1,6 @@
 const db = require("../../models")
-const validUrl = require('valid-url')
+const validUrl = require('valid-url');
+const { FLOAT, DECIMAL } = require("sequelize");
 const { FoodItem, FoodCategory } = db
 
 
@@ -10,14 +11,16 @@ const isValid = function (value) {
     return true;
 };
 
+////////////////////////// -GLOBAL- //////////////////////
+const isValidNumber = function (itemPrice) {
+    if (!itemPrice || typeof itemPrice != DECIMAL || itemPrice.trim().length == 0)
+        return false;
+    return true;
+};
+
 //////////////// -FOR EMPTY BODY- ///////////////////////
 const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
-};
-
-//////////////// -FOR FULL NAME- ///////////////////////
-const isValidFullName = (fullName) => {
-    return /^[a-zA-Z ]+$/.test(fullName);
 };
 
 //////////////// -FOR ITEM-DESCRIPTION- ///////////////////////
@@ -34,6 +37,7 @@ const isValidItemPrice = (itemPrice) => {
 const isActiveItem = (isActive) => {
     return /^(true|false|True|False)$/.test(isActive);
 };
+
 //////////////// -FOR CATEGORY-AVAILABLE- ///////////////////////
 const isValidFutureDate = (dateCreated) => {
     return /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/.test(dateCreated);
@@ -45,7 +49,7 @@ const createFoodItem = async function (req, res, next) {
     try {
         const data = req.body
 
-        const { categoryName, itemName, itemDescription, itemPrice, itemImage, dateCreated, isActive } = req.body
+        const { categoryName, itemName, itemDescription, itemPrice, itemImage, isActive } = req.body
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -79,9 +83,9 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1003, message: "Please provide a valid itemDescription" })
         }
 
-        if (!isValid(itemPrice)) {
-            return res.status(422).send({ status: 1002, message: "itemPrice is required" })
-        }
+        // if (!isValidNumber(itemPrice)) {
+        //     return res.status(422).send({ status: 1002, message: "itemPrice is required" })
+        // }
 
         if (!isValidItemPrice(itemPrice)) {
             return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })
@@ -98,26 +102,6 @@ const createFoodItem = async function (req, res, next) {
         }
 
         if (!(validUrl.isWebUri(data.itemImage.trim()))) return res.status(400).send({ status: 1003, message: "Please Provide a valid itemImage Url" })
-
-        if (!isValid(dateCreated)) {
-            return res.status(422).send({ status: 1002, message: "Date Created is Required" })
-        }
-
-        if (!isValidFutureDate(dateCreated)) {
-            return res.status(422).send({ status: 1002, message: "Please enter a valid dateCreated format like dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy" })
-        }
-
-        function isFutureDate(idate) {
-            var today = new Date().getTime(),
-                idate = idate.split("/");
-
-            idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
-            return (today - idate) <= 0;
-        }
-
-        if (!isFutureDate(dateCreated)) {
-            return res.status(422).send({ status: 1003, message: "Please enter date created from the today onwards or date from the future" })
-        }
 
         if (!isValid(isActive)) {
             return res.status(422).send({ status: 1002, message: "isActive is required" })
@@ -158,7 +142,7 @@ const updateFoodItem = async function (req, res, next) {
 
         const data = req.body
 
-        const { categoryName, itemName, itemDescription, itemPrice, itemImage, dateCreated, isActive } = req.body
+        const { categoryName, itemName, itemDescription, itemPrice, itemImage, isActive } = req.body
 
         const dataObject = {};
 
@@ -211,9 +195,9 @@ const updateFoodItem = async function (req, res, next) {
 
         if ("itemPrice" in data) {
 
-            if (!isValid(itemPrice)) {
-                return res.status(422).send({ status: 1002, message: "itemPrice is required" })
-            }
+            // if (!isValid(itemPrice)) {
+            //     return res.status(422).send({ status: 1002, message: "itemPrice is required" })
+            // }
 
             if (!isValidItemPrice(itemPrice)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })
@@ -237,31 +221,6 @@ const updateFoodItem = async function (req, res, next) {
             }
 
             dataObject['itemImage'] = itemPrice
-        }
-
-        if ("dateCreated" in data) {
-
-            if (!isValid(dateCreated)) {
-                return res.status(422).send({ status: 1002, message: "Date Created is Required" })
-            }
-
-            if (!isValidFutureDate(dateCreated)) {
-                return res.status(422).send({ status: 1002, message: "Please enter a valid dateCreated format like dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy" })
-            }
-
-            function isFutureDate(idate) {
-                var today = new Date().getTime(),
-                    idate = idate.split("/");
-
-                idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
-                return (today - idate) <= 0;
-            }
-
-            if (!isFutureDate(dateCreated)) {
-                return res.status(422).send({ status: 1003, message: "Please enter date created from the today onwards or date from the future" })
-            }
-
-            dataObject['dateCreated'] = dateCreated
         }
 
         if ("isActive" in data) {
@@ -314,36 +273,12 @@ const deleteFoodItem = async function (req, res, next) {
     }
 };
 
-//========================================Upload-A-ItemImage==========================================================//
-
-const uploadItemImage = async function (req, res, next) {
-    try {
-        // let data = req.query
-
-        // let { itemImage } = data
-
-        // if (Object.keys(data).length !== 0) {
-        //     return res.status(422).send({ status: 1002, message: "Please provide image name and file to upload" })
-        // }
-
-        // if (!isValid(itemImage)) {
-        //     return res.status(422).send({ status: 1002, message: "restaurantName is required" })
-        // }
-
-        next()
-    }
-    catch (err) {
-        console.log(err.message);
-        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-    }
-};
 
 
 module.exports = {
     createFoodItem,
     updateFoodItem,
-    deleteFoodItem,
-    uploadItemImage
+    deleteFoodItem
 }
 
 

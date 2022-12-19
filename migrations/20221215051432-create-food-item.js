@@ -22,14 +22,10 @@ module.exports = {
         allowNull: false,
       },
       itemPrice: {
-        type: Sequelize.STRING,
+        type: Sequelize.DECIMAL,
         allowNull: false,
       },
       itemImage: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      dateCreated: {
         type: Sequelize.STRING,
         allowNull: false,
       },

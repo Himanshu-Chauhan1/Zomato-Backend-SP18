@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class foodItem extends Model {
     /**
@@ -33,14 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     itemPrice: {
-      type: DataTypes.STRING,
+      type: DataTypes.DECIMAL,
       allowNull: false,
     },
     itemImage: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    dateCreated: {
       type: DataTypes.STRING,
       allowNull: false,
     },

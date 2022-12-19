@@ -11,9 +11,9 @@ const uploadFile = async (file) => {
     return new Promise(function (resolve, reject) {
 
         let s3 = new aws.S3({ apiVersion: "2006-03-01" })
-        var contenttype = file.mimetype;
+        const contenttype = file.mimetype;
 
-        var uploadParams = {
+        const uploadParams = {
             ACL: "public-read",
             Bucket: process.env.AWS_BUCKET,
             Key: "Himanshu/" + file.originalname,

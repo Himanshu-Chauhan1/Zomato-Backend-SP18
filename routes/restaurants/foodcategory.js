@@ -1,7 +1,7 @@
 const express = require("express")
 const foodCategoryRouter = express.Router()
 const validate = require("../../validators/restaurants/foodCategory")
-const { authentication } = require("../../middlewares/authentication");
+// const { authentication } = require("../../middlewares/authentication");
 const { create, update, index, destroy} = require("../../controllers/restaurants/foodCategory");
 // const { authorization } = require("../../middleware/authorization")
 

@@ -6,6 +6,7 @@ const restaurantRouter = require("../routes/restaurants/restaurant");
 const menuRouter=require("../routes/restaurants/menu")
 const foodItemRouter=require("../routes/restaurants/foodItem")
 const foodCategoryRouter=require("../routes/restaurants/foodcategory")
+const cartRouter=require("../routes/customers/cart")
 
 
 module.exports = {
@@ -16,5 +17,6 @@ module.exports = {
     restaurantRouter,
     menuRouter,
     foodItemRouter,
-    foodCategoryRouter
+    foodCategoryRouter,
+    cartRouter
 }

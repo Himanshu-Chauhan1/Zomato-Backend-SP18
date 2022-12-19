@@ -15,7 +15,8 @@ const customerSupportModel = require('./customersupport')
 const deliveryPartnerModel = require('./deliverypartner')
 const foodItemModel = require('./fooditem')
 const foodCategoryModel = require('./foodcategory')
-const menuModel = require('./menu')
+const cartModel = require('./cart')
+
 
 let sequelize;
 if (config.use_env_variable) {
@@ -45,9 +46,9 @@ const Restaurant = restaurantModel(sequelize, Sequelize)
 const Admin = adminModel(sequelize, Sequelize)
 const CustomerSupport = customerSupportModel(sequelize, Sequelize)
 const DeliveryPartner = deliveryPartnerModel(sequelize, Sequelize)
-const Menu = menuModel(sequelize, Sequelize)
 const FoodItem = foodItemModel(sequelize, Sequelize)
 const FoodCategory = foodCategoryModel(sequelize, Sequelize)
+const Cart = cartModel(sequelize, Sequelize)
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -59,7 +60,7 @@ module.exports = {
   Admin,
   CustomerSupport,
   DeliveryPartner,
-  Menu,
   FoodItem,
-  FoodCategory
+  FoodCategory,
+  Cart
 };
