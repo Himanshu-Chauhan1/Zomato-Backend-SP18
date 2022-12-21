@@ -4,19 +4,22 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Orderstatuses', {
       id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+        primaryKey: true
       },
-      firstName: {
-        type: Sequelize.STRING
+      orderId: {
+        type: Sequelize.UUID,
+        allowNull: true,
       },
-      lastName: {
-        type: Sequelize.STRING
+      orderStatus: {
+        type: Sequelize.STRING,
+        allowNull: true
       },
-      email: {
-        type: Sequelize.STRING
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

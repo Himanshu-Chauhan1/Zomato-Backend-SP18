@@ -7,7 +7,11 @@ const menuRouter=require("../routes/restaurants/menu")
 const foodItemRouter=require("../routes/restaurants/foodItem")
 const foodCategoryRouter=require("../routes/restaurants/foodcategory")
 const cartRouter=require("../routes/customers/cart")
-const offerRouter=require("../routes/restaurants/offer")
+const offerRouter = require("../routes/restaurants/offer")
+const customerOrderStatus=require("../routes/customerSupport/orderStatus")
+const restaurantOrderStatus=require("../routes/restaurants/orderStatus")
+const customerSupportOrderStatus=require("../routes/customerSupport/orderStatus")
+const deliveryPartnerOrderStatus=require("../routes/deliveryPartners/orderStatus")
 
 
 module.exports = {
@@ -20,5 +24,9 @@ module.exports = {
     foodItemRouter,
     foodCategoryRouter,
     cartRouter,
-    offerRouter
+    offerRouter,
+    customerOrderStatus,
+    restaurantOrderStatus,
+    customerSupportOrderStatus,
+    deliveryPartnerOrderStatus
 }

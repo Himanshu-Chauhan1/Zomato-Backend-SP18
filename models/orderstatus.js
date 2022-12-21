@@ -14,9 +14,24 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Orderstatus.init({
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true
+    },
+    orderId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    orderStatus: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    }
   }, {
     sequelize,
     modelName: 'Orderstatus',
