@@ -14,19 +14,18 @@ module.exports = {
         allowNull: false
       },
       itemId: {
-        type: Sequelize.UUID,
-        allowNull:false
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        defaultValue:[]
       },
       itemQuantity: {
-        type: Sequelize.INTEGER,
-        allowNull:true
+        type: Sequelize.STRING,
       },
       totalPrice: {
         type: Sequelize.DECIMAL,
         allowNull: true
       },
       totalItems: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allownull: true
       },
       createdAt: {

@@ -45,7 +45,7 @@ let login = async (req, res) => {
                 exp: Math.floor(Date.now() / 1000) + (8.64e+7)
             };
 
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
+            const token = jwt.sign({ payload }, process.env.JWT_SECRET_KEY)
 
             const data = {
                 token: token,
@@ -71,7 +71,7 @@ let login = async (req, res) => {
                 exp: Math.floor(Date.now() / 1000) + (8.64e+7)
             };
 
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
+            const token = jwt.sign({ payload }, process.env.JWT_SECRET_KEY)
 
             const data = {
                 token: token,

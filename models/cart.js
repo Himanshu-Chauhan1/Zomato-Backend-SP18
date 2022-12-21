@@ -2,7 +2,6 @@
 const {
   Model, UUID
 } = require('sequelize');
-const { FoodItem } = require('.');
 module.exports = (sequelize, DataTypes) => {
   class Cart extends Model {
     /**
@@ -26,19 +25,17 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     itemId: {
-      type: DataTypes.UUID,
-      allowNull: false
+      type: DataTypes.ARRAY(DataTypes.STRING),
     },
     itemQuantity: {
-      type: DataTypes.INTEGER,
-      allowNull: true
+      type: DataTypes.STRING,
     },
     totalPrice: {
       type: DataTypes.DECIMAL,
       allowNull: true
     },
     totalItems: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.STRING,
       allownull: true
     },
   }, {

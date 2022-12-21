@@ -1,3 +1,4 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken")
 
 //----------------------------------------authentication----------------------------------------------------*/
@@ -10,7 +11,7 @@ const authentication = async function (req, res, next) {
 
         let splitToken = token.split(" ")
 
-        let verifiedtoken = jwt.verify(splitToken[1], process.env.SECRET_KEY)
+        let verifiedtoken = jwt.verify(splitToken[1], process.env.JWT_SECRET_KEY)
         if (!verifiedtoken) return res.status(400).send({ status: 1003, message: "Invalid Token!" })
 
         let exp = verifiedtoken.payload.exp
