@@ -7,6 +7,7 @@ const menuRouter=require("../routes/restaurants/menu")
 const foodItemRouter=require("../routes/restaurants/foodItem")
 const foodCategoryRouter=require("../routes/restaurants/foodcategory")
 const cartRouter=require("../routes/customers/cart")
+const offerRouter=require("../routes/restaurants/offer")
 
 
 module.exports = {
@@ -18,5 +19,6 @@ module.exports = {
     menuRouter,
     foodItemRouter,
     foodCategoryRouter,
-    cartRouter
+    cartRouter,
+    offerRouter
 }

@@ -1,6 +1,6 @@
 const express = require("express")
 require('dotenv').config()
-const { adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, menuRouter, foodItemRouter, foodCategoryRouter, cartRouter } = require('./routes/index')
+const { adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, menuRouter, foodItemRouter, foodCategoryRouter, cartRouter, offerRouter} = require('./routes/index')
 const app = express()
 const Sequelize = require('sequelize');
 const multer = require('multer')
@@ -23,7 +23,7 @@ const port = process.env.PORT
 // });
 
 //Load Routes
-app.use("/", adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, menuRouter, foodItemRouter, foodCategoryRouter, cartRouter)
+app.use("/", adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, menuRouter, foodItemRouter, foodCategoryRouter, cartRouter, offerRouter)
 
 app.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`);

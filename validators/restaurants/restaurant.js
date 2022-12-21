@@ -180,12 +180,6 @@ let login = async (req, res, next) => {
                 return res.status(422).send({ status: 1003, message: "Resturant Email should be a valid email address" })
             }
 
-            const isRegisteredRestaurantEmail = await Restaurant.findOne({ where: { email: email } });
-
-            if (!isRegisteredRestaurantEmail) {
-                return res.status(422).send({ status: 1008, message: "This Restaurant-EmailId is already registered" })
-            }
-
             dataObject['email'] = email
         }
         if ("phone" in data) {

@@ -16,6 +16,7 @@ const deliveryPartnerModel = require('./deliverypartner')
 const foodItemModel = require('./fooditem')
 const foodCategoryModel = require('./foodcategory')
 const cartModel = require('./cart')
+const offerModel = require('./offer')
 
 
 let sequelize;
@@ -49,6 +50,7 @@ const DeliveryPartner = deliveryPartnerModel(sequelize, Sequelize)
 const FoodItem = foodItemModel(sequelize, Sequelize)
 const FoodCategory = foodCategoryModel(sequelize, Sequelize)
 const Cart = cartModel(sequelize, Sequelize)
+const Offer = offerModel(sequelize, Sequelize)
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -62,5 +64,6 @@ module.exports = {
   DeliveryPartner,
   FoodItem,
   FoodCategory,
-  Cart
+  Cart,
+  Offer
 };

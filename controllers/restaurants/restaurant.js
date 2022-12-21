@@ -45,11 +45,11 @@ let login = async (req, res) => {
                 exp: Math.floor(Date.now() / 1000) + (8.64e+7)
             };
 
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
+            const token = jwt.sign({ payload }, process.env.JWT_SECRET_KEY)
 
             const data = {
                 token: token,
-                role:"restaurant"
+                role: "restaurant"
             }
 
             return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
@@ -71,13 +71,13 @@ let login = async (req, res) => {
                 exp: Math.floor(Date.now() / 1000) + (8.64e+7)
             };
 
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
+            const token = jwt.sign({ payload }, process.env.JWT_SECRET_KEY)
 
             console.log(token.role);
 
             const data = {
                 token: token,
-                role:"restaurant"
+                role: "restaurant"
             }
 
             return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
