@@ -8,6 +8,7 @@ const foodItemRouter=require("../routes/restaurants/foodItem")
 const foodCategoryRouter=require("../routes/restaurants/foodcategory")
 const cartRouter=require("../routes/customers/cart")
 const offerRouter = require("../routes/restaurants/offer")
+const adminOrderStatusRouter = require("../routes/admin/orderStatus")
 const customerOrderStatus=require("../routes/customerSupport/orderStatus")
 const restaurantOrderStatus=require("../routes/restaurants/orderStatus")
 const customerSupportOrderStatus=require("../routes/customerSupport/orderStatus")
@@ -25,6 +26,7 @@ module.exports = {
     foodCategoryRouter,
     cartRouter,
     offerRouter,
+    adminOrderStatusRouter,
     customerOrderStatus,
     restaurantOrderStatus,
     customerSupportOrderStatus,

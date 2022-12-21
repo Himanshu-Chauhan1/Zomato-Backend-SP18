@@ -1,6 +1,20 @@
 const db = require("../../models");
 const { Customer, OrderStatus } = db
 
+//========================================POST /CREATE-A-ORDER-STATUS==========================================================//
+
+const create = async function (req, res) {
+    try {
+
+        const orderStatusCreated = await OrderStatus.create(req.body)
+
+        res.status(201).send({ status: 1009, message: "order status has been changed successfully", data: orderStatusCreated })
+
+    } catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
 
 //========================================POST/UPDATE-A-CUSTOMER==========================================================//
 
@@ -44,6 +58,7 @@ const index = async function (req, res) {
 
 
 module.exports = {
+    create,
     update,
     index
 }

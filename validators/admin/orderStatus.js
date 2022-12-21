@@ -40,7 +40,7 @@ const createOrderStatus = async function (req, res, next) {
         if (!isValid(orderStatus)) {
             return res.status(422).send({ status: 1002, message: "orderStatus is required" })
         }
-
+  
         if (!(
             orderStatus == 'accepted' ||
             orderStatus == 'rejected' ||
@@ -52,8 +52,8 @@ const createOrderStatus = async function (req, res, next) {
             orderStatus == 'delivered' ||
             orderStatus == 'placed' ||
             orderStatus == 'onTheLocation' ||
-            orderStatus == 'reachedTheLocation' ||
-            orderStatus == 'cancelled'
+            orderStatus == 'reachedTheLocation' || 
+            orderStatus == 'cancelled'  
         )) {
             return res.status(422).send({ status: 1003, message: "orderStatus can only be accepted, rejected, preparing, prepared, takenOver. handedOver, onTheway, delivered, placed, cancelled, onTheLocation and reachedTheLocation" })
         }
@@ -103,9 +103,9 @@ const updateOrderStatus = async function (req, res, next) {
             if (!isValid(orderId)) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
-
+    
             const isRegisteredOrderId = await OrderStatus.findOne({ where: { id: orderId } });
-
+    
             if (!isRegisteredOrderId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
             }
@@ -117,7 +117,7 @@ const updateOrderStatus = async function (req, res, next) {
             if (!isValid(orderStatus)) {
                 return res.status(422).send({ status: 1002, message: "orderStatus is required" })
             }
-
+      
             if (!(
                 orderStatus == 'accepted' ||
                 orderStatus == 'rejected' ||
@@ -125,13 +125,12 @@ const updateOrderStatus = async function (req, res, next) {
                 orderStatus == 'prepared' ||
                 orderStatus == 'takenOver' ||
                 orderStatus == 'handedOver' ||
-                orderStatus == 'handedOver' ||
                 orderStatus == 'onTheWay' ||
                 orderStatus == 'delivered' ||
                 orderStatus == 'placed' ||
                 orderStatus == 'onTheLocation' ||
-                orderStatus == 'reachedTheLocation' ||
-                orderStatus == 'cancelled'
+                orderStatus == 'reachedTheLocation' || 
+                orderStatus == 'cancelled'  
             )) {
                 return res.status(422).send({ status: 1003, message: "orderStatus can only be accepted, rejected, preparing, prepared, takenOver. handedOver, onTheway, delivered, placed, cancelled, onTheLocation and reachedTheLocation" })
             }
@@ -147,11 +146,40 @@ const updateOrderStatus = async function (req, res, next) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
+//========================================Delete-A-OrderStatus==========================================================//
+
+const deleteOrderStatus = async function (req, res, next) {
+    try {
+
+        const enteredId = req.params.id;
+
+        let checkOrderStatusId = enteredId.split('').length
+
+        if (checkOrderStatusId != 36) {
+            return res.status(422).send({ status: 1003, message: "orderStatus-Id is not valid" })
+        }
+
+        let orderStatusId = enteredId
+
+        const enteredOrderStatusId = await Customer.findOne({ where: { id: orderStatusId } })
+
+        if (!enteredOrderStatusId) {
+            return res.status(422).send({ status: 1006, message: "Provided orderStatus-ID does not exists" })
+        }
+        next()
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
 
 
 module.exports = {
     createOrderStatus,
-    updateOrderStatus
+    updateOrderStatus,
+    deleteOrderStatus
 }
 
 
