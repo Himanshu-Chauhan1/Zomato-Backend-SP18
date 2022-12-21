@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true
       },
       orderId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       orderStatus: {

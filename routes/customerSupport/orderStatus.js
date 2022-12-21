@@ -7,6 +7,6 @@ const { authorization } = require("../../middlewares/authorization");
 
 orderStatusRouter.post('/orderstatus', [validate.createOrderStatus], create);
 orderStatusRouter.put('/orderstatus/:id', [validate.updateOrderStatus], update);
-orderStatusRouter.get('/orderstatus', index);
+orderStatusRouter.get('/orderstatus', [validate.getOrderStatus], index);
 
 module.exports = orderStatusRouter

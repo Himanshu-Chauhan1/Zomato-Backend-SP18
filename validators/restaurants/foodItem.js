@@ -195,9 +195,9 @@ const updateFoodItem = async function (req, res, next) {
 
         if ("itemPrice" in data) {
 
-            // if (!isValid(itemPrice)) {
-            //     return res.status(422).send({ status: 1002, message: "itemPrice is required" })
-            // }
+            if (!isValid(itemPrice)) {
+                return res.status(422).send({ status: 1002, message: "itemPrice is required" })
+            }
 
             if (!isValidItemPrice(itemPrice)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })

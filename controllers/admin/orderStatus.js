@@ -1,5 +1,18 @@
 const db = require("../../models");
 const { Customer, OrderStatus } = db
+const { Op } = require("sequelize");
+
+////////////////////////// -GLOBAL- //////////////////////
+const isValid = function (value) {
+    if (!value || typeof value != "string" || value.trim().length == 0)
+        return false;
+    return true;
+};
+
+//////////////// -FOR EMPTY BODY- ///////////////////////
+const isValidRequestBody = function (requestBody) {
+    return Object.keys(requestBody).length > 0;
+};
 
 
 //========================================POST /CREATE-A-ORDER-STATUS==========================================================//
@@ -38,18 +51,33 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-ORDER-STATUS==========================================================//
+//========================================GET/GET-ALL-0RDER-STATUS==========================================================//
 
 const index = async function (req, res) {
     try {
+        let data = req.query
+        let { orderId, orderStatus } = data
 
-        let customers = await OrderStatus.findAll()
+        if (Object.keys(req.query).length > 0) {
+            let findOrderStatusByFilter = await OrderStatus.findAll({
+                where: {
+                    [Op.or]: [{ orderStatus: { [Op.eq]: orderStatus } }, { orderId: { [Op.eq]: orderId } }],
+                }
+            })
 
-        if (customers.length === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Customers found....." })
+            if (!findOrderStatusByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No orders found" })
+
+            return res.status(200).send({ status: 1010, Menu: findOrderStatusByFilter })
+        } else {
+            let findOrderStatusByFilter = await OrderStatus.findAll()
+
+            if (!findOrderStatusByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No orders found" })
+
+            return res.status(200).send({ status: 1010, data: findOrderStatusByFilter })
         }
 
-        return res.status(200).send({ status: 1010, message: 'All Customers:', data: customers })
     }
     catch (err) {
         console.log(err.message)

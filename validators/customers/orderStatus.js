@@ -125,10 +125,55 @@ const updateOrderStatus = async function (req, res, next) {
     }
 }
 
+//========================================Delete-A-OrderStatus==========================================================//
+
+const getOrderStatus = async function (req, res, next) {
+    try {
+
+        let data = req.query
+        let { orderId, orderStatus } = data
+
+        if ("orderId" in data) {
+
+            if (!isValid(orderId)) {
+                return res.status(422).send({ status: 1002, message: "orderId is required" })
+            }
+
+            const isRegisteredOrderId = await OrderStatus.findOne({ where: { id: orderId } });
+
+            if (!isRegisteredOrderId) {
+                return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
+            }
+        }
+
+        if ("orderStatus" in data) {
+
+            if (!isValid(orderStatus)) {
+                return res.status(422).send({ status: 1002, message: "orderStatus is required" })
+            }
+
+            if (!(
+                orderStatus == 'placed' ||
+                orderStatus == 'cancelled'
+            )) {
+                return res.status(422).send({ status: 1003, message: "orderStatus can only be placed, cancelled" })
+            }
+        }
+
+        next()
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
+
 
 module.exports = {
     createOrderStatus,
-    updateOrderStatus
+    updateOrderStatus,
+    getOrderStatus
 }
 
 
