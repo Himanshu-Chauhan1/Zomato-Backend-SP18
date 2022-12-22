@@ -33,7 +33,7 @@ const isValidItemPrice = (itemPrice) => {
     return /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(itemPrice);
 };
 
-//////////////// -FOR CATEGORY-AVILABLE- ///////////////////////
+//////////////// -FOR ITEM-AVILABLE- ///////////////////////
 const isActiveItem = (isActive) => {
     return /^(true|false|True|False)$/.test(isActive);
 };

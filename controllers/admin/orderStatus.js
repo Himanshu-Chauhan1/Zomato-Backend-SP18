@@ -1,19 +1,6 @@
 const db = require("../../models");
-const { Customer, OrderStatus } = db
+const { OrderStatus } = db
 const { Op } = require("sequelize");
-
-////////////////////////// -GLOBAL- //////////////////////
-const isValid = function (value) {
-    if (!value || typeof value != "string" || value.trim().length == 0)
-        return false;
-    return true;
-};
-
-//////////////// -FOR EMPTY BODY- ///////////////////////
-const isValidRequestBody = function (requestBody) {
-    return Object.keys(requestBody).length > 0;
-};
-
 
 //========================================POST /CREATE-A-ORDER-STATUS==========================================================//
 

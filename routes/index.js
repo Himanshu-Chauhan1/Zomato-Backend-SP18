@@ -13,6 +13,11 @@ const customerOrderStatus=require("../routes/customerSupport/orderStatus")
 const restaurantOrderStatus=require("../routes/restaurants/orderStatus")
 const customerSupportOrderStatus=require("../routes/customerSupport/orderStatus")
 const deliveryPartnerOrderStatus=require("../routes/deliveryPartners/orderStatus")
+const adminQueryRouter=require("../routes/admin/query")
+const customerQueryRouter=require("../routes/customers/query")
+const customerSupportQueryRouter=require("../routes/customerSupport/query")
+const deliveryPartnerQueryRouter=require("../routes/deliveryPartners/query")
+const restaurantQueryRouter=require("../routes/restaurants/query")
 
 
 module.exports = {
@@ -30,5 +35,10 @@ module.exports = {
     customerOrderStatus,
     restaurantOrderStatus,
     customerSupportOrderStatus,
-    deliveryPartnerOrderStatus
+    deliveryPartnerOrderStatus,
+    adminQueryRouter,
+    customerQueryRouter,
+    customerSupportQueryRouter,
+    deliveryPartnerQueryRouter,
+    restaurantQueryRouter
 }

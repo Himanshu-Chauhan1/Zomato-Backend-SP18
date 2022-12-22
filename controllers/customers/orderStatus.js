@@ -1,5 +1,5 @@
 const db = require("../../models");
-const { Customer, OrderStatus } = db
+const { OrderStatus } = db
 const { Op } = require("sequelize");
 
 //========================================POST /CREATE-A-ORDER-STATUS==========================================================//
