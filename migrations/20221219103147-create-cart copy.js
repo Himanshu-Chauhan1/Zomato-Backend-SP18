@@ -11,14 +11,14 @@ module.exports = {
       },
       customerId: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       itemId: {
-        type: Sequelize.ARRAY(Sequelize.STRING),
-        defaultValue:[]
+        type: Sequelize.STRING,
+        allowNull: true
       },
       itemQuantity: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       totalPrice: {
         type: Sequelize.DECIMAL,
@@ -27,6 +27,11 @@ module.exports = {
       totalItems: {
         type: Sequelize.STRING,
         allownull: true
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        allownull: true,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,

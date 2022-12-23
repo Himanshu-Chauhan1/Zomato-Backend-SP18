@@ -20,7 +20,7 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, userRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -36,13 +36,13 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
         }
 
-        if (!isValid(roleId)) {
-            return res.status(422).send({ status: 1002, message: "roleId is required" })
+        if (!isValid(userId)) {
+            return res.status(422).send({ status: 1002, message: "userId is required" })
         }
 
-        const isRegisteredRoleId = await Customer.findOne({ where: { id: roleId } });
+        const isRegistereduserId = await Customer.findOne({ where: { id: userId } });
 
-        if (!isRegisteredRoleId) {
+        if (!isRegistereduserId) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists for any customers" })
         }
 
@@ -50,7 +50,7 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
 
-        data.isRole = "customer".toLocaleLowerCase()
+        data.userRole = "customer".toLocaleLowerCase()
         data.isRequest = "false".toLocaleLowerCase()
         data.isActive = "true".toLocaleLowerCase()
 
@@ -86,7 +86,7 @@ const updateOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription } = data
+        const { orderId, userId, queryDescription } = data
 
         const dataObject = {};
 
@@ -108,19 +108,19 @@ const updateOrderQuery = async function (req, res, next) {
             dataObject['orderId'] = orderId
         }
 
-        if ("roleId" in data) {
+        if ("userId" in data) {
 
-            if (isValid(!roleId)) {
-                return res.status(422).send({ status: 1002, message: "roleId is required" })
+            if (isValid(!userId)) {
+                return res.status(422).send({ status: 1002, message: "userId is required" })
             }
 
-            const isRegisteredRoleId = await Customer.findOne({ where: { id: roleId } });
+            const isRegistereduserId = await Customer.findOne({ where: { id: userId } });
 
-            if (!isRegisteredRoleId) {
+            if (!isRegistereduserId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists for any customers" })
             }
 
-            dataObject['roleId'] = roleId
+            dataObject['userId'] = userId
         }
 
         if ("queryDescription" in data) {
@@ -148,7 +148,7 @@ const getOrderQuery = async function (req, res, next) {
 
         let data = req.query
 
-        const { orderId, roleId } = data
+        const { orderId, userId } = data
 
 
         if ("orderId" in data) {
@@ -164,16 +164,16 @@ const getOrderQuery = async function (req, res, next) {
             }
         }
 
-        if ("roleId" in data) {
+        if ("userId" in data) {
 
-            if (!isValid(roleId)) {
-                return res.status(422).send({ status: 1002, message: "roleId is required" })
+            if (!isValid(userId)) {
+                return res.status(422).send({ status: 1002, message: "userId is required" })
             }
 
-            const isRegisteredRoleId = await Customer.findOne({ where: { id: roleId } });
+            const isRegistereduserId = await Customer.findOne({ where: { id: userId } });
 
-            if (!isRegisteredRoleId) {
-                return res.status(422).send({ status: 1008, message: "This roleId does not exists for any customers" })
+            if (!isRegistereduserId) {
+                return res.status(422).send({ status: 1008, message: "This userId does not exists for any customers" })
             }
 
         }

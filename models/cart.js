@@ -21,14 +21,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     customerId: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: true
     },
     itemId: {
       type: DataTypes.STRING,
+      allowNull: true
     },
     itemQuantity: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
     },
     totalPrice: {
       type: DataTypes.DECIMAL,
@@ -37,6 +38,11 @@ module.exports = (sequelize, DataTypes) => {
     totalItems: {
       type: DataTypes.STRING,
       allownull: true
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allownull: true,
+      defaultValue: true
     },
   }, {
     sequelize,

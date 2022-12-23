@@ -1,6 +1,5 @@
 const db = require("../../models")
-const bcrypt = require("bcrypt")
-const { Customer, Cart } = db
+const { Customer, Cart, FoodItem } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -36,28 +35,69 @@ const isValidEmail = (email) => {
 const createCart = async function (req, res, next) {
     try {
 
+        const enteredCustomerId = req.params.customerId
 
-        const enteredId = req.params.id
-        let { itemId, cartId } = req.body
-
-        let checkCustomerId = enteredId.split('').length
+        let checkCustomerId = enteredCustomerId.split('').length
 
         if (checkCustomerId != 36) {
             return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
         }
 
-        let customerId = enteredId
+        let paramsCustomerId = enteredCustomerId
 
-        const enteredCustomerId = await Customer.findOne({ where: { id: customerId } })
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
 
-        if (!enteredCustomerId) {
+        if (!checkEnteredCustomerId) {
             return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
         }
 
         if (!isValidRequestBody(req.body)) {
-            return res.status(400).send({ status: false, message: "Please provide cart details" })
+            return res.status(400).send({ status: 1002, message: 'kindly provide itemId in request body' })
         }
 
+        let data = req.body
+
+        let { customerId, itemId, itemQuantity, totalPrice, totalItems } = data
+
+        if (!isValid(customerId)) {
+            return res.status(422).send({ status: 1002, message: "customerId is required" })
+        }
+
+        const isRegisteredCustomer = await Customer.findOne({ where: { id: customerId } });
+
+        if (!isRegisteredCustomer) {
+            return res.status(422).send({ status: 1008, message: "This customer is not registered, Please enter a new one" })
+        }
+
+        if (!isValid(itemId)) {
+            return res.status(422).send({ status: 1002, message: "itemId is required" })
+        }
+
+        const isRegisteredItem = await FoodItem.findOne({ where: { id: itemId } });
+
+        if (!isRegisteredItem) {
+            return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active, Please enter a new one" })
+        }
+
+        const isInCartItem = await Cart.findOne({ where: { itemId: itemId } });
+
+        if (isInCartItem) {
+            return res.status(422).send({ status: 1008, message: "This itemId or item is already in the cart, Please enter a new one" })
+        }
+
+        if (!isValid(itemQuantity)) {
+            return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
+        }
+
+        if (itemQuantity < 1) {
+            return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
+        }
+
+        const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
+        let itemCost = checkingItemPrice.itemPrice
+
+        data.totalPrice = itemQuantity * itemCost
+        data.totalItems = itemQuantity
 
         next()
 
@@ -72,25 +112,45 @@ const createCart = async function (req, res, next) {
 const updateCart = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredCustomerId = req.params.customerId
 
-        let checkCustomerId = enteredId.split('').length
+        let checkCustomerId = enteredCustomerId.split('').length
 
         if (checkCustomerId != 36) {
             return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
         }
 
-        let customerId = enteredId
+        let customerId = enteredCustomerId
 
-        const enteredCustomerId = await Customer.findOne({ where: { id: customerId } })
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: customerId } });
 
-        if (!enteredCustomerId) {
-            return res.status(422).send({ status: 1006, message: "Provided Customer-ID does not exists" })
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
         }
 
-        const data = req.body
+        const enteredId = req.params.cartId
 
-        const { fullName, email, phone, oldPassword, newPassword, password } = data
+        let checkCartId = enteredId.split('').length
+
+        if (checkCartId != 36) {
+            return res.status(422).send({ status: 1003, message: "Cart-Id is not valid" })
+        }
+
+        let cartId = enteredId
+
+        const enteredCartId = await Cart.findOne({ where: { id: cartId } })
+
+        if (!enteredCartId) {
+            return res.status(422).send({ status: 1006, message: "Provided Cart-ID does not exists" })
+        }
+
+        if (enteredCartId.customerId != customerId) {
+            return res.status(400).send({ status: 1003, message: 'this cart does not belongs to you! Enter appropriate cartId' })
+        }
+
+        let data = req.body
+
+        let { itemId, itemQuantity, totalPrice, totalItems } = data
 
         const dataObject = {};
 
@@ -98,88 +158,47 @@ const updateCart = async function (req, res, next) {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
         }
 
-        if ("fullName" in data) {
+        if ("itemId" in data) {
 
-            if (!isValid(fullName)) {
-                return res.status(422).send({ status: 1002, message: "FullName is required" })
+            if (!isValid(itemId)) {
+                return res.status(422).send({ status: 1002, message: "itemId is required" })
             }
 
-            if (!isValidFullName(fullName)) {
-                return res.status(422).send({ status: 1003, message: "Please provide a valid fullName" })
+            const isRegisteredItem = await FoodItem.findOne({ where: { id: itemId } });
+
+            if (!isRegisteredItem) {
+                return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active, Please enter a new one" })
             }
 
-            dataObject['fullName'] = fullName
+            dataObject['itemId'] = itemId
         }
 
-        if ("email" in data) {
+        if ("itemQuantity" in data) {
 
-            if (!isValid(email)) {
-                return res.status(422).send({ status: 1002, message: "Email is required" })
+            if (!isValid(itemQuantity)) {
+                return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
             }
 
-            if (!isValidEmail(email)) {
-                return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+            if (itemQuantity < 1) {
+                return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
             }
 
-            const isRegisteredEmail = await Customer.findOne({ where: { email: email } });
-
-            if (isRegisteredEmail) {
-                return res.status(422).send({ status: 1008, message: "This Email-Id is already registered" })
-            }
-
-            dataObject['email'] = email
+            dataObject['itemQuantity'] = itemQuantity
         }
 
+        if ("itemQuantity" && "itemId" in data) {
 
-        if ("phone" in data) {
+            const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
+            let itemCost = checkingItemPrice.itemPrice
 
-            if (!isValid(phone)) {
-                return res.status(422).send({ status: 1002, message: "Phone No. is required" })
-            }
+            const checkingItemQuantity = await Cart.findOne({ where: { id: cartId } })
+            let oldQuantity = checkingItemQuantity.itemQuantity
 
-            if (!isValidPhone(phone)) {
-                return res.status(422).send({ status: 1003, message: "Please enter a valid Phone no" })
-            }
+            data.totalPrice = (+oldQuantity + +itemQuantity) * itemCost
+            data.totalItems = (+itemQuantity + +oldQuantity)
 
-            const isRegisteredPhone = await Customer.findOne({ where: { phone: phone } });
-
-            if (isRegisteredPhone) {
-                return res.status(422).send({ status: 1008, message: "This Phone No. is already registered" })
-            }
-
-            dataObject['phone'] = phone
-        }
-
-        if ("oldPassword" in data) {
-
-            if (!isValid(oldPassword)) {
-                return res.status(422).send({ status: 1002, message: "oldPassword is required" })
-            }
-
-            if (!isValid(newPassword)) {
-                return res.status(422).send({ status: 1002, message: "newPassword is required" })
-            }
-            let customer = await Customer.findOne({ where: { id: customerId } })
-
-            let checkPassword = await bcrypt.compare(oldPassword, customer.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
-        }
-
-        if ("oldPassword" && "newPassword" in data) {
-
-            if (newPassword.length < 8) {
-                return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
-            }
-            if (newPassword.length > 15) {
-                return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
-            }
-            let customer = await Customer.findOne({ where: { id: customerId } })
-            let checkOldPassword = await bcrypt.compare(newPassword, customer.password)
-            if (checkOldPassword) {
-                return res.status(422).send({ status: 1003, msg: "oldPassword and newPassword cannot be same" })
-            }
-
-            dataObject['password'] = newPassword
+            dataObject['totalPrice'] = totalPrice
+            dataObject['totalItems'] = totalItems
         }
 
         next()
@@ -196,23 +215,46 @@ const updateCart = async function (req, res, next) {
 const deleteCart = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id
 
-        let checkCustomerId = enteredId.split('').length
+        const enteredCustomerId = req.params.customerId
+
+        let checkCustomerId = enteredCustomerId.split('').length
 
         if (checkCustomerId != 36) {
             return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
         }
 
-        let customerId = enteredId
+        let customerId = enteredCustomerId
 
-        const enteredCustomerId = await Customer.findOne({ where: { id: customerId } })
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: customerId } });
 
-        if (!enteredCustomerId) {
-            return res.status(422).send({ status: 1006, message: "Provided Customer-ID does not exists" })
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
         }
 
-        next()
+        const enteredId = req.params.cartId
+
+        let checkCartId = enteredId.split('').length
+
+        if (checkCartId != 36) {
+            return res.status(422).send({ status: 1003, message: "Cart-Id is not valid" })
+        }
+
+        let cartId = enteredId
+
+        const enteredCartId = await Cart.findOne({ where: { id: cartId } })
+
+        if (!enteredCartId) {
+            return res.status(422).send({ status: 1006, message: "Provided Cart-ID does not exists" })
+        }
+
+        if (enteredCartId.customerId !== customerId) {
+            return res.status(400).send({ status: 1003, message: 'this cart does not belongs to you! Enter appropriate cartId' })
+        } else {
+            next()
+        }
+
+
     }
     catch (err) {
         console.log(err.message)

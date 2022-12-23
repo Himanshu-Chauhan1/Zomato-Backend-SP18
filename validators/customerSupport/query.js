@@ -32,7 +32,7 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, userRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -48,13 +48,13 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
         }
 
-        if (!isValid(roleId)) {
-            return res.status(422).send({ status: 1002, message: "roleId is required" })
+        if (!isValid(userId)) {
+            return res.status(422).send({ status: 1002, message: "userId is required" })
         }
 
-        const isRegisteredRoleId = await CustomerSupport.findOne({ where: { id: roleId } });
+        const isRegistereduserId = await CustomerSupport.findOne({ where: { id: userId } });
 
-        if (!isRegisteredRoleId) {
+        if (!isRegistereduserId) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists for any customer support" })
         }
 
@@ -66,7 +66,7 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "isRequest is required" })
         }
 
-        data.isRole="customersupport".toLocaleLowerCase()
+        data.userRole="customersupport".toLocaleLowerCase()
 
         if (!isValidRequest(isRequest)) {
             return res.status(422).send({ status: 1003, message: "Please provide isRequest like True or false etc" })
@@ -112,7 +112,7 @@ const updateOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription,isRequest, isActive } = data
+        const { orderId, userId, queryDescription,isRequest, isActive } = data
 
         const dataObject = {};
 
@@ -134,19 +134,19 @@ const updateOrderQuery = async function (req, res, next) {
             dataObject['orderId'] = orderId
         }
 
-        if ("roleId" in data) {
+        if ("userId" in data) {
 
-            if (!isValid(roleId)) {
-                return res.status(422).send({ status: 1002, message: "roleId is required" })
+            if (!isValid(userId)) {
+                return res.status(422).send({ status: 1002, message: "userId is required" })
             }
 
-            const isRegisteredRoleId = await CustomerSupport.findOne({ where: { id: roleId } });
+            const isRegistereduserId = await CustomerSupport.findOne({ where: { id: userId } });
 
-            if (!isRegisteredRoleId) {
+            if (!isRegistereduserId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists for any customer support" })
             }
 
-            dataObject['roleId'] = roleId
+            dataObject['userId'] = userId
         }
 
         if ("queryDescription" in data) {
@@ -202,7 +202,7 @@ const getOrderQuery = async function (req, res, next) {
 
         let data = req.query
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, isRequest, isActive } = data
 
         if ("orderId" in data) {
 
@@ -217,15 +217,15 @@ const getOrderQuery = async function (req, res, next) {
             }
         }
 
-        if ("roleId" in data) {
+        if ("userId" in data) {
 
-            if (!isValid(roleId)) {
-                return res.status(422).send({ status: 1002, message: "roleId is required" })
+            if (!isValid(userId)) {
+                return res.status(422).send({ status: 1002, message: "userId is required" })
             }
 
-            const isRegisteredRoleId = await CustomerSupport.findOne({ where: { id: roleId } });
+            const isRegistereduserId = await CustomerSupport.findOne({ where: { id: userId } });
 
-            if (!isRegisteredRoleId) {
+            if (!isRegistereduserId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists for any customer support" })
             }
 
@@ -239,21 +239,21 @@ const getOrderQuery = async function (req, res, next) {
 
         }
 
-        if ("isRole" in data) {
+        if ("userRole" in data) {
 
-            if (!isValid(isRole)) {
-                return res.status(422).send({ status: 1002, message: "isRole is required" })
+            if (!isValid(userRole)) {
+                return res.status(422).send({ status: 1002, message: "userRole is required" })
             }
 
             if (!(
-                isRole == 'customer' ||
-                isRole == 'Customer' ||
-                isRole == 'restaurant' ||
-                isRole == 'Restaurant' ||
-                isRole == 'Customersupport' ||
-                isRole == 'customersupport' ||
-                isRole == 'deliverypartner' ||
-                isRole == 'Deliverypartner'
+                userRole == 'customer' ||
+                userRole == 'Customer' ||
+                userRole == 'restaurant' ||
+                userRole == 'Restaurant' ||
+                userRole == 'Customersupport' ||
+                userRole == 'customersupport' ||
+                userRole == 'deliverypartner' ||
+                userRole == 'Deliverypartner'
             )) {
                 return res.status(422).send({ status: 1003, message: "Role can only be customer, customersupport, restaurant, and Delivery Partner" })
             }

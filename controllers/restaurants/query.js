@@ -43,7 +43,7 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
         let data = req.query
-        const { orderId } = data
+        const { orderId, userId } = data
 
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
@@ -52,7 +52,9 @@ const index = async function (req, res) {
                         {
                             [Op.and]: [
                                 { orderId: { [Op.eq]: orderId } },
-                                { isActive: { [Op.eq]: true } }
+                                { isActive: { [Op.eq]: true } },
+                                { userRole: { [Op.eq]: "restaurant" } },
+                                { userId: { [Op.eq]: userId } }
                             ],
                         }
                     ],
@@ -64,7 +66,7 @@ const index = async function (req, res) {
 
             return res.status(200).send({ status: 1010, Menu: findOrderQueryByFilter })
         } else {
-            let findAllOrderQuery = await Query.findAll()
+            let findAllOrderQuery = await Query.findAll({ where: { isActive: true, userRole: "restaurant" } })
 
             if (!findAllOrderQuery.length)
                 return res.status(404).send({ status: 1006, message: "No order queries found" })

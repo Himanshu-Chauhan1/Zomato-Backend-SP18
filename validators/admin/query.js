@@ -31,34 +31,34 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, userRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
 
-        if (isValid(orderId)) {
+        if (!isValid(orderId)) {
             return res.status(422).send({ status: 1002, message: "orderId is required" })
         }
 
-        const isRegisteredOrderId = await OrderStatus.findOne({ where: { id: orderId } });
+        const isRegisteredOrderId = await db.Admin.findOne({ where: { id: orderId } });
 
         if (!isRegisteredOrderId) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
         }
 
-        if (isValid(roleId)) {
+        if (!isValid(userId)) {
             return res.status(422).send({ status: 1002, message: "orderId is required" })
         }
         const isIdUnique = id =>
-            db.findOne({ where: { id: roleId }, attributes: ['id'] })
+            db.findOne({ where: { id: userId }, attributes: ['id'] })
                 .then(console.log("Yes"))
 
-        if (isValid(queryDescription)) {
+        if (!isValid(queryDescription)) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
 
-        data.isRole="admin".toLocaleLowerCase()
+        data.userRole="admin".toLocaleLowerCase()
 
         if (!isValid(isRequest)) {
             return res.status(422).send({ status: 1002, message: "isRequest is required" })
@@ -108,7 +108,7 @@ const updateOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, isRequest, isActive } = data
 
         const dataObject = {};
 
@@ -130,17 +130,17 @@ const updateOrderQuery = async function (req, res, next) {
             dataObject['orderId'] = orderId
         }
 
-        if ("roleId" in data) {
+        if ("userId" in data) {
 
-            if (isValid(roleId)) {
+            if (isValid(userId)) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
             const isIdUnique = id =>
-                db.findOne({ where: { id: roleId }, attributes: ['id'] })
+                db.findOne({ where: { id: userId }, attributes: ['id'] })
                     .then(console.log("Yes"))
 
-            dataObject['roleId'] = roleId
+            dataObject['userId'] = userId
         }
 
         if ("queryDescription" in data) {
@@ -205,7 +205,7 @@ const getOrderQuery = async function (req, res, next) {
 
         let data = req.query
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, isRequest, isActive } = data
 
         if ("orderId" in data) {
 
@@ -220,14 +220,14 @@ const getOrderQuery = async function (req, res, next) {
             }
         }
 
-        if ("roleId" in data) {
+        if ("userId" in data) {
 
-            if (isValid(roleId)) {
+            if (isValid(userId)) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
             const isIdUnique = id =>
-                db.findOne({ where: { id: roleId }, attributes: ['id'] })
+                db.findOne({ where: { id: userId }, attributes: ['id'] })
                     .then(console.log("Yes"))
 
         }
@@ -240,23 +240,23 @@ const getOrderQuery = async function (req, res, next) {
 
         }
 
-        if ("isRole" in data) {
+        if ("userRole" in data) {
 
-            if (!isValid(isRole)) {
-                return res.status(422).send({ status: 1002, message: "isRole is required" })
+            if (!isValid(userRole)) {
+                return res.status(422).send({ status: 1002, message: "userRole is required" })
             }
 
             if (!(
-                isRole == 'admin' ||
-                isRole == 'Admin' ||
-                isRole == 'customer' ||
-                isRole == 'Customer' ||
-                isRole == 'restaurant' ||
-                isRole == 'Restaurant' ||
-                isRole == 'Customersupport' ||
-                isRole == 'customersupport' ||
-                isRole == 'deliverypartner' ||
-                isRole == 'Deliverypartner'
+                userRole == 'admin' ||
+                userRole == 'Admin' ||
+                userRole == 'customer' ||
+                userRole == 'Customer' ||
+                userRole == 'restaurant' ||
+                userRole == 'Restaurant' ||
+                userRole == 'Customersupport' ||
+                userRole == 'customersupport' ||
+                userRole == 'deliverypartner' ||
+                userRole == 'Deliverypartner'
             )) {
                 return res.status(422).send({ status: 1003, message: "Role can only be admin, customer, customersupport, restaurant, and Delivery Partner" })
             }

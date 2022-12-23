@@ -7,9 +7,9 @@ const { authorization } = require("../../middlewares/authorization");
 
 
 
-cartRouter.post('/carts/:id', create);
-// cartRouter.put('/carts/:id', [authentication, authorization, validate.updateCustomer], update);
-// cartRouter.get('/customers', [authentication], index);
-// cartRouter.delete('/customers/:id', [authentication, authorization, validate.deleteCustomer], destroy);
+cartRouter.post('/customers/:customerId/cart', [validate.createCart], create);
+cartRouter.put('/customers/:customerId/cart/:cartId', [validate.updateCart], update);
+cartRouter.get('/customers/:customerId/cart', index);
+cartRouter.delete('/customers/:customerId/cart/:cartId',[validate.deleteCart], destroy);
 
 module.exports = cartRouter
