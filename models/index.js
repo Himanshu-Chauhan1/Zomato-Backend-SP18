@@ -19,6 +19,7 @@ const cartModel = require('./cart')
 const offerModel = require('./offer')
 const orderStatusModel = require('./orderstatus')
 const queryModel = require('./query')
+const orderModel = require('./order')
 
 
 let sequelize;
@@ -55,6 +56,7 @@ const Cart = cartModel(sequelize, Sequelize)
 const Offer = offerModel(sequelize, Sequelize)
 const OrderStatus = orderStatusModel(sequelize, Sequelize)
 const Query = queryModel(sequelize, Sequelize)
+const Order = queryModel(sequelize, Sequelize)
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -71,5 +73,6 @@ module.exports = {
   Cart,
   Offer,
   OrderStatus,
-  Query
+  Query,
+  Order
 };
