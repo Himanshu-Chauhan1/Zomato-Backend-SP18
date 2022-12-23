@@ -13,13 +13,17 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      roleId: {
+      userId: {
         type: Sequelize.STRING,
         allowNull: true,
       },
       queryDescription: {
         type: Sequelize.STRING,
         allowNull: true
+      },
+      userRole: {
+        type:   Sequelize.ENUM,
+        values: ['customer', 'deliverypartner', 'customersupport', 'restaurant','admin','superadmin']
       },
       isRequest: {
         type: Sequelize.BOOLEAN,

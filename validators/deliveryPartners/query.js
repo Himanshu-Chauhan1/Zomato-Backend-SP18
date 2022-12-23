@@ -50,7 +50,8 @@ const createOrderQuery = async function (req, res, next) {
         if (!isValid(queryDescription)) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
-
+        
+        data.isRole="deliverypartner".toLocaleLowerCase()
         data.isRequest = "false".toLocaleLowerCase()
         data.isActive = "false".toLocaleLowerCase()
 

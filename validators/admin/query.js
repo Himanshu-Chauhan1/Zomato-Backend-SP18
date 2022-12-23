@@ -14,7 +14,6 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-
 //////////////// -FOR REQUEST-AVILABLE- ///////////////////////
 const isValidRequest = (isRequest) => {
     return /^(true|false|True|False)$/.test(isRequest);
@@ -32,7 +31,7 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -58,6 +57,8 @@ const createOrderQuery = async function (req, res, next) {
         if (isValid(queryDescription)) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
+
+        data.isRole="admin".toLocaleLowerCase()
 
         if (!isValid(isRequest)) {
             return res.status(422).send({ status: 1002, message: "isRequest is required" })
@@ -237,6 +238,28 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "queryDescription is required" })
             }
 
+        }
+
+        if ("isRole" in data) {
+
+            if (!isValid(isRole)) {
+                return res.status(422).send({ status: 1002, message: "isRole is required" })
+            }
+
+            if (!(
+                isRole == 'admin' ||
+                isRole == 'Admin' ||
+                isRole == 'customer' ||
+                isRole == 'Customer' ||
+                isRole == 'restaurant' ||
+                isRole == 'Restaurant' ||
+                isRole == 'Customersupport' ||
+                isRole == 'customersupport' ||
+                isRole == 'deliverypartner' ||
+                isRole == 'Deliverypartner'
+            )) {
+                return res.status(422).send({ status: 1003, message: "Role can only be admin, customer, customersupport, restaurant, and Delivery Partner" })
+            }
         }
 
         if ("isRequest" in data) {

@@ -32,7 +32,7 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -65,6 +65,8 @@ const createOrderQuery = async function (req, res, next) {
         if (!isValid(isRequest)) {
             return res.status(422).send({ status: 1002, message: "isRequest is required" })
         }
+
+        data.isRole="customersupport".toLocaleLowerCase()
 
         if (!isValidRequest(isRequest)) {
             return res.status(422).send({ status: 1003, message: "Please provide isRequest like True or false etc" })
@@ -110,7 +112,7 @@ const updateOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, roleId, queryDescription,isRequest, isActive } = data
 
         const dataObject = {};
 
@@ -235,6 +237,26 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "queryDescription is required" })
             }
 
+        }
+
+        if ("isRole" in data) {
+
+            if (!isValid(isRole)) {
+                return res.status(422).send({ status: 1002, message: "isRole is required" })
+            }
+
+            if (!(
+                isRole == 'customer' ||
+                isRole == 'Customer' ||
+                isRole == 'restaurant' ||
+                isRole == 'Restaurant' ||
+                isRole == 'Customersupport' ||
+                isRole == 'customersupport' ||
+                isRole == 'deliverypartner' ||
+                isRole == 'Deliverypartner'
+            )) {
+                return res.status(422).send({ status: 1003, message: "Role can only be customer, customersupport, restaurant, and Delivery Partner" })
+            }
         }
 
         if ("isRequest" in data) {

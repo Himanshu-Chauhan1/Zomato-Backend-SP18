@@ -21,13 +21,13 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
 
-        if (isValid(orderId)) {
+        if (!isValid(orderId)) {
             return res.status(422).send({ status: 1002, message: "orderId is required" })
         }
 
@@ -51,6 +51,7 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
 
+        data.isRole = "restaurant".toLocaleLowerCase()
         data.isRequest = "false".toLocaleLowerCase()
         data.isActive = "false".toLocaleLowerCase()
 

@@ -1,6 +1,7 @@
 const db = require("../../models");
 const { Query } = db
 const { Op } = require("sequelize");
+const customer = require("../../models/customer");
 
 //========================================POST /CREATE-A-ORDER-QUERY==========================================================//
 
@@ -43,16 +44,20 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
         let data = req.query
-        const { orderId, roleId, queryDescription, isActive } = data
+
+        const { orderId } = data
 
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
                 where: {
                     [Op.or]: [
-                        { orderId: { [Op.eq]: orderId } },
-                        { roleId: { [Op.eq]: roleId } },
-                        { queryDescription: { [Op.eq]: queryDescription } },
-                        { isActive: { [Op.eq]: false } }
+                        {
+                            [Op.and]: [
+                                { orderId: { [Op.eq]: orderId } },
+                                { isActive: { [Op.eq]: true } },
+                                { isRole: { [Op.eq]: customer } },
+                            ],
+                        }
                     ],
                 }
             })
@@ -62,7 +67,8 @@ const index = async function (req, res) {
 
             return res.status(200).send({ status: 1010, Menu: findOrderQueryByFilter })
         } else {
-            let findAllOrderQuery = await Query.findAll()
+
+            let findAllOrderQuery = await Query.findAll({ where: { isActive: true, isRole: customer } })
 
             if (!findAllOrderQuery.length)
                 return res.status(404).send({ status: 1006, message: "No order queries found" })
@@ -77,27 +83,9 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-ORDER-STATUS==========================================================//
-
-const destroy = async function (req, res) {
-    try {
-
-        let orderQueryId = req.params.id
-
-        let deleteQuery = await Query.destroy({ where: { id: orderQueryId } })
-
-        return res.status(200).send({ status: 1010, message: "The order query has been deleted Successfully", data: deleteQuery })
-    }
-    catch (err) {
-        console.log(err.message);
-        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-    }
-}
-
 
 module.exports = {
     create,
     update,
-    index,
-    destroy
+    index
 }

@@ -24,13 +24,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    roleId: {
+    userId: {
       type: DataTypes.STRING,
       allowNull: true,
-    },
+    },//does not required
     queryDescription: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    userRole: {
+      type: DataTypes.ENUM,
+      values: ['customer', 'deliverypartner', 'customersupport', 'restaurant', 'admin', 'superadmin']
     },
     isRequest: {
       type: DataTypes.BOOLEAN,

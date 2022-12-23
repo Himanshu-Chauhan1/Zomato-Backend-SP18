@@ -43,16 +43,18 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
         let data = req.query
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId } = data
 
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
                 where: {
                     [Op.or]: [
-                        { orderId: { [Op.eq]: orderId } },
-                        { roleId: { [Op.eq]: roleId } },
-                        { queryDescription: { [Op.eq]: queryDescription } },
-                        { isActive: { [Op.eq]: true } }
+                        {
+                            [Op.and]: [
+                                { orderId: { [Op.eq]: orderId } },
+                                { isActive: { [Op.eq]: true } }
+                            ],
+                        }
                     ],
                 }
             })

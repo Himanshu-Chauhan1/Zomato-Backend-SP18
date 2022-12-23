@@ -17,11 +17,10 @@ const isValidRequestBody = function (requestBody) {
 
 const createOrderQuery = async function (req, res, next) {
     try {
-        console.log(req);
 
         const data = req.body
 
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, roleId, queryDescription, isRole, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -51,8 +50,9 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
 
+        data.isRole = "customer".toLocaleLowerCase()
         data.isRequest = "false".toLocaleLowerCase()
-        data.isActive = "false".toLocaleLowerCase()
+        data.isActive = "true".toLocaleLowerCase()
 
         next()
 

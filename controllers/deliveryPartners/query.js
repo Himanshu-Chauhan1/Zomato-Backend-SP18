@@ -1,6 +1,7 @@
 const db = require("../../models");
 const { Query } = db
 const { Op } = require("sequelize");
+const deliverypartner = require("../../models/deliverypartner");
 
 //========================================POST /CREATE-A-ORDER-QUERY==========================================================//
 
@@ -43,17 +44,19 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
         let data = req.query
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+        const { orderId, isRole } = data
 
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
                 where: {
                     [Op.or]: [
-                        { orderId: { [Op.eq]: orderId } },
-                        { roleId: { [Op.eq]: roleId } },
-                        { queryDescription: { [Op.eq]: queryDescription } },
-                        { isRequest: { [Op.eq]: isRequest } },
-                        { isActive: { [Op.eq]: isActive } },
+                        {
+                            [Op.and]: [
+                                { orderId: { [Op.eq]: orderId } },
+                                { isActive: { [Op.eq]: true } },
+                                { isRole: { [Op.eq]: deliverypartner } },
+                            ],
+                        }
                     ],
                 }
             })
@@ -63,7 +66,7 @@ const index = async function (req, res) {
 
             return res.status(200).send({ status: 1010, Menu: findOrderQueryByFilter })
         } else {
-            let findAllOrderQuery = await Query.findAll()
+            let findAllOrderQuery = await Query.findAll({ where: { isActive: true } })
 
             if (!findAllOrderQuery.length)
                 return res.status(404).send({ status: 1006, message: "No order queries found" })

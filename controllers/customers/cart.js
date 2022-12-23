@@ -42,7 +42,6 @@ const create = async function (req, res) {
             return res.status(400).send({ status: 1002, message: 'kindly provide productid in request body' })
         }
 
-
         const cart = await Cart.findOne({ where: { customerId: customerId } })
 
         if (!cart) {
@@ -68,10 +67,12 @@ const create = async function (req, res) {
                 return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
             }
 
-            const checkingItemPrice = await FoodItem.findAll({ where: { id: itemId }, attributes: ['itemPrice'] })
+            const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId }})
+
+            console.log(checkingItemPrice);
 
             totalPrice = itemQuantity * checkingItemPrice
-            totalItems = itemQuantity
+            totalItems = itemQuantity 
 
             let submitData = {
                 customerId: req.params.id,
