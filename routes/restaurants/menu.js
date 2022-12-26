@@ -7,6 +7,6 @@ const { index } = require("../../controllers/restaurants/menu");
 
 
 
-menuRouter.get('/menus', [validate.getMenu], index);
+menuRouter.get('/restaurants/:restaurantId/menus', [validate.getMenu], index);
 
 module.exports = menuRouter

@@ -30,6 +30,22 @@ const isActiveRequest = (isActive) => {
 const createOrderQuery = async function (req, res, next) {
     try {
 
+        const enteredCustomerSupportId = req.params.customerSupportId
+
+        let checkCustomerSupportId = enteredCustomerSupportId.split('').length
+
+        if (checkCustomerSupportId != 36) {
+            return res.status(422).send({ status: 1003, message: "CustomerSupport-Id is not valid" })
+        }
+
+        let paramsCustomerSupportId = enteredCustomerSupportId
+
+        const checkEnteredCustomerSupportId = await CustomerSupport.findOne({ where: { id: paramsCustomerSupportId } });
+
+        if (!checkEnteredCustomerSupportId) {
+            return res.status(422).send({ status: 1006, message: "CustomerSupport-ID does not exists" })
+        }
+
         const data = req.body
 
         const { orderId, userId, queryDescription, userRole, isRequest, isActive } = data
@@ -66,7 +82,7 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "isRequest is required" })
         }
 
-        data.userRole="customersupport".toLocaleLowerCase()
+        data.userRole = "customersupport".toLocaleLowerCase()
 
         if (!isValidRequest(isRequest)) {
             return res.status(422).send({ status: 1003, message: "Please provide isRequest like True or false etc" })
@@ -94,7 +110,23 @@ const createOrderQuery = async function (req, res, next) {
 const updateOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredCustomerSupportId = req.params.customerSupportId
+
+        let checkCustomerSupportId = enteredCustomerSupportId.split('').length
+
+        if (checkCustomerSupportId != 36) {
+            return res.status(422).send({ status: 1003, message: "CustomerSupport-Id is not valid" })
+        }
+
+        let paramsCustomerSupportId = enteredCustomerSupportId
+
+        const checkEnteredCustomerSupportId = await CustomerSupport.findOne({ where: { id: paramsCustomerSupportId } });
+
+        if (!checkEnteredCustomerSupportId) {
+            return res.status(422).send({ status: 1006, message: "CustomerSupport-ID does not exists" })
+        }
+
+        const enteredId = req.params.queryId
 
         let checkQueryId = enteredId.split('').length
 
@@ -112,7 +144,7 @@ const updateOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, userId, queryDescription,isRequest, isActive } = data
+        const { orderId, userId, queryDescription, isRequest, isActive } = data
 
         const dataObject = {};
 
@@ -199,6 +231,22 @@ const updateOrderQuery = async function (req, res, next) {
 
 const getOrderQuery = async function (req, res, next) {
     try {
+
+        const enteredCustomerSupportId = req.params.customerSupportId
+
+        let checkCustomerSupportId = enteredCustomerSupportId.split('').length
+
+        if (checkCustomerSupportId != 36) {
+            return res.status(422).send({ status: 1003, message: "CustomerSupport-Id is not valid" })
+        }
+
+        let paramsCustomerSupportId = enteredCustomerSupportId
+
+        const checkEnteredCustomerSupportId = await CustomerSupport.findOne({ where: { id: paramsCustomerSupportId } });
+
+        if (!checkEnteredCustomerSupportId) {
+            return res.status(422).send({ status: 1006, message: "CustomerSupport-ID does not exists" })
+        }
 
         let data = req.query
 

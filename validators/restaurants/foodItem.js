@@ -47,6 +47,23 @@ const isValidFutureDate = (dateCreated) => {
 
 const createFoodItem = async function (req, res, next) {
     try {
+
+        const enteredRestaurantId = req.params.restaurantId
+
+        let checkRestaurantId = enteredRestaurantId.split('').length
+
+        if (checkRestaurantId != 36) {
+            return res.status(422).send({ status: 1003, message: "Restaurant-Id is not valid" })
+        }
+
+        let paramsRestaurantId = enteredRestaurantId
+
+        const checkEnteredRestaurantId = await Restaurant.findOne({ where: { id: paramsRestaurantId } });
+
+        if (!checkEnteredRestaurantId) {
+            return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
+        }
+
         const data = req.body
 
         const { categoryName, itemName, itemDescription, itemPrice, itemImage, isActive } = req.body
@@ -124,7 +141,23 @@ const createFoodItem = async function (req, res, next) {
 const updateFoodItem = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredRestaurantId = req.params.restaurantId
+
+        let checkRestaurantId = enteredRestaurantId.split('').length
+
+        if (checkRestaurantId != 36) {
+            return res.status(422).send({ status: 1003, message: "Restaurant-Id is not valid" })
+        }
+
+        let paramsRestaurantId = enteredRestaurantId
+
+        const checkEnteredRestaurantId = await Restaurant.findOne({ where: { id: paramsRestaurantId } });
+
+        if (!checkEnteredRestaurantId) {
+            return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
+        }
+
+        const enteredId = req.params.foodItemId
 
         let checkFoodItemId = enteredId.split('').length
 
@@ -250,7 +283,23 @@ const updateFoodItem = async function (req, res, next) {
 const deleteFoodItem = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredRestaurantId = req.params.restaurantId
+
+        let checkRestaurantId = enteredRestaurantId.split('').length
+
+        if (checkRestaurantId != 36) {
+            return res.status(422).send({ status: 1003, message: "Restaurant-Id is not valid" })
+        }
+
+        let paramsRestaurantId = enteredRestaurantId
+
+        const checkEnteredRestaurantId = await Restaurant.findOne({ where: { id: paramsRestaurantId } });
+
+        if (!checkEnteredRestaurantId) {
+            return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
+        }
+
+        const enteredId = req.params.foodItemId
 
         let checkFoodItemId = enteredId.split('').length
 

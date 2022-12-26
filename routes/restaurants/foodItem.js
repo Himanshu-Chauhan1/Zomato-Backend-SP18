@@ -6,11 +6,11 @@ const { create, update, index, destroy, upload } = require("../../controllers/re
 // const { authorization } = require("../../middleware/authorization")
 
 
-foodItemRouter.post('/fooditems', [validate.createFoodItem], create);
-foodItemRouter.put('/fooditems/:id', [validate.updateFoodItem], update);
-foodItemRouter.get('/fooditems', index);
-foodItemRouter.delete('/fooditems/:id', [validate.deleteFoodItem], destroy);
-foodItemRouter.post('/fooditems/upload', upload);
+foodItemRouter.post('/restaurants/:restaurantId/fooditems', [validate.createFoodItem], create);
+foodItemRouter.put('/restaurants/:restaurantId/fooditems/:foodItemId', [validate.updateFoodItem], update);
+foodItemRouter.get('/restaurants/:restaurantId/fooditems', index);
+foodItemRouter.delete('/restaurants/:restaurantId/fooditems/:foodItemId', [validate.deleteFoodItem], destroy);
+foodItemRouter.post('/restaurants/:restaurantId/fooditems/upload', upload);
 
 
 

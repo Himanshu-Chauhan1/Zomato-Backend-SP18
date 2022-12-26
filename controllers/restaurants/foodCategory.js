@@ -22,7 +22,7 @@ const create = async function (req, res) {
 
 const update = async function (req, res) {
     try {
-        const foodCategoryId = req.params.id;
+        const foodCategoryId = req.params.categoryId
         let data = req.body
 
         const values = data;
@@ -63,7 +63,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let foodCategoryId = req.params.id
+        let foodCategoryId = req.params.categoryId
 
         let deleteFoodCategory = await FoodCategory.destroy({ where: { id: foodCategoryId } })
 

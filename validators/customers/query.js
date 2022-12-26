@@ -18,6 +18,22 @@ const isValidRequestBody = function (requestBody) {
 const createOrderQuery = async function (req, res, next) {
     try {
 
+        const enteredCustomerId = req.params.customerId
+
+        let checkCustomerId = enteredCustomerId.split('').length
+
+        if (checkCustomerId != 36) {
+            return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
+        }
+
+        let paramsCustomerId = enteredCustomerId
+
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
+
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
+        }
+
         const data = req.body
 
         const { orderId, userId, queryDescription, userRole, isRequest, isActive } = data
@@ -68,7 +84,23 @@ const createOrderQuery = async function (req, res, next) {
 const updateOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredCustomerId = req.params.customerId
+
+        let checkCustomerId = enteredCustomerId.split('').length
+
+        if (checkCustomerId != 36) {
+            return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
+        }
+
+        let paramsCustomerId = enteredCustomerId
+
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
+
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
+        }
+
+        const enteredId = req.params.queryId
 
         let checkQueryId = enteredId.split('').length
 
@@ -82,6 +114,10 @@ const updateOrderQuery = async function (req, res, next) {
 
         if (!enteredOueryId) {
             return res.status(422).send({ status: 1006, message: "Provided query-ID does not exists" })
+        }
+
+        if (enteredOueryId.userId != userId) {
+            return res.status(400).send({ status: 1003, message: 'this query does not belongs to you! Enter appropriate queryId' })
         }
 
         const data = req.body
@@ -145,6 +181,22 @@ const updateOrderQuery = async function (req, res, next) {
 
 const getOrderQuery = async function (req, res, next) {
     try {
+
+        const enteredCustomerId = req.params.customerId
+
+        let checkCustomerId = enteredCustomerId.split('').length
+
+        if (checkCustomerId != 36) {
+            return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
+        }
+
+        let paramsCustomerId = enteredCustomerId
+
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
+
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
+        }
 
         let data = req.query
 

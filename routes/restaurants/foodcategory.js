@@ -6,9 +6,9 @@ const { create, update, index, destroy} = require("../../controllers/restaurants
 // const { authorization } = require("../../middleware/authorization")
 
 
-foodCategoryRouter.post('/foodcategory', [validate.createFoodCategory], create);
-foodCategoryRouter.put('/foodcategory/:id', [validate.updateFoodCategory], update);
-foodCategoryRouter.get('/foodcategory', index);
-foodCategoryRouter.delete('/foodcategory/:id', [validate.deleteFoodCategory], destroy);
+foodCategoryRouter.post('/restaurants/:restaurantId/foodcategory', [validate.createFoodCategory], create);
+foodCategoryRouter.put('/restaurants/:restaurantId/foodcategory/:categoryId', [validate.updateFoodCategory], update);
+foodCategoryRouter.get('/restaurants/:restaurantId/foodcategory', index);
+foodCategoryRouter.delete('/restaurants/:restaurantId/foodcategory/:categoryId', [validate.deleteFoodCategory], destroy);
 
 module.exports = foodCategoryRouter

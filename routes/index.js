@@ -23,6 +23,11 @@ const customerOrderRouter = require("../routes/customers/order")
 const customerSupportOrderRouter = require("../routes/customerSupport/order")
 const deliveryPartnerOrderRouter = require("../routes/deliveryPartners/order")
 const restaurantOrderRouter = require("../routes/restaurants/order")
+const adminAddressRouter = require("../routes/admin/address")
+const customerAddressRouter = require("../routes/customers/address")
+const customerSupportAddressRouter = require("../routes/customerSupport/address")
+const deliveryPartnerAddressRouter = require("../routes/deliveryPartners/address")
+const restaurantAddressRouter = require("../routes/restaurants/address")
 
 
 module.exports = {
@@ -50,5 +55,10 @@ module.exports = {
     customerOrderRouter,
     customerSupportOrderRouter,
     deliveryPartnerOrderRouter,
-    restaurantOrderRouter
+    restaurantOrderRouter,
+    adminAddressRouter,
+    customerAddressRouter,
+    customerSupportAddressRouter,
+    deliveryPartnerAddressRouter,
+    restaurantAddressRouter
 }

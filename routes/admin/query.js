@@ -6,9 +6,9 @@ const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
 
-orderQueryRouter.post('/admin/orderqueries', [validate.createOrderQuery], create);
-orderQueryRouter.put('/admin/orderqueries/:id', [validate.updateOrderQuery], update);
-orderQueryRouter.get('/admin/orderqueries', [validate.getOrderQuery], index);
-orderQueryRouter.delete('/admin/orderqueries/:id', [validate.deleteOrderQuery], destroy);
+orderQueryRouter.post('/admin/:adminId/orderqueries', [validate.createOrderQuery], create);
+orderQueryRouter.put('/admin/:adminId/orderqueries/:id', [validate.updateOrderQuery], update);
+orderQueryRouter.get('/admin/:adminId/orderqueries', [validate.getOrderQuery], index);
+orderQueryRouter.delete('/admin/:adminId/orderqueries/:id', [validate.deleteOrderQuery], destroy);
 
 module.exports = orderQueryRouter

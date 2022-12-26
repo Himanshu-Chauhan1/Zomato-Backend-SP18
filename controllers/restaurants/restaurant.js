@@ -94,7 +94,7 @@ let login = async (req, res) => {
 
 const update = async function (req, res) {
     try {
-        const restaurantId = req.params.id;
+        const restaurantId = req.params.restaurantId
         let data = req.body
 
         const values = data;
@@ -166,7 +166,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let restaurantId = req.params.id
+        let restaurantId = req.params.restaurantId
 
         let deleteRestaurant = await Restaurant.destroy({ where: { id: restaurantId } })
 
@@ -177,7 +177,6 @@ const destroy = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
-
 
 
 module.exports = {

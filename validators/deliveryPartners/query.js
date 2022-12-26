@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Query,DeliveryPartner } = db
+const { Query, DeliveryPartner } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -18,6 +18,22 @@ const isValidRequestBody = function (requestBody) {
 
 const createOrderQuery = async function (req, res, next) {
     try {
+
+        const enteredDeliveryPartnerId = req.params.deliveryPartnerId
+
+        let checkDeliveryPartnerId = enteredDeliveryPartnerId.split('').length
+
+        if (checkDeliveryPartnerId != 36) {
+            return res.status(422).send({ status: 1003, message: "deliveryPartner-Id is not valid" })
+        }
+
+        let paramsDeliveryPartnerId = enteredDeliveryPartnerId
+
+        const checkEnteredDeliveryPartnerId = await DeliveryPartner.findOne({ where: { id: paramsDeliveryPartnerId } });
+
+        if (!checkEnteredDeliveryPartnerId) {
+            return res.status(422).send({ status: 1006, message: "deliveryPartner-ID does not exists" })
+        }
 
         const data = req.body
 
@@ -50,8 +66,8 @@ const createOrderQuery = async function (req, res, next) {
         if (!isValid(queryDescription)) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
-        
-        data.userRole="deliverypartner".toLocaleLowerCase()
+
+        data.userRole = "deliverypartner".toLocaleLowerCase()
         data.isRequest = "false".toLocaleLowerCase()
         data.isActive = "true".toLocaleLowerCase()
 
@@ -69,7 +85,23 @@ const createOrderQuery = async function (req, res, next) {
 const updateOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredDeliveryPartnerId = req.params.deliveryPartnerId
+
+        let checkDeliveryPartnerId = enteredDeliveryPartnerId.split('').length
+
+        if (checkDeliveryPartnerId != 36) {
+            return res.status(422).send({ status: 1003, message: "deliveryPartner-Id is not valid" })
+        }
+
+        let paramsDeliveryPartnerId = enteredDeliveryPartnerId
+
+        const checkEnteredDeliveryPartnerId = await DeliveryPartner.findOne({ where: { id: paramsDeliveryPartnerId } });
+
+        if (!checkEnteredDeliveryPartnerId) {
+            return res.status(422).send({ status: 1006, message: "deliveryPartner-ID does not exists" })
+        }
+
+        const enteredId = req.params.queryId
 
         let checkQueryId = enteredId.split('').length
 
@@ -146,6 +178,22 @@ const updateOrderQuery = async function (req, res, next) {
 
 const getOrderQuery = async function (req, res, next) {
     try {
+
+        const enteredDeliveryPartnerId = req.params.deliveryPartnerId
+
+        let checkDeliveryPartnerId = enteredDeliveryPartnerId.split('').length
+
+        if (checkDeliveryPartnerId != 36) {
+            return res.status(422).send({ status: 1003, message: "deliveryPartner-Id is not valid" })
+        }
+
+        let paramsDeliveryPartnerId = enteredDeliveryPartnerId
+
+        const checkEnteredDeliveryPartnerId = await DeliveryPartner.findOne({ where: { id: paramsDeliveryPartnerId } });
+
+        if (!checkEnteredDeliveryPartnerId) {
+            return res.status(422).send({ status: 1006, message: "deliveryPartner-ID does not exists" })
+        }
 
         let data = req.query
 

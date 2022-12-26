@@ -7,10 +7,10 @@ const { authentication } = require("../../middlewares/authentication")
 
 
 restaurantRouter.post('/restaurants', [validate.createRestaurant], create);
-restaurantRouter.put('/restaurants/:id', [authentication,validate.updateRestaurant], update);
+restaurantRouter.put('/restaurants/:restaurantId', [authentication,validate.updateRestaurant], update);
 restaurantRouter.get('/restaurants/filter',[authentication], get);
 restaurantRouter.get('/restaurants',[authentication], index);
-restaurantRouter.delete('/restaurants/:id', [authentication,validate.deleteRestaurant], destroy);
+restaurantRouter.delete('/restaurants/:restaurantId', [authentication,validate.deleteRestaurant], destroy);
 restaurantRouter.post('/restaurants/login', [validate.login], login);
 
 module.exports = restaurantRouter

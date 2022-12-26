@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Query, OrderStatus, Customer, CustomerSupport, DeliveryPartner, Restaurant } = db
+const { Query } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -28,6 +28,21 @@ const isActiveRequest = (isActive) => {
 
 const createOrderQuery = async function (req, res, next) {
     try {
+        const enteredAdminId = req.params.adminId
+
+        let checkAdminId = enteredAdminId.split('').length
+
+        if (checkAdminId != 36) {
+            return res.status(422).send({ status: 1003, message: "admin-Id is not valid" })
+        }
+
+        let paramsAdminId = enteredAdminId
+
+        const checkEnteredAdminId = await Admin.findOne({ where: { id: paramsAdminId } });
+
+        if (!checkEnteredAdminId) {
+            return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
+        }
 
         const data = req.body
 
@@ -58,7 +73,7 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
         }
 
-        data.userRole="admin".toLocaleLowerCase()
+        data.userRole = "admin".toLocaleLowerCase()
 
         if (!isValid(isRequest)) {
             return res.status(422).send({ status: 1002, message: "isRequest is required" })
@@ -89,6 +104,21 @@ const createOrderQuery = async function (req, res, next) {
 
 const updateOrderQuery = async function (req, res, next) {
     try {
+        const enteredAdminId = req.params.adminId
+
+        let checkAdminId = enteredAdminId.split('').length
+
+        if (checkAdminId != 36) {
+            return res.status(422).send({ status: 1003, message: "admin-Id is not valid" })
+        }
+
+        let paramsAdminId = enteredAdminId
+
+        const checkEnteredAdminId = await Admin.findOne({ where: { id: paramsAdminId } });
+
+        if (!checkEnteredAdminId) {
+            return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
+        }
 
         const enteredId = req.params.id;
 
@@ -203,6 +233,22 @@ const updateOrderQuery = async function (req, res, next) {
 const getOrderQuery = async function (req, res, next) {
     try {
 
+        const enteredAdminId = req.params.adminId
+
+        let checkAdminId = enteredAdminId.split('').length
+
+        if (checkAdminId != 36) {
+            return res.status(422).send({ status: 1003, message: "admin-Id is not valid" })
+        }
+
+        let paramsAdminId = enteredAdminId
+
+        const checkEnteredAdminId = await Admin.findOne({ where: { id: paramsAdminId } });
+
+        if (!checkEnteredAdminId) {
+            return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
+        }
+
         let data = req.query
 
         const { orderId, userId, queryDescription, isRequest, isActive } = data
@@ -301,6 +347,22 @@ const getOrderQuery = async function (req, res, next) {
 
 const deleteOrderQuery = async function (req, res, next) {
     try {
+
+        const enteredAdminId = req.params.adminId
+
+        let checkAdminId = enteredAdminId.split('').length
+
+        if (checkAdminId != 36) {
+            return res.status(422).send({ status: 1003, message: "admin-Id is not valid" })
+        }
+
+        let paramsAdminId = enteredAdminId
+
+        const checkEnteredAdminId = await Admin.findOne({ where: { id: paramsAdminId } });
+
+        if (!checkEnteredAdminId) {
+            return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
+        }
 
         const enteredId = req.params.id;
 
