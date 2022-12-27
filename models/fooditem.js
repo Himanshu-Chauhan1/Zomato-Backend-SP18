@@ -29,30 +29,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setCategoryName(val) {
-        this.setDataValue('categoryName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('categoryName', val.trim());
+        this.setDataValue('categoryName', val.toLocaleLowerCase().trim());
       },
     },
     itemName: {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setItemName(val) {
-        this.setDataValue('itemName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('itemName', val.trim());
+        this.setDataValue('itemName', val.toLocaleLowerCase().trim());
       },
     },
     itemDescription: {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setItemDescription(val) {
-        this.setDataValue('itemDescription', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('itemDescription', val.trim());
+        this.setDataValue('itemDescription', val.toLocaleLowerCase().trim());
       },
     },
     itemPrice: {
@@ -74,10 +65,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       default: true,
       set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isActive', val.trim());
+        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
       },
     }
   }, {

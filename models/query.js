@@ -38,40 +38,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       set: function setQueryDescription(val) {
-        this.setDataValue('queryDescription', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('queryDescription', val.trim());
+        this.setDataValue('queryDescription', val.toLocaleLowerCase().trim());
       },
     },
     userRole: {
       type: DataTypes.ENUM,
       values: ['customer', 'deliverypartner', 'customersupport', 'restaurant', 'admin', 'superadmin'],
       set: function setUserRole(val) {
-        this.setDataValue('userRole', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('userRole', val.trim());
+        this.setDataValue('userRole', val.toLocaleLowerCase().trim());
       },
     },
     isRequest: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       set: function setIsRequest(val) {
-        this.setDataValue('isRequest', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isRequest', val.trim());
+        this.setDataValue('isRequest', val.toLocaleLowerCase().trim());
       },
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isActive', val.trim());
+        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
       },
     },
   }, {

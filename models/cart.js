@@ -66,10 +66,7 @@ module.exports = (sequelize, DataTypes) => {
       allownull: true,
       defaultValue: true,
       set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isActive', val.trim());
+        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
       },
     },
   }, {

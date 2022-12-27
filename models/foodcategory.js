@@ -31,10 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setCategoryName(val) {
-        this.setDataValue('categoryName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('categoryName', val.trim());
+        this.setDataValue('categoryName', val.toLocaleLowerCase().trim());
       },
     },
     isActive: {
@@ -42,10 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       default: true,
       set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isActive', val.trim());
+        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
       },
     }
   }, {

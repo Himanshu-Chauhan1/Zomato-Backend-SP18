@@ -31,40 +31,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM,
       values: ['customer', 'deliverypartner', 'customersupport', 'restaurant', 'admin', 'superadmin'],
       set: function setUserRole(val) {
-        this.setDataValue('userRole', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('userRole', val.trim());
+        this.setDataValue('userRole', val.toLocaleLowerCase().trim());
       },
     },
     streetName: {
       type: DataTypes.STRING,
       allowNull: true,
       set: function setStreetName(val) {
-        this.setDataValue('streetName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('streetName', val.trim());
+        this.setDataValue('streetName', val.toLocaleLowerCase().trim());
       },
     },
     cityName: {
       type: DataTypes.STRING,
       allowNull: true,
       set: function setCityName(val) {
-        this.setDataValue('cityName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('cityName', val.trim());
+        this.setDataValue('cityName', val.toLocaleLowerCase().trim());
       },
     },
     stateName: {
       type: DataTypes.STRING,
       allowNull: true,
       set: function setStateName(val) {
-        this.setDataValue('stateName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('stateName', val.trim());
+        this.setDataValue('stateName', val.toLocaleLowerCase().trim());
       },
     },
     pincode: {

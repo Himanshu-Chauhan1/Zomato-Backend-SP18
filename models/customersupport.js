@@ -23,10 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setFirstName(val) {
-        this.setDataValue('firstName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('firstName', val.trim());
+        this.setDataValue('firstName', val.toLocaleLowerCase().trim());
       },
     },
     lastName: {
@@ -34,10 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
       set: function setLastName(val) {
-        this.setDataValue('lastName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('lastName', val.trim());
+        this.setDataValue('lastName', val.toLocaleLowerCase().trim());
       },
     },
     gender: {
@@ -45,10 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
       set: function setGender(val) {
-        this.setDataValue('gender', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('gender', val.trim());
+        this.setDataValue('gender', val.toLocaleLowerCase().trim());
       },
     },
     dob: {
@@ -63,10 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
       set: function setEmail(val) {
-        this.setDataValue('email', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('email', val.trim());
+        this.setDataValue('email', val.toLocaleLowerCase().trim());
       },
     },
     phone: {
@@ -80,10 +68,7 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       set: function setPassword(val) {
-        this.setDataValue('password', bcrypt.hashSync(val, 10));
-      },
-      set: function trimValue(val) {
-        this.setDataValue('password', val.trim());
+        this.setDataValue('password', bcrypt.hashSync(val, 10).trim());
       },
     },
     bloodGroup: {
@@ -104,10 +89,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setDepartmentName(val) {
-        this.setDataValue('departmentName', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('departmentName', val.trim());
+        this.setDataValue('departmentName', val.toLocaleLowerCase().trim());
       },
     },
     isApproved: {
@@ -115,10 +97,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: false,
       set: function setIsApproved(val) {
-        this.setDataValue('isApproved', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isApproved', val.trim());
+        this.setDataValue('isApproved', val.toLocaleLowerCase().trim());
       },
     },
     isActive: {
@@ -126,10 +105,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: true,
       set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase());
-      },
-      set: function trimValue(val) {
-        this.setDataValue('isActive', val.trim());
+        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
       },
     }
   }, {
