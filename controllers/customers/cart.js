@@ -4,7 +4,7 @@ const { Cart, Customer } = db
 const { Op } = require("sequelize");
 
 
-//========================================POST /CREATE-A-CUSTOMER==========================================================//
+//========================================POST /CREATE-A-CART==========================================================//
 
 const create = async function (req, res) {
     try {
@@ -18,7 +18,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-CUSTOMER==========================================================//
+//========================================POST/UPDATE-A-CART==========================================================//
 
 const update = async function (req, res) {
     try {
@@ -39,7 +39,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-CUSTOMERS==========================================================//
+//========================================GET/GET-A-CART==========================================================//
 
 const index = async function (req, res) {
     try {
@@ -60,20 +60,13 @@ const index = async function (req, res) {
             return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
         }
 
-        const enteredCustomer = await Cart.findOne({ where: { customerId: customerId } })
+        let findCustomerCart = await Cart.findAll({
+            where: { [Op.and]: [{ customerId: customerId, isActive: true }] }
+        })
 
-        if (!enteredCustomer) {
+        if (!findCustomerCart) {
             return res.status(422).send({ status: 1006, message: "There is no cart for this customer" })
         }
-
-        let findCustomerCart = await Cart.findAll({
-            where: {
-                [Op.and]: [
-                    { customerId: customerId },
-
-                ],
-            }
-        })
 
         return res.status(200).send({ status: 1010, CartData: findCustomerCart })
 
@@ -84,18 +77,23 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-CUSTOMER==========================================================//
+//========================================DELETE/DELETE-A-CART==========================================================//
 
 const destroy = async function (req, res) {
     try {
 
         const cartId = req.params.cartId
+        const customerId = req.params.customerId
 
-        const checkingCart = await Cart.findOne({ where: { id: cartId } })
+        let findCustomerCart = await Cart.findAll({
+            where: { [Op.and]: [{ customerId: customerId, isActive: true }] }
+        })
 
-        if (!checkingCart) return res.status(404).send({ status: 1006, message: "Cart does not exist for this customer" })
+        if (!findCustomerCart) {
+            return res.status(422).send({ status: 1006, message: "There is no cart for this customer" })
+        }
 
-        let deleteCart = await Cart.destroy({ where: { id: cartId } })
+        let deleteCart = await Cart.destroy({ where: { id: cartId, customerId: customerId } })
 
         return res.status(200).send({ status: 1010, message: "The cart has been deleted Successfully", data: deleteCart })
     }
