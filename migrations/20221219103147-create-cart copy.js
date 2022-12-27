@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
+      restaurantId: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       itemId: {
         type: Sequelize.STRING,
         allowNull: true

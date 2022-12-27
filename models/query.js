@@ -23,26 +23,56 @@ module.exports = (sequelize, DataTypes) => {
     orderId: {
       type: DataTypes.STRING,
       allowNull: true,
+      set: function trimValue(val) {
+        this.setDataValue('orderId', val.trim());
+      },
     },
     userId: {
       type: DataTypes.STRING,
       allowNull: true,
-    },//does not required
+      set: function trimValue(val) {
+        this.setDataValue('userId', val.trim());
+      },
+    },
     queryDescription: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      set: function setQueryDescription(val) {
+        this.setDataValue('queryDescription', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('queryDescription', val.trim());
+      },
     },
     userRole: {
       type: DataTypes.ENUM,
-      values: ['customer', 'deliverypartner', 'customersupport', 'restaurant', 'admin', 'superadmin']
+      values: ['customer', 'deliverypartner', 'customersupport', 'restaurant', 'admin', 'superadmin'],
+      set: function setUserRole(val) {
+        this.setDataValue('userRole', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('userRole', val.trim());
+      },
     },
     isRequest: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      set: function setIsRequest(val) {
+        this.setDataValue('isRequest', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('isRequest', val.trim());
+      },
     },
     isActive: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      set: function setIsActive(val) {
+        this.setDataValue('isActive', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('isActive', val.trim());
+      },
     },
   }, {
     sequelize,

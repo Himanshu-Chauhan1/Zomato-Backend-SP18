@@ -15,27 +15,22 @@ module.exports = {
       },
       lastName: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       gender: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       dob: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       phone: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       password: {
@@ -48,7 +43,6 @@ module.exports = {
       },
       bloodGroup: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
       },
       joiningDate: {

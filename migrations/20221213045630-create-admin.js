@@ -12,24 +12,18 @@ module.exports = {
       fullName: {
         type: Sequelize.STRING,
         allowNull: false,
-        trim:true
       },
       email: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       phone: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false,
-        trim:true
       },
       createdAt: {
         allowNull: false,

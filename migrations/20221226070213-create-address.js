@@ -20,6 +20,7 @@ module.exports = {
       streetName: {
         type: Sequelize.STRING,
         allowNull: true,
+        lowerCase: true
       },
       cityName: {
         type: Sequelize.STRING,

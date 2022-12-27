@@ -158,8 +158,8 @@ const updateAddress = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "Provided Address-ID does not exists" })
         }
 
-        if (enteredAddressId.userId != userId) {
-            return res.status(400).send({ status: 1003, message: 'this query does not belongs to you! Enter appropriate addressId' })
+        if (enteredAddressId.userId != paramsRestaurantId) {
+            return res.status(400).send({ status: 1003, message: 'this address does not belongs to you! Enter appropriate addressId' })
         }
 
         const data = req.body
@@ -271,6 +271,10 @@ const getAddress = async function (req, res, next) {
 
         if (!checkEnteredRestaurantId) {
             return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
+        }
+
+        if (enteredAddressId.userId != paramsRestaurantId) {
+            return res.status(400).send({ status: 1003, message: 'this address does not belongs to you! Enter appropriate addressId' })
         }
 
         let data = req.query
@@ -408,8 +412,8 @@ const deleteAddress = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "Provided Address-ID does not exists" })
         }
 
-        if (enteredAddressId.userId != userId) {
-            return res.status(400).send({ status: 1003, message: 'this query does not belongs to you! Enter appropriate addressId' })
+        if (enteredAddressId.userId != paramsRestaurantId) {
+            return res.status(400).send({ status: 1003, message: 'this address does not belongs to you! Enter appropriate addressId' })
         }
 
         next()

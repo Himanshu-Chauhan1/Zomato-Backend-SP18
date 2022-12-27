@@ -12,53 +12,39 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        trim:true
       },
       email: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       phone: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       landline: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       ownerFullName: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       ownerFullName: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       ownerEmail: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false,
-        trim:true
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false,
-        trim:true
       },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: true,
-        defaultValue:true
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,

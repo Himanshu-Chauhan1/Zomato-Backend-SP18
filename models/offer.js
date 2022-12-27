@@ -23,26 +23,53 @@ module.exports = (sequelize, DataTypes) => {
     restaurantId: {
       type: DataTypes.UUID,
       allowNull: true,
+      set: function trimValue(val) {
+        this.setDataValue('restaurantId', val.trim());
+      },
     },
     categoryName: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      set: function setCategoryName(val) {
+        this.setDataValue('categoryName', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('categoryName', val.trim());
+      },
     },
     offerName: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      set: function setOfferName(val) {
+        this.setDataValue('offerName', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('offerName', val.trim());
+      },
     },
     dateActiveFrom: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      set: function trimValue(val) {
+        this.setDataValue('dateActiveFrom', val.trim());
+      },
     },
     dateActiveTo: {
       allowNull: true,
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      set: function trimValue(val) {
+        this.setDataValue('dateActiveTo', val.trim());
+      },
     },
     isActive: {
       type: DataTypes.BOOLEAN,
-      allowNull: true
+      allowNull: true,
+      set: function setIsActive(val) {
+        this.setDataValue('isActive', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('isActive', val.trim());
+      },
     }
   }, {
     sequelize,

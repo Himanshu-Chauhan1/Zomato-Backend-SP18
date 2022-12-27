@@ -22,41 +22,78 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      set: function setName(val) {
+        this.setDataValue('name', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('name', val.trim());
+      },
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      set: function setEmail(val) {
+        this.setDataValue('email', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('email', val.trim());
+      },
     },
     phone: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
+      set: function trimValue(val) {
+        this.setDataValue('phone', val.trim());
+      },
     },
     landline: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
+      set: function trimValue(val) {
+        this.setDataValue('landline', val.trim());
+      },
     },
     ownerFullName: {
       type: DataTypes.STRING,
       allowNull: false,
+      set: function setOwnerFullName(val) {
+        this.setDataValue('ownerFullName', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('ownerFullName', val.trim());
+      },
     },
     ownerEmail: {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      set: function setEmail(val) {
+        this.setDataValue('ownerEmail', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('ownerEmail', val.trim());
+      },
     },
     password: {
       type: DataTypes.STRING,
       set: function setPassword(val) {
         this.setDataValue('password', bcrypt.hashSync(val, 10));
       },
+      set: function trimValue(val) {
+        this.setDataValue('password', val.trim());
+      },
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-      default: true
+      default: true,
+      set: function setIsActive(val) {
+        this.setDataValue('isActive', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('isActive', val.trim());
+      },
     }
   }, {
     sequelize,

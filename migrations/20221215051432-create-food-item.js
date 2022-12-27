@@ -9,6 +9,10 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
+      restaurantId: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       categoryName: {
         type: Sequelize.STRING,
         allowNull: false,

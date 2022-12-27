@@ -22,27 +22,55 @@ module.exports = (sequelize, DataTypes) => {
     },
     customerId: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      set: function trimValue(val) {
+        this.setDataValue('customerId', val.trim());
+      },
+    },
+    restaurantId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      set: function trimValue(val) {
+        this.setDataValue('restaurantId', val.trim());
+      },
     },
     itemId: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
+      set: function trimValue(val) {
+        this.setDataValue('itemId', val.trim());
+      },
     },
     itemQuantity: {
       type: DataTypes.INTEGER,
+      set: function trimValue(val) {
+        this.setDataValue('itemQuantity', val.trim());
+      },
     },
     totalPrice: {
       type: DataTypes.DECIMAL,
-      allowNull: true
+      allowNull: true,
+      set: function trimValue(val) {
+        this.setDataValue('totalPrice', val.trim());
+      },
     },
     totalItems: {
       type: DataTypes.STRING,
-      allownull: true
+      allownull: true,
+      set: function trimValue(val) {
+        this.setDataValue('totalItems', val.trim());
+      },
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allownull: true,
-      defaultValue: true
+      defaultValue: true,
+      set: function setIsActive(val) {
+        this.setDataValue('isActive', val.toLocaleLowerCase());
+      },
+      set: function trimValue(val) {
+        this.setDataValue('isActive', val.trim());
+      },
     },
   }, {
     sequelize,
