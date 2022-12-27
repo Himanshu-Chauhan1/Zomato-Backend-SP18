@@ -79,7 +79,7 @@ const createCart = async function (req, res, next) {
             return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active, Please enter a new one" })
         }
 
-        const isInCartItem = await Cart.findOne({ where: { itemId: itemId } });
+        const isInCartItem = await Cart.findOne({ where: { itemId: itemId, customerId: customerId } });
 
         if (isInCartItem) {
             return res.status(422).send({ status: 1008, message: "This itemId or item is already in the cart, Please enter a new one" })

@@ -1,6 +1,7 @@
 require("dotenv").config();
 const db = require("../../models");
 const { Cart, Customer } = db
+const { Op } = require("sequelize");
 
 
 //========================================POST /CREATE-A-CUSTOMER==========================================================//
@@ -65,7 +66,16 @@ const index = async function (req, res) {
             return res.status(422).send({ status: 1006, message: "There is no cart for this customer" })
         }
 
-        return res.status(200).send({ status: 1010, data: enteredCustomer })
+        let findCustomerCart = await Cart.findAll({
+            where: {
+                [Op.and]: [
+                    { customerId: customerId },
+
+                ],
+            }
+        })
+
+        return res.status(200).send({ status: 1010, CartData: findCustomerCart })
 
     }
     catch (err) {
