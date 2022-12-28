@@ -48,6 +48,7 @@ const index = async function (req, res) {
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
                 where: {
+                    userRole: { [Op.not]: "admin" },
                     [Op.or]: [
                         { orderId: { [Op.eq]: orderId } },
                         { userRole: { [Op.eq]: userRole } },
@@ -65,9 +66,9 @@ const index = async function (req, res) {
         } else {
             let findAllOrderQuery = await Query.findAll({
                 where: {
-                  userRole: {[Op.not]:'admin'}
+                    userRole: { [Op.not]: 'admin' }
                 }
-              })
+            })
 
             if (!findAllOrderQuery.length)
                 return res.status(404).send({ status: 1006, message: "No order queries found" })

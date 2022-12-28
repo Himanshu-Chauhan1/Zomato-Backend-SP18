@@ -12,8 +12,8 @@ const isValid = function (value) {
 };
 
 ////////////////////////// -GLOBAL- //////////////////////
-const isValidNumber = function (itemPrice) {
-    if (!itemPrice || typeof itemPrice != DECIMAL || itemPrice.trim().length == 0)
+const isValidNumber = function (value) {
+    if (!value || typeof value != "number")
         return false;
     return true;
 };
@@ -30,7 +30,7 @@ const isValidItemDescription = (itemDescription) => {
 
 //////////////// -FOR ITEMPRICE- ///////////////////////
 const isValidItemPrice = (itemPrice) => {
-    return /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(itemPrice);
+    return /^((100)|(\d{1,2}(.\d*)?))$/.test(itemPrice);
 };
 
 //////////////// -FOR ITEM-AVILABLE- ///////////////////////
@@ -115,9 +115,9 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1003, message: "Please provide a valid itemDescription" })
         }
 
-        // if (!isValidNumber(itemPrice)) {
-        //     return res.status(422).send({ status: 1002, message: "itemPrice is required" })
-        // }
+        if (!isValidNumber(itemPrice)) {
+            return res.status(422).send({ status: 1002, message: "itemPrice is required" })
+        }
 
         if (!isValidItemPrice(itemPrice)) {
             return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })

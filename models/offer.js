@@ -41,6 +41,10 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('offerName', val.toLocaleLowerCase().trim());
       },
     },
+    discount: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
     dateActiveFrom: {
       allowNull: false,
       type: DataTypes.STRING,

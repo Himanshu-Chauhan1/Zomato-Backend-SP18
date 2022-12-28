@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const { Admin } = db
+const { Op } = require("sequelize");
+const { signAccessToken } = require("../../Utils/jwt")
+const nodeKey = process.env.NODE_KEY
 
 
 //========================================POST /CREATE-A-ADMIN==========================================================//
@@ -29,55 +32,21 @@ let login = async (req, res) => {
 
         let { email, phone, password } = data
 
-        if ("email" in data) {
-            let admin = await Admin.findOne({ where: { email: email } })
+        if ("phone" || "email" in data) {
+
+            let admin = await Admin.findOne({ where: { [Op.or]: [{ email: email }, { phone: phone }] } })
             if (!admin) {
                 return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
             }
 
-            let checkPassword = await bcrypt.compare(password, admin.password)
+            let checkPassword = await bcrypt.compare(password + nodeKey, admin.password)
             if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
 
-            const payload = {
-                adminId: admin.id,
-                issuer: "sparkeighteen.com",
-                role: "admin",
-                exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-            };
-
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
+            const token = await signAccessToken(admin.id, admin.userRole);
 
             const data = {
                 token: token,
-                role: "admin"
-            }
-
-            return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
-
-        }
-        if ("phone" in data) {
-            let admin = await Admin.findOne({ where: { phone: phone } })
-            if (!admin) {
-                return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
-            }
-
-            let checkPassword = await bcrypt.compare(password, admin.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
-
-            const payload = {
-                adminId: admin.id,
-                issuer: "sparkeighteen.com",
-                role: "admin",
-                exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-            };
-
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
-
-            console.log(token.role);
-
-            const data = {
-                token: token,
-                role: "admin"
+                role: admin.userRole
             }
 
             return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
@@ -135,7 +104,7 @@ const get = async function (req, res) {
         }
 
         return res.status(200).send({ status: 1010, message: 'Timetable for the given the parameters:', data: findByFilter })
-     
+
     }
     catch (err) {
         console.log(err.message)
@@ -146,7 +115,7 @@ const get = async function (req, res) {
 
 const index = async function (req, res) {
     try {
-          
+
         let admins = await Admin.findAll()
 
         if (admins.length === 0) {
@@ -179,10 +148,6 @@ const destroy = async function (req, res) {
 }
 
 //forgotpassword
-
-
-
-
 
 module.exports = {
     create,

@@ -55,28 +55,19 @@ const index = async function (req, res) {
         if (Object.keys(req.query).length > 0) {
             let findFoodItemsByFilter = await FoodItem.findAll({
                 where: {
+                    restaurantId: { [Op.eq]: paramsRestaurantId },
                     [Op.or]: [
+                        { categoryName: categoryName },
+                        { restaurantId: paramsRestaurantId },
                         {
-                            [Op.and]: [
-                                { categoryName: categoryName },
-                                { restaurantId: paramsRestaurantId },
-                            ],
-                            [Op.and]: [
-                                {
-                                    itemPrice: {
-                                        $gte: itemPrice,
-                                        $lte: itemPrice,
-                                        $gt: itemPrice,
-                                        $lt: itemPrice
-                                    }
-                                },
-                                { restaurantId: paramsRestaurantId }
-                            ],
-                            [Op.and]: [
-                                { itemName: itemName },
-                                { restaurantId: paramsRestaurantId }
-                            ],
-                        }
+                            itemPrice: {
+                                $gte: itemPrice,
+                                $lte: itemPrice,
+                                $gt: itemPrice,
+                                $lt: itemPrice
+                            }
+                        },
+                        { itemName: itemName },
                     ],
                 }
             })

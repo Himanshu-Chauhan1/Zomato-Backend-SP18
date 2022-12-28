@@ -49,15 +49,10 @@ const index = async function (req, res) {
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
                 where: {
+                    userRole: { [Op.eq]: "deliverypartner" },
                     [Op.or]: [
-                        {
-                            [Op.and]: [
-                                { orderId: { [Op.eq]: orderId } },
-                                { isActive: { [Op.eq]: true } },
-                                { userRole: { [Op.eq]: "deliverypartner" } },
-                                { userId: { [Op.eq]: userId } },
-                            ],
-                        }
+                        { orderId: { [Op.eq]: orderId } },
+                        { userId: { [Op.eq]: userId } },
                     ],
                 }
             })

@@ -86,6 +86,7 @@ const createCustomer = async function (req, res, next) {
         if (!isValid(password)) {
             return res.status(422).send({ status: 1002, message: "Password is required" })
         }
+
         if (confirmPassword !== password) {
             return res.status(422).send({ status: 1002, message: "Passwords does not match" })
         }

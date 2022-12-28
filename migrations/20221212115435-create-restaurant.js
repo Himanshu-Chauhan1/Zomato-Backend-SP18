@@ -41,6 +41,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      userRole: {
+        type: Sequelize.STRING,
+        defaultValue: "restaurant"
+      },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: true,

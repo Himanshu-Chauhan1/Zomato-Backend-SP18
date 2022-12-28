@@ -189,14 +189,14 @@ let login = async (req, res, next) => {
             return res.status(422).send({ status: 1002, message: "EmailId is required" })
         }
 
-        if (!isValidWorkEmail(email)) {
-            return res.status(422).send({ status: 1003, message: "Email should be a valid work email address like ....@zomato.com" })
-        }
+        // if (!isValidWorkEmail(email)) {
+        //     return res.status(422).send({ status: 1003, message: "Email should be a valid work email address like ....@zomato.com" })
+        // }
 
         const isRegisteredCustomerSupportEmail = await CustomerSupport.findOne({ where: { email: email } });
 
         if (!isRegisteredCustomerSupportEmail) {
-            return res.status(422).send({ status: 1008, message: "This Restaurant-EmailId is already registered" })
+            return res.status(422).send({ status: 1008, message: "This CustomerSupport-EmailId is not registered" })
         }
 
         if (!isValid(password)) {

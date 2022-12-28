@@ -1,6 +1,7 @@
 require("dotenv").config();
 const db = require("../../models");
 const { Offer } = db
+const { Op } = require("sequelize");
 
 
 //========================================POST /CREATE-A-OFFER==========================================================//
@@ -39,18 +40,42 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-FOOD-ITEMS==========================================================//
+//========================================GET/GET-ALL-OFFERS==========================================================//
 
 const index = async function (req, res) {
     try {
 
-        let offer = await Offer.findAll()
+        let data = req.query
+        let paramsRestaurantId = req.params.restaurantId
 
-        if (offer.length === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Offers found....." })
+        const { categoryName, offerName, dateActiveFrom, dateActiveTo, isActive } = data
+
+        if (Object.keys(req.query).length > 0) {
+            let findOffersByFilter = await Offer.findAll({
+                where: {
+                    restaurantId: { [Op.eq]: paramsRestaurantId },
+                    [Op.or]: [
+                        { categoryName: { [Op.eq]: categoryName } },
+                        { offerName: { [Op.eq]: offerName } },
+                        { dateActiveFrom: { [Op.eq]: dateActiveFrom } },
+                        { dateActiveTo: { [Op.eq]: dateActiveTo } },
+                        { isActive: { [Op.eq]: isActive } },
+                    ],
+                }
+            })
+
+            if (!findOffersByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No offers found as per the filters....." })
+
+            return res.status(200).send({ status: 1010, data: findOffersByFilter })
+        } else {
+            let findAllOffers = await Offer.findAll({ where: { restaurantId: paramsRestaurantId } })
+
+            if (!findAllOffers.length)
+                return res.status(404).send({ status: 1006, message: "No offers found...." })
+
+            return res.status(200).send({ status: 1010, data: findAllOffers })
         }
-
-        return res.status(200).send({ status: 1010, message: 'All Offers on Food Items:', data: offer })
     }
     catch (err) {
         console.log(err.message)
@@ -64,8 +89,9 @@ const destroy = async function (req, res) {
     try {
 
         let offerId = req.params.offerId
+        let paramsRestaurantId = req.params.restaurantId
 
-        let deleteOffer = await Offer.destroy({ where: { id: offerId } })
+        let deleteOffer = await Offer.destroy({ where: { id: offerId, restaurantId: paramsRestaurantId } })
 
         return res.status(200).send({ status: 1010, message: "The offer has been deleted Successfully", data: deleteOffer })
     }

@@ -50,11 +50,11 @@ const index = async function (req, res) {
                 where: {
                     [Op.or]: [
                         { userId: { [Op.eq]: userId } },
-                        { userRole: { [Op.eq]: userRole } },
                         { streetName: { [Op.eq]: streetName } },
                         { cityName: { [Op.eq]: cityName } },
                         { stateName: { [Op.eq]: stateName } },
                         { pincode: { [Op.eq]: pincode } },
+                        { userRole: { [Op.eq]: userRole } },
                     ],
                 }
             })

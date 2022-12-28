@@ -48,13 +48,14 @@ const index = async function (req, res) {
         if (Object.keys(req.query).length > 0) {
             let findAddressByFilter = await Address.findAll({
                 where: {
+                    userRole: { [Op.not]: "admin" },
                     [Op.or]: [
                         { userId: { [Op.eq]: userId } },
-                        { userRole: { [Op.eq]: userRole } },
                         { streetName: { [Op.eq]: streetName } },
                         { cityName: { [Op.eq]: cityName } },
                         { stateName: { [Op.eq]: stateName } },
                         { pincode: { [Op.eq]: pincode } },
+                        { userRole: { [Op.eq]: userRole } },
                     ],
                 }
             })

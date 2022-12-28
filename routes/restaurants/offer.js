@@ -6,9 +6,9 @@ const { create, update, index, destroy } = require("../../controllers/restaurant
 // const { authorization } = require("../../middleware/authorization")
 
 
-offerRouter.post('/restaurantId/:restaurantId/offers', [validate.createOffer], create);
-offerRouter.put('/restaurantId/:restaurantId/offers/:offerId', [validate.updateOffer], update);
-offerRouter.get('/restaurantId/:restaurantId/offers', index);
-offerRouter.delete('/restaurantId/:restaurantId/offers/:offerId', [validate.deleteOffer], destroy);
+offerRouter.post('/restaurants/:restaurantId/offers', [validate.createOffer], create);
+offerRouter.put('/restaurants/:restaurantId/offers/:offerId', [validate.updateOffer], update);
+offerRouter.get('/restaurants/:restaurantId/offers', [validate.getOffer], index);
+offerRouter.delete('/restaurants/:restaurantId/offers/:offerId', [validate.deleteOffer], destroy);
 
 module.exports = offerRouter

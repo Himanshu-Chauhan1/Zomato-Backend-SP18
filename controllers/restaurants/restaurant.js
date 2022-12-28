@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const { Restaurant } = db
+const { Op } = require("sequelize");
+const { signAccessToken } = require("../../Utils/jwt")
+const nodeKey = process.env.NODE_KEY
 
 
 //========================================POST /CREATE-A-RESTAURANT==========================================================//
@@ -29,59 +32,26 @@ let login = async (req, res) => {
 
         let { email, phone, password } = data
 
-        if ("email" in data) {
-            let restaurant = await Restaurant.findOne({ where: { email: email } })
+        if ("email" || 'phone' in data) {
+
+            let restaurant = await Restaurant.findOne({ where: { [Op.or]: [{ email: email }, { phone: phone }] } })
+
             if (!restaurant) {
                 return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
             }
 
-            let checkPassword = await bcrypt.compare(password, restaurant.password)
+            let checkPassword = await bcrypt.compare(password + nodeKey, restaurant.password)
+
             if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
 
-            const payload = {
-                restaurantId: restaurant.id,
-                issuer: "sparkeighteen.com",
-                role: "restaurant",
-                exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-            };
-
-            const token = jwt.sign({ payload }, process.env.JWT_SECRET_KEY)
+            const token = await signAccessToken(restaurant.id, restaurant.userRole);
 
             const data = {
                 token: token,
-                role: "restaurant"
+                role: restaurant.userRole
             }
 
             return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
-
-        }
-        if ("phone" in data) {
-            let restaurant = await Restaurant.findOne({ where: { phone: phone } })
-            if (!restaurant) {
-                return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
-            }
-
-            let checkPassword = await bcrypt.compare(password, restaurant.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
-
-            const payload = {
-                restaurantId: restaurant.id,
-                issuer: "sparkeighteen.com",
-                role: "restaurant",
-                exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-            };
-
-            const token = jwt.sign({ payload }, process.env.JWT_SECRET_KEY)
-
-            console.log(token.role);
-
-            const data = {
-                token: token,
-                role: "restaurant"
-            }
-
-            return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
-
         }
 
     } catch (error) {

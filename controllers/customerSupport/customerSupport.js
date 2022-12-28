@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const { CustomerSupport } = db
+const { Op } = require("sequelize");
+const { signAccessToken } = require("../../Utils/jwt")
+const nodeKey = process.env.NODE_KEY
 
 
 //========================================POST /CREATE-A-CUSTOMER-SUPPORT==========================================================//
@@ -35,25 +38,17 @@ let login = async (req, res) => {
             return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
         }
 
-        let checkPassword = await bcrypt.compare(password, customerSupport.password)
-
+        let checkPassword = await bcrypt.compare(password + nodeKey, customerSupport.password)
         if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
 
-        const payload = {
-            customerSupportId: customerSupport.id,
-            issuer: "sparkeighteen.com",
-            role: "customerSupport",
-            exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-        };
+        const token = await signAccessToken(customerSupport.id, customerSupport.userRole);
 
-        const token = jwt.sign({ payload }, process.env.SECRET_KEY)
-
-        const tokenData = {
+        const tokendata = {
             token: token,
-            role: "customerSupport"
+            role: customerSupport.userRole
         }
 
-        return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: tokenData })
+        return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: tokendata })
 
     } catch (error) {
         console.log(error.message);
@@ -86,7 +81,7 @@ const update = async function (req, res) {
 
 const get = async function (req, res) {
     try {
-       
+
         let data = req.query
 
         // let findByFilter = await Customer.findAll({

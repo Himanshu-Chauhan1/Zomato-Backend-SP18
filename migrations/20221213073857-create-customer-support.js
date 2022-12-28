@@ -54,6 +54,10 @@ module.exports = {
         allowNull: true,
         default: false
       },
+      userRole: {
+        type: Sequelize.STRING,
+        defaultValue:"customersupport"
+      },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: true,

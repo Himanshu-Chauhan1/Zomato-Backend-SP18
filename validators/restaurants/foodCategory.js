@@ -13,12 +13,12 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0
 };
 
-//////////////// -FOR FULLNAME- ///////////////////////
+//////////////// -FOR CATEGORYNAME- ///////////////////////
 const isValidCategoryName = (categoryName) => {
     return /^[a-zA-Z ]+$/.test(categoryName)
 };
 
-//////////////// -FOR CATEGORYAVILABLE- ///////////////////////
+//////////////// -FOR CATEGORYAVAILABLE- ///////////////////////
 const isActiveCategory = (isActive) => {
     return /^(true|false|True|False)$/.test(isActive)
 };

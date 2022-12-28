@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const bcrypt = require("bcrypt");
+const nodeKey = process.env.NODE_KEY
 
 module.exports = (sequelize, DataTypes) => {
   class customer extends Model {
@@ -41,8 +42,12 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       set: function setPassword(val) {
-        this.setDataValue('password', bcrypt.hashSync(val, 10).trim());
+        this.setDataValue('password', bcrypt.hashSync(((val + nodeKey)), 10).trim());
       },
+    },
+    userRole: {
+      type: DataTypes.STRING,
+      defaultValue:"customer"
     },
     isActive: {
       type: DataTypes.BOOLEAN,

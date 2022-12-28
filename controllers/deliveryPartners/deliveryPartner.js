@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const { DeliveryPartner } = db
+const { Op } = require("sequelize");
+const { signAccessToken } = require("../../Utils/jwt")
+const nodeKey = process.env.NODE_KEY
 
 
 //========================================POST /CREATE-A-DELIVERY-PARTNER==========================================================//
@@ -35,22 +38,15 @@ let login = async (req, res) => {
             return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
         }
 
-        let checkPassword = await bcrypt.compare(password, deliveryPartner.password)
+        let checkPassword = await bcrypt.compare(password + nodeKey, deliveryPartner.password)
 
         if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
 
-        const payload = {
-            deliveryPartnerId: deliveryPartner.id,
-            issuer: "sparkeighteen.com",
-            role: "deliveryPartner",
-            exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-        };
-
-        const token = jwt.sign({ payload }, process.env.SECRET_KEY)
+        const token = await signAccessToken(deliveryPartner.id, deliveryPartner.userRole);
 
         const tokenData = {
             token: token,
-            role: "deliveryPartner"
+            role: deliveryPartner.userRole
         }
 
         return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: tokenData })
@@ -86,7 +82,7 @@ const update = async function (req, res) {
 
 const get = async function (req, res) {
     try {
-       
+
         let data = req.query
 
         // let findByFilter = await Customer.findAll({

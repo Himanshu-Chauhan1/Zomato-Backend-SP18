@@ -53,13 +53,10 @@ const index = async function (req, res) {
         if (Object.keys(req.query).length > 0) {
             let findFoodCategoryByFilter = await FoodCategory.findAll({
                 where: {
+                    restaurantId: { [Op.eq]: paramsRestaurantId },
                     [Op.or]: [
-                        {
-                            [Op.and]: [
-                                { categoryName: categoryName },
-                                { restaurantId: paramsRestaurantId },
-                            ],
-                        }
+                        { categoryName: categoryName },
+                        { isActive: isActive },
                     ],
                 }
             })
@@ -72,7 +69,7 @@ const index = async function (req, res) {
             let findAllFoodCategory = await FoodCategory.findAll({ where: { restaurantId: paramsRestaurantId } })
 
             if (!findAllFoodCategory.length)
-                return res.status(404).send({ status: 1006, message: "No Addresses found" })
+                return res.status(404).send({ status: 1006, message: "No food categories found" })
 
             return res.status(200).send({ status: 1010, data: findAllFoodCategory })
         }

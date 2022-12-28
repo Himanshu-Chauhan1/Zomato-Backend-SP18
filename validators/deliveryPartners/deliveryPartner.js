@@ -2,7 +2,6 @@ const isvalidBirthdate = require("is-valid-birthdate")
 const validateDate = require("validate-date")
 const db = require("../../models")
 const bcrypt = require("bcrypt")
-const e = require("express")
 const { DeliveryPartner } = db
 
 
@@ -222,14 +221,14 @@ let login = async (req, res, next) => {
             return res.status(422).send({ status: 1002, message: "EmailId is required" })
         }
 
-        if (!isValidWorkEmail(email)) {
-            return res.status(422).send({ status: 1003, message: "Email should be a valid work email address like ....@zomato.com" })
-        }
+        // if (!isValidWorkEmail(email)) {
+        //     return res.status(422).send({ status: 1003, message: "Email should be a valid work email address like ....@zomato.com" })
+        // }
 
         const isRegisteredCustomerSupportEmail = await DeliveryPartner.findOne({ where: { email: email } });
 
         if (!isRegisteredCustomerSupportEmail) {
-            return res.status(422).send({ status: 1008, message: "This Delivery-Partner-EmailId is already registered" })
+            return res.status(422).send({ status: 1008, message: "This Delivery-Partner-EmailId is not registered" })
         }
 
         if (!isValid(password)) {
