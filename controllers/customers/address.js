@@ -100,7 +100,6 @@ const destroy = async function (req, res) {
     }
 }
 
-
 module.exports = {
     create,
     update,

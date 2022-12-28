@@ -50,16 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     totalPrice: {
       type: DataTypes.DECIMAL,
       allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('totalPrice', val.trim());
-      },
     },
     totalItems: {
       type: DataTypes.STRING,
       allownull: true,
-      set: function trimValue(val) {
-        this.setDataValue('totalItems', val.trim());
-      },
     },
     isActive: {
       type: DataTypes.BOOLEAN,

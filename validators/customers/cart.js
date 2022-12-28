@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Customer, Cart, FoodItem } = db
+const { Customer, Cart, FoodItem, Restaurant } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -57,7 +57,7 @@ const createCart = async function (req, res, next) {
 
         let data = req.body
 
-        let { customerId, itemId, itemQuantity, totalPrice, totalItems } = data
+        let { customerId, restaurantId, itemId, itemQuantity, totalPrice, totalItems } = data
 
         if (!isValid(customerId)) {
             return res.status(422).send({ status: 1002, message: "customerId is required" })
@@ -69,20 +69,39 @@ const createCart = async function (req, res, next) {
             return res.status(422).send({ status: 1008, message: "This customer is not registered, Please enter a new one" })
         }
 
+        if (checkEnteredCustomerId.id != customerId) {
+            return res.status(400).send({ status: 1003, message: 'this params customerId should match with customerId in body! Enter appropriate customertId in path params and requestbody' })
+        }
+
+        if (!isValid(restaurantId)) {
+
+            return res.status(422).send({ status: 1002, message: "restaurantId is required" })
+        }
+
+        if (restaurantId.length != 36) {
+            return res.status(422).send({ status: 1003, message: "Please enter restaurantId-Id in a valid format" })
+        }
+
+        const isRegisteredRestaurantId = await Restaurant.findOne({ where: { id: restaurantId } });
+
+        if (!isRegisteredRestaurantId) {
+            return res.status(422).send({ status: 1008, message: "This restaurantId is not registered, Please enter a registered one" })
+        }
+
         if (!isValid(itemId)) {
             return res.status(422).send({ status: 1002, message: "itemId is required" })
         }
 
-        const isRegisteredItem = await FoodItem.findOne({ where: { id: itemId } });
+        const isRegisteredItem = await FoodItem.findOne({ where: { id: itemId, restaurantId: restaurantId } });
 
         if (!isRegisteredItem) {
-            return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active, Please enter a new one" })
+            return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active for this restaurant, Please try a new one" })
         }
 
-        const isInCartItem = await Cart.findOne({ where: { itemId: itemId, customerId: customerId } });
+        const isInCartItem = await Cart.findOne({ where: { itemId: itemId, customerId: customerId, restaurantId: restaurantId } });
 
         if (isInCartItem) {
-            return res.status(422).send({ status: 1008, message: "This itemId or item is already in the cart, Please enter a new one" })
+            return res.status(422).send({ status: 1008, message: "This itemId or item is already in the cart for this restaurant, Please try a new one" })
         }
 
         if (!isValid(itemQuantity)) {
@@ -96,8 +115,8 @@ const createCart = async function (req, res, next) {
         const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
         let itemCost = checkingItemPrice.itemPrice
 
-        data.totalPrice = itemQuantity * itemCost
-        data.totalItems = itemQuantity
+        data.totalPrice = +itemQuantity * +itemCost
+        data.totalItems = +itemQuantity
 
         next()
 

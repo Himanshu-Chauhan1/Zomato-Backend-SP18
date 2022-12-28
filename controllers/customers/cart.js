@@ -60,8 +60,10 @@ const index = async function (req, res) {
             return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
         }
 
+        let findRestaurantId = await Cart.findOne({ where: { customerId: customerId } })
+
         let findCustomerCart = await Cart.findAll({
-            where: { [Op.and]: [{ customerId: customerId, isActive: true }] }
+            where: { [Op.and]: [{ customerId: customerId, isActive: true, restaurantId: findRestaurantId.restaurantId }] }
         })
 
         if (!findCustomerCart) {
@@ -102,8 +104,6 @@ const destroy = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
-
-
 
 module.exports = {
     create,

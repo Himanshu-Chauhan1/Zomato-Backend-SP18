@@ -8,7 +8,7 @@ const { create, update, index, destroy} = require("../../controllers/restaurants
 
 foodCategoryRouter.post('/restaurants/:restaurantId/foodcategory', [validate.createFoodCategory], create);
 foodCategoryRouter.put('/restaurants/:restaurantId/foodcategory/:categoryId', [validate.updateFoodCategory], update);
-foodCategoryRouter.get('/restaurants/:restaurantId/foodcategory', index);
+foodCategoryRouter.get('/restaurants/:restaurantId/foodcategory',[validate.getFoodCategory], index);
 foodCategoryRouter.delete('/restaurants/:restaurantId/foodcategory/:categoryId', [validate.deleteFoodCategory], destroy);
 
 module.exports = foodCategoryRouter

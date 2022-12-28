@@ -2,6 +2,7 @@ require("dotenv").config();
 const { uploadFile } = require("../../Utils/aws")
 const db = require("../../models");
 const { FoodItem } = db
+const { Op } = require("sequelize");
 
 
 //========================================POST /CREATE-A-FOOD-ITEM==========================================================//
@@ -23,6 +24,7 @@ const create = async function (req, res) {
 
 const update = async function (req, res) {
     try {
+
         const foodItemId = req.params.foodItemId
         let data = req.body
 
@@ -45,13 +47,52 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
 
-        let foodItems = await FoodItem.findAll()
+        let data = req.query
+        let paramsRestaurantId = req.params.restaurantId
 
-        if (foodItems.length === 0) {
-            return res.status(404).send({ status: 1008, msg: "No foodItems found....." })
+        const { categoryName, itemName, itemPrice, isActive } = data
+
+        if (Object.keys(req.query).length > 0) {
+            let findFoodItemsByFilter = await FoodItem.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            [Op.and]: [
+                                { categoryName: categoryName },
+                                { restaurantId: paramsRestaurantId },
+                            ],
+                            [Op.and]: [
+                                {
+                                    itemPrice: {
+                                        $gte: itemPrice,
+                                        $lte: itemPrice,
+                                        $gt: itemPrice,
+                                        $lt: itemPrice
+                                    }
+                                },
+                                { restaurantId: paramsRestaurantId }
+                            ],
+                            [Op.and]: [
+                                { itemName: itemName },
+                                { restaurantId: paramsRestaurantId }
+                            ],
+                        }
+                    ],
+                }
+            })
+
+            if (!findFoodItemsByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No food items found as per the filters....." })
+
+            return res.status(200).send({ status: 1010, data: findFoodItemsByFilter })
+        } else {
+            let findAllFoodItems = await FoodItem.findAll({ where: { restaurantId: paramsRestaurantId } })
+
+            if (!findAllFoodItems.length)
+                return res.status(404).send({ status: 1006, message: "No Food items found...." })
+
+            return res.status(200).send({ status: 1010, data: findAllFoodItems })
         }
-
-        return res.status(200).send({ status: 1010, message: 'All Food Items:', data: foodItems })
     }
     catch (err) {
         console.log(err.message)
@@ -81,7 +122,7 @@ const destroy = async function (req, res) {
 const upload = async function (req, res) {
     try {
         let files = req.files
-       
+
 
         if (files && files.length > 0) {
 

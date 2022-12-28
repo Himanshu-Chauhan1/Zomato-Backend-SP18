@@ -49,9 +49,6 @@ module.exports = (sequelize, DataTypes) => {
     itemPrice: {
       type: DataTypes.DECIMAL,
       allowNull: false,
-      set: function trimValue(val) {
-        this.setDataValue('itemPrice', val.trim());
-      },
     },
     itemImage: {
       type: DataTypes.STRING,
