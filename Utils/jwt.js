@@ -8,8 +8,8 @@ const signAccessToken = (userId, userRole) => {
         }
         const secret = process.env.JWT_SECRET_KEY
         const option = {
-            expiresIn: "1h",
-            issuer: "sparkeighteen.com",
+            expiresIn: process.env.JWT_EXP_TIME,
+            issuer: process.env.JWT_ISSUER_NAME,
             audience: userId,
         };
 
