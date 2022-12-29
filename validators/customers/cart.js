@@ -14,9 +14,11 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-//////////////// -FOR FULLNAME- ///////////////////////
-const isValidFullName = (fullName) => {
-    return /^[a-zA-Z ]+$/.test(fullName);
+////////////////////////// -GLOBAL- //////////////////////
+const isValidNumber = function (value) {
+    if (!value || typeof value != "number")
+        return false;
+    return true;
 };
 
 //////////////// -FOR MOBILE- ///////////////////////
@@ -74,7 +76,6 @@ const createCart = async function (req, res, next) {
         }
 
         if (!isValid(restaurantId)) {
-
             return res.status(422).send({ status: 1002, message: "restaurantId is required" })
         }
 
@@ -98,27 +99,83 @@ const createCart = async function (req, res, next) {
             return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active for this restaurant, Please try a new one" })
         }
 
-        const isInCartItem = await Cart.findOne({ where: { itemId: itemId, customerId: customerId, restaurantId: restaurantId } });
+        const isCart = await Cart.findOne({ where: { itemId: itemId, customerId: customerId, restaurantId: restaurantId } });
 
-        if (isInCartItem) {
-            return res.status(422).send({ status: 1008, message: "This itemId or item is already in the cart for this restaurant, Please try a new one" })
+        if (!isCart) {
+
+            let data = req.body
+
+            let { itemId, itemQuantity } = data
+
+            if (!isValidNumber(itemQuantity)) {
+                return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
+            }
+
+            if (itemQuantity < 1) {
+                return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
+            }
+
+            const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
+            let itemCost = checkingItemPrice.itemPrice
+
+            data.totalPrice = (+itemQuantity * +itemCost)
+            data.totalItems = +itemQuantity
+
+            next()
+
+        } else {
+
+            let data = req.body
+
+            let { cartId, customerId, itemId, itemQuantity } = data
+
+            if (!isValid(cartId)) {
+                return res.status(422).send({ status: 1002, message: "cartId is required" })
+            }
+
+            if (cartId.length != 36) {
+                return res.status(422).send({ status: 1003, message: "Please enter cartId in a valid format" })
+            }
+
+            if (!isValid(customerId)) {
+                return res.status(422).send({ status: 1002, message: "customerId is required" })
+            }
+
+            const isRegisteredCustomerCart = await Cart.findOne({ where: { id: cartId, customerId: customerId } });
+
+            if (!isRegisteredCustomerCart) {
+                return res.status(422).send({ status: 1008, message: "A cart does not exists with this customer, Please create a cart first to add the user" })
+            }
+
+            if (!isValidNumber(itemQuantity)) {
+                return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
+            }
+
+            if (itemQuantity < 1) {
+                return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
+            }
+
+            const checkOldQuantity = await Cart.findOne({ where: { itemId: itemId } })
+            let oldQuantity = checkOldQuantity.itemQuantity
+
+            const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
+            let itemCost = checkingItemPrice.itemPrice
+
+            data.itemQuantity = (+oldQuantity + itemQuantity)
+            data.totalPrice = (itemQuantity + +oldQuantity) * (+itemCost)
+            data.totalItems = (itemQuantity + +oldQuantity)
+
+            const values = data;
+            const condition = { where: { id: cartId } };
+            const options = { multi: true };
+
+            const updateDetails = await Cart.update(values, condition, options)
+
+            return res.status(200).send({ status: 1010, message: "The entered cart details has been Updated Succesfully", updatedData: values })
+
         }
 
-        if (!isValid(itemQuantity)) {
-            return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
-        }
 
-        if (itemQuantity < 1) {
-            return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
-        }
-
-        const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
-        let itemCost = checkingItemPrice.itemPrice
-
-        data.totalPrice = +itemQuantity * +itemCost
-        data.totalItems = +itemQuantity
-
-        next()
 
     } catch (error) {
         console.log(error.message);

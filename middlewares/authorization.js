@@ -9,7 +9,7 @@ const authorization = async function (req, res, next) {
     try {
 
         const verifiedtoken = req.verifiedtoken
-        let idFromToken=verifiedtoken.payload.customerId
+        let idFromToken=verifiedtoken.payload.id
 
         const findCustomer = await Customer.findByPk(idFromToken)
         const customerId = findCustomer.id

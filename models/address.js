@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Address extends Model {
     /**
@@ -11,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-    }
+      // this.hasMany(models.Customer, {
+      //   as: "Address",
+      //   foreignKey: "userId"
+      // })
+    };
+
   }
   Address.init({
     id: {
@@ -21,11 +25,18 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     userId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('userId', val.trim());
+      type: DataTypes.UUID,
+      references: {
+        model: {
+          tableName: 'customers',
+          tableName: 'restaurants',
+          tableName: 'Admins',
+          tableName: 'customerSupports',
+          tableName: 'deliveryPartners',
+        },
+        key: 'id'
       },
+      allowNull: false
     },
     userRole: {
       type: DataTypes.ENUM,
@@ -68,3 +79,4 @@ module.exports = (sequelize, DataTypes) => {
   });
   return Address;
 };
+

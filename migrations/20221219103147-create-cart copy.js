@@ -10,16 +10,34 @@ module.exports = {
         primaryKey: true
       },
       customerId: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'customers',
+          },
+          key: 'id'
+        },
+        allowNull: false
       },
       restaurantId: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'restaurants',
+          },
+          key: 'id'
+        },
+        allowNull: false
       },
       itemId: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'foodItems',
+          },
+          key: 'id'
+        },
+        allowNull: false
       },
       itemQuantity: {
         type: Sequelize.INTEGER,

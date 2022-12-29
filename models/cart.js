@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model, UUID
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Cart extends Model {
     /**
@@ -20,32 +19,38 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true
     },
-    customerId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('customerId', val.trim());
-      },
-    },
-    restaurantId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('restaurantId', val.trim());
-      },
-    },
-    itemId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('itemId', val.trim());
-      },
-    },
     itemQuantity: {
       type: DataTypes.INTEGER,
-      set: function trimValue(val) {
-        this.setDataValue('itemQuantity', val.trim());
+    },
+    customerId: {
+      type: DataTypes.UUID,
+      references: {
+        model: {
+          tableName: 'customers',
+        },
+        key: 'id'
       },
+      allowNull: false
+    },
+    restaurantId: {
+      type: DataTypes.UUID,
+      references: {
+        model: {
+          tableName: 'restaurants',
+        },
+        key: 'id'
+      },
+      allowNull: false
+    },
+    itemId: {
+      type: DataTypes.UUID,
+      references: {
+        model: {
+          tableName: 'foodItems',
+        },
+        key: 'id'
+      },
+      allowNull: false
     },
     totalPrice: {
       type: DataTypes.DECIMAL,

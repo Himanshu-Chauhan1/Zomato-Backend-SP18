@@ -4,17 +4,20 @@ const bcrypt = require("bcrypt");
 const nodeKey = process.env.NODE_KEY
 
 module.exports = (sequelize, DataTypes) => {
-  class customer extends Model {
+  class Customer extends Model {
     static associate(models) {
       // define association here
+      // this.belongsTo(models.address, {
+      //   foreignKey: "id"
+      // })
     }
   }
-  customer.init({
+  Customer.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
     },
     fullName: {
       type: DataTypes.STRING,
@@ -47,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     userRole: {
       type: DataTypes.STRING,
-      defaultValue:"customer"
+      defaultValue: "customer"
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -61,5 +64,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'customer',
   });
-  return customer;
+  return Customer;
 };
+
+

@@ -13,6 +13,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      userId: {
+        type: Sequelize.DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'customers',
+            tableName: 'restaurants',
+            tableName: 'Admins',
+            tableName: 'customerSupports',
+            tableName: 'deliveryPartners',
+          },
+          key: 'id'
+        },
+        allowNull: false
+      },
       userRole: {
         type: Sequelize.ENUM,
         values: ['customer', 'deliverypartner', 'customersupport', 'restaurant', 'admin', 'superadmin']
