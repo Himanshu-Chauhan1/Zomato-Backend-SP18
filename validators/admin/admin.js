@@ -111,6 +111,7 @@ const createAdmin = async function (req, res, next) {
 let login = async (req, res, next) => {
     try {
         const data = req.body;
+        
         let { email, phone, password } = data
 
         const dataObject = {};

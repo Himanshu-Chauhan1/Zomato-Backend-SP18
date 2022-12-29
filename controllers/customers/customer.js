@@ -29,9 +29,9 @@ let login = async (req, res) => {
         const data = req.body
         let { email, phone, password } = data
 
-        if ("email" || 'phone' in data) {
+        if (("phone" || "email" in data)) {
 
-            let customer = await Customer.findOne({ where: { [Op.or]: [{ email: email }, { phone: phone }] } })
+            let customer = await Customer.findOne({ where: { [Op.or]: [{ email: { [Op.eq]: email } }, { phone: { [Op.eq]: phone } }] } })
 
             if (!customer) {
                 return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
