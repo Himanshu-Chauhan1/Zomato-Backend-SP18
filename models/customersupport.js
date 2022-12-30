@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.query, {
+        as: "query",
+        foreignKey: "userId"
+      })
     }
   }
   customerSupport.init({
@@ -104,7 +108,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     userRole: {
       type: DataTypes.STRING,
-      defaultValue:"customersupport"
+      defaultValue: "customersupport"
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -116,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'customerSupport',
+    modelName: 'customersupport',
   });
   return customerSupport;
 };

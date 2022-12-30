@@ -5,13 +5,29 @@ const nodeKey = process.env.NODE_KEY
 
 module.exports = (sequelize, DataTypes) => {
   class restaurant extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       // define association here
+      this.hasMany(models.cart, {
+        as: "cart",
+        foreignKey: "restaurantId"
+      })
+      this.hasMany(models.fooditem, {
+        as: "fooditem",
+        foreignKey: "restaurantId"
+      })
+      this.hasMany(models.offer, {
+        as: "offer",
+        foreignKey: "restaurantId"
+      })
+      this.hasMany(models.foodcategory, {
+        as: "foodcategory",
+        foreignKey: "restaurantId"
+      })
+      this.hasMany(models.query, {
+        as: "query",
+        foreignKey: "userId"
+      })
     }
   }
   restaurant.init({

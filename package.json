@@ -10,6 +10,7 @@
     "down": "npx sequelize-cli db:migrate:undo",
     "migrate": "npx sequelize-cli db:migrate",
     "make-migration": "npx sequelize-cli migration:create --name modify_users_add_new_fields.",
+    "revert-all-migration": "npx sequelize-cli db:migrate:undo:all",
     "swagger": "npx nodemon app/swagger/index.js"
   },
   "author": "Ankit Sathiya,Himanshu Chauhan",

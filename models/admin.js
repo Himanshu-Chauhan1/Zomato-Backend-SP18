@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.query, {
+        as: "query",
+        foreignKey: "userId"
+      })
     }
   }
   Admin.init({
@@ -56,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'Admin',
+    modelName: 'admin',
   });
   return Admin;
 };

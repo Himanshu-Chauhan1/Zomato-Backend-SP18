@@ -3,7 +3,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Offers', {
+    await queryInterface.createTable('offers', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -11,8 +11,12 @@ module.exports = {
         primaryKey: true
       },
       restaurantId: {
-        type: Sequelize.UUID,
-        allowNull: true,
+        type: Sequelize.DataTypes.UUID,
+        references: {
+          model: "restaurants",
+          key: 'id'
+        },
+        allowNull: false
       },
       categoryName: {
         type: Sequelize.STRING,
@@ -49,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Offers');
+    await queryInterface.dropTable('offers');
   }
 };

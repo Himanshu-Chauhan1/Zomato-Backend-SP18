@@ -3,17 +3,29 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Address extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+    
     static associate(models) {
       // define association here
-      // this.hasMany(models.Customer, {
-      //   as: "Address",
-      //   foreignKey: "userId"
-      // })
+      this.belongsTo(models.customer, {
+        as: "customer",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.restaurant, {
+        as: "restaurant",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.admin, {
+        as: "admin",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.customersupport, {
+        as: "customersupport",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.deliverypartner, {
+        as: "deliverypartner",
+        foreignKey: "userId"
+      })
     };
 
   }
@@ -27,13 +39,11 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       type: DataTypes.UUID,
       references: {
-        model: {
-          tableName: 'customers',
-          tableName: 'restaurants',
-          tableName: 'Admins',
-          tableName: 'customerSupports',
-          tableName: 'deliveryPartners',
-        },
+        model: "customer",
+        model: "restaurant",
+        model: "admin",
+        model: "customersupport",
+        model: "deliverypartner",
         key: 'id'
       },
       allowNull: false
@@ -75,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'Address',
+    modelName: 'address',
   });
   return Address;
 };

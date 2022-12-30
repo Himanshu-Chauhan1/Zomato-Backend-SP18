@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('foodItems', {
+    await queryInterface.createTable('fooditems', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -10,8 +10,12 @@ module.exports = {
         primaryKey: true
       },
       restaurantId: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.DataTypes.UUID,
+        references: {
+          model: "restaurant",
+          key: 'id'
+        },
+        allowNull: false
       },
       categoryName: {
         type: Sequelize.STRING,
@@ -49,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('foodItems');
+    await queryInterface.dropTable('fooditems');
   }
 };

@@ -3,13 +3,21 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Cart extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       // define association here
+      this.belongsTo(models.customer, {
+        as: "customer",
+        foreignKey: "customerId"
+      })
+      this.belongsTo(models.restaurant, {
+        as: "restaurant",
+        foreignKey: "restaurantId"
+      })
+      this.belongsTo(models.fooditem, {
+        as: "fooditem",
+        foreignKey: "itemId"
+      })
     }
   }
   Cart.init({
@@ -25,9 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     customerId: {
       type: DataTypes.UUID,
       references: {
-        model: {
-          tableName: 'customers',
-        },
+        model: "customer",
         key: 'id'
       },
       allowNull: false
@@ -35,9 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     restaurantId: {
       type: DataTypes.UUID,
       references: {
-        model: {
-          tableName: 'restaurants',
-        },
+        model: "restaurant",
         key: 'id'
       },
       allowNull: false
@@ -45,9 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     itemId: {
       type: DataTypes.UUID,
       references: {
-        model: {
-          tableName: 'foodItems',
-        },
+        model: "fooditem",
         key: 'id'
       },
       allowNull: false
@@ -70,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'Cart',
+    modelName: 'cart',
   });
   return Cart;
 };

@@ -3,13 +3,17 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class foodItem extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       // define association here
+      this.hasMany(models.fooditem, {
+        as: "fooditem",
+        foreignKey: "itemId"
+      })
+      this.belongsTo(models.restaurant, {
+        as: "restaurant",
+        foreignKey: "restaurantId"
+      })
     }
   }
   foodItem.init({
@@ -20,11 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     restaurantId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('restaurantId', val.trim());
+      type: DataTypes.UUID,
+      references: {
+        model: "restaurant",
+        key: 'id'
       },
+      allowNull: false,
     },
     categoryName: {
       type: DataTypes.STRING,
@@ -68,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'foodItem',
+    modelName: 'fooditem',
   });
   return foodItem;
 };

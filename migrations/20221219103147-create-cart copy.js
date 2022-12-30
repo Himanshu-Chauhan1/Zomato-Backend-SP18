@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Carts', {
+    await queryInterface.createTable('carts', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -12,9 +12,7 @@ module.exports = {
       customerId: {
         type: Sequelize.DataTypes.UUID,
         references: {
-          model: {
-            tableName: 'customers',
-          },
+          model: "customers",
           key: 'id'
         },
         allowNull: false
@@ -22,9 +20,7 @@ module.exports = {
       restaurantId: {
         type: Sequelize.DataTypes.UUID,
         references: {
-          model: {
-            tableName: 'restaurants',
-          },
+          model: "restaurants",
           key: 'id'
         },
         allowNull: false
@@ -32,9 +28,7 @@ module.exports = {
       itemId: {
         type: Sequelize.DataTypes.UUID,
         references: {
-          model: {
-            tableName: 'foodItems',
-          },
+          model: "fooditems",
           key: 'id'
         },
         allowNull: false
@@ -66,6 +60,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Carts');
+    await queryInterface.dropTable('carts');
   }
 };

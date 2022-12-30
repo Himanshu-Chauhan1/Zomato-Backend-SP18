@@ -4,13 +4,29 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Query extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       // define association here
+      this.belongsTo(models.customer, {
+        as: "customer",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.restaurant, {
+        as: "restaurant",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.admin, {
+        as: "admin",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.customersupport, {
+        as: "customersupport",
+        foreignKey: "userId"
+      })
+      this.belongsTo(models.deliverypartner, {
+        as: "deliverypartner",
+        foreignKey: "userId"
+      })
     }
   }
   Query.init({
@@ -28,11 +44,16 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     userId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      set: function trimValue(val) {
-        this.setDataValue('userId', val.trim());
+      type: DataTypes.UUID,
+      references: {
+        model: "customer",
+        model: "restaurant",
+        model: "admin",
+        model: "customersupport",
+        model: "deliverypartner",
+        key: 'id'
       },
+      allowNull: false
     },
     queryDescription: {
       type: DataTypes.STRING,
@@ -64,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'Query',
+    modelName: 'query',
   });
   return Query;
 };

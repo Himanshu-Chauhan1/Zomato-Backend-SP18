@@ -7,9 +7,18 @@ module.exports = (sequelize, DataTypes) => {
   class Customer extends Model {
     static associate(models) {
       // define association here
-      // this.belongsTo(models.address, {
-      //   foreignKey: "id"
-      // })
+      this.hasMany(models.address, {
+        as: "address",
+        foreignKey: "userId"
+      })
+      this.hasMany(models.cart, {
+        as: "cart",
+        foreignKey: "customerId"
+      })
+      this.hasMany(models.query, {
+        as: "query",
+        foreignKey: "userId"
+      })
     }
   }
   Customer.init({
