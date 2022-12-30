@@ -179,7 +179,7 @@ let login = async (req, res, next) => {
 const updateCustomer = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.customerId;
 
         let checkCustomerId = enteredId.split('').length
 
@@ -303,7 +303,7 @@ const updateCustomer = async function (req, res, next) {
 const deleteCustomer = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id
+        const enteredId = req.params.customerId
 
         let checkCustomerId = enteredId.split('').length
 

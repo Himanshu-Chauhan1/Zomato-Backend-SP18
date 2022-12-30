@@ -1,7 +1,7 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken")
 
-//----------------------------------------authentication----------------------------------------------------*/
+//==============================================authentication=========================================================//
 
 const authentication = async function (req, res, next) {
     try {
@@ -14,14 +14,16 @@ const authentication = async function (req, res, next) {
         let verifiedtoken = jwt.verify(splitToken[1], process.env.JWT_SECRET_KEY)
         if (!verifiedtoken) return res.status(400).send({ status: 1003, message: "Invalid Token!" })
 
-        let exp = verifiedtoken.payload.exp
+        let exp = verifiedtoken.exp
         let iatNow = Math.floor(Date.now() / 1000)
         if (exp < iatNow) {
-            return res.status(401).send({ status: false, message: 'Session expired, Please login again!' })
+            return res.status(401).send({ status: 1003, message: 'Session expired, Please login again!' })
         }
+
+        req.userId = verifiedtoken.aud
         req.verifiedtoken = verifiedtoken
 
-        next();
+        next()
 
     } catch (error) {
         console.log(error.message);

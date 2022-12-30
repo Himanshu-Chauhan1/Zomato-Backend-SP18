@@ -3,7 +3,7 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Address extends Model {
-    
+
     static associate(models) {
       // define association here
       this.belongsTo(models.customer, {
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
   }
   Address.init({
-    id: {
+    id: { 
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,

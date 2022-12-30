@@ -77,11 +77,11 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1003, message: "Please enter restaurantId-Id in a valid format" })
         }
 
-        const isRegisteredRestaurantId = await FoodCategory.findOne({ where: { restaurantId: restaurantId, categoryName: categoryName } });
+        // const isRegisteredRestaurantId = await FoodCategory.findOne({ where: { restaurantId: restaurantId, categoryName: categoryName } });
 
-        if (!isRegisteredRestaurantId) {
-            return res.status(422).send({ status: 1008, message: "This restaurantId is not registered under this category, Please enter a registered one" })
-        }
+        // if (!isRegisteredRestaurantId) {
+        //     return res.status(422).send({ status: 1008, message: "This restaurantId is not registered under this category, Please enter a registered one" })
+        // }
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -91,11 +91,11 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "categoryId is required" })
         }
 
-        const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: restaurantId } });
+        // const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: restaurantId } });
 
-        if (!isRegisteredCategory) {
-            return res.status(422).send({ status: 1008, message: "This category is not registered under this restaurant, Please enter a registered category" })
-        }
+        // if (!isRegisteredCategory) {
+        //     return res.status(422).send({ status: 1008, message: "This category is not registered under this restaurant, Please enter a registered category" })
+        // }
 
         if (!isValid(itemName)) {
             return res.status(422).send({ status: 1002, message: "itemName is required" })

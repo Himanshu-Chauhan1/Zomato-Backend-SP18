@@ -31,14 +31,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       set: function setCategoryName(val) {
-        this.setDataValue('categoryName', val.toLocaleLowerCase().trim());
+        this.setDataValue('categoryName', val.trim());
       },
     },
     offerName: {
       type: DataTypes.STRING,
       allowNull: true,
       set: function setOfferName(val) {
-        this.setDataValue('offerName', val.toLocaleLowerCase().trim());
+        this.setDataValue('offerName', val.trim());
       },
     },
     discount: {
@@ -61,10 +61,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     isActive: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
+      allowNull: true
     }
   }, {
     sequelize,

@@ -1,5 +1,4 @@
 const isvalidBirthdate = require("is-valid-birthdate")
-const validateDate = require("validate-date")
 const db = require("../../models")
 const bcrypt = require("bcrypt")
 const { CustomerSupport } = db
@@ -216,15 +215,13 @@ let login = async (req, res, next) => {
 const updateCustomerSupport = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.customerSupportId;
 
-        //exception class in try/catch
+        let checkCustomerSupportId = enteredId.split('').length
 
-        // let checkCustomerSupportId = enteredId.split('').length
-
-        // if (checkCustomerSupportId != 36) {
-        //     return res.status(422).send({ status: 1003, message: "CustomerSupport-Id is not valid" })
-        // }
+        if (checkCustomerSupportId != 36) {
+            return res.status(422).send({ status: 1003, message: "CustomerSupport-Id is not valid" })
+        }
 
         let customerSupportId = enteredId
 
@@ -420,7 +417,7 @@ const deleteCustomerSupport = async function (req, res, next) {
     try {
 
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.customerSupportId;
 
         let checkCustomerSupportId = enteredId.split('').length
 

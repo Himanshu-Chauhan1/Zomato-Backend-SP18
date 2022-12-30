@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setName(val) {
-        this.setDataValue('name', val.toLocaleLowerCase().trim());
+        this.setDataValue('name', val.trim());
       },
     },
     email: {
@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setOwnerFullName(val) {
-        this.setDataValue('ownerFullName', val.toLocaleLowerCase().trim());
+        this.setDataValue('ownerFullName', val.trim());
       },
     },
     ownerEmail: {
@@ -95,9 +95,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       default: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
     }
   }, {
     sequelize,

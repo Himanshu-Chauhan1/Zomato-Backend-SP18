@@ -2,7 +2,6 @@ const db = require("../../models")
 const bcrypt = require("bcrypt")
 const { Admin } = db
 
-
 ////////////////////////// -GLOBAL- //////////////////////
 const isValid = function (value) {
     if (!value || typeof value != "string" || value.trim().length == 0)
@@ -111,7 +110,7 @@ const createAdmin = async function (req, res, next) {
 let login = async (req, res, next) => {
     try {
         const data = req.body;
-        
+
         let { email, phone, password } = data
 
         const dataObject = {};
@@ -179,7 +178,7 @@ let login = async (req, res, next) => {
 const updateAdmin = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id
+        const enteredId = req.params.adminId
 
         let checkAdminId = enteredId.split('').length
 
@@ -303,7 +302,7 @@ const updateAdmin = async function (req, res, next) {
 const deleteAdmin = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id
+        const enteredId = req.params.adminId
 
         let checkAdminId = enteredId.split('').length
 

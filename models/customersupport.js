@@ -28,17 +28,11 @@ module.exports = (sequelize, DataTypes) => {
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
-      set: function setFirstName(val) {
-        this.setDataValue('firstName', val.toLocaleLowerCase().trim());
-      },
     },
     lastName: {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
-      set: function setLastName(val) {
-        this.setDataValue('lastName', val.toLocaleLowerCase().trim());
-      },
     },
     gender: {
       type: DataTypes.STRING,
@@ -95,16 +89,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setDepartmentName(val) {
-        this.setDataValue('departmentName', val.toLocaleLowerCase().trim());
+        this.setDataValue('departmentName', val.trim());
       },
     },
     isApproved: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: false,
-      set: function setIsApproved(val) {
-        this.setDataValue('isApproved', val.toLocaleLowerCase().trim());
-      },
+      defaultValue: false
     },
     userRole: {
       type: DataTypes.STRING,
@@ -113,10 +104,7 @@ module.exports = (sequelize, DataTypes) => {
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
+      defaultValue: true
     }
   }, {
     sequelize,

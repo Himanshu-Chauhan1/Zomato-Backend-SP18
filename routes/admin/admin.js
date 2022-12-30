@@ -7,10 +7,10 @@ const { authentication } = require("../../middlewares/authentication");
 
 
 adminRouter.post('/admins', [validate.createAdmin], create);
-adminRouter.put('/admins/:id', [authentication, validate.updateAdmin], update);
-adminRouter.get('/admins/filter', [authentication], get);
-adminRouter.get('/admins', [authentication], index);
-adminRouter.delete('/admins/:id', [authentication, validate.deleteAdmin], destroy);
+adminRouter.put('/admins/:adminId', [validate.updateAdmin], update);
+adminRouter.get('/admins/filter', get);
+adminRouter.get('/admins',index);
+adminRouter.delete('/admins/:adminId', [validate.deleteAdmin], destroy);
 adminRouter.post('/admins/login', [validate.login], login);
 
 

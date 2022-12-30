@@ -60,7 +60,7 @@ let login = async (req, res) => {
 
 const update = async function (req, res) {
     try {
-        const restaurantId = req.params.id;
+        const restaurantId = req.params.customerSupportId;
         let data = req.body
 
         const values = data;
@@ -134,7 +134,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let restaurantId = req.params.id
+        let restaurantId = req.params.customerSupportId
 
         let deleteRestaurant = await CustomerSupport.destroy({ where: { id: restaurantId } })
 

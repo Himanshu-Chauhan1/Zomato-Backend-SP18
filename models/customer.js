@@ -31,9 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
-      set: function setFullName(val) {
-        this.setDataValue('fullName', val.toLocaleLowerCase().trim());
-      },
     },
     email: {
       type: DataTypes.STRING,
@@ -50,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       set: function trimValue(val) {
         this.setDataValue('phone', val.trim());
       },
-    },
+    }, //0 to 15 
     password: {
       type: DataTypes.STRING,
       set: function setPassword(val) {
@@ -65,9 +62,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       default: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
     }
   }, {
     sequelize,

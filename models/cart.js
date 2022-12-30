@@ -65,10 +65,7 @@ module.exports = (sequelize, DataTypes) => {
     isActive: {
       type: DataTypes.BOOLEAN,
       allownull: true,
-      defaultValue: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
+      defaultValue: true
     },
   }, {
     sequelize,

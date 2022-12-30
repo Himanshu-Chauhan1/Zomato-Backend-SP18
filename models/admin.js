@@ -5,11 +5,7 @@ const nodeKey = process.env.NODE_KEY
 
 module.exports = (sequelize, DataTypes) => {
   class Admin extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  
     static associate(models) {
       // define association here
       this.hasMany(models.query, {
@@ -18,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+
   Admin.init({
     id: {
       type: DataTypes.UUID,
@@ -28,9 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
-      set: function setFullName(val) {
-        this.setDataValue('fullName', val.toLocaleLowerCase().trim());
-      },
     },
     email: {
       type: DataTypes.STRING,

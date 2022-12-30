@@ -35,21 +35,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setCategoryName(val) {
-        this.setDataValue('categoryName', val.toLocaleLowerCase().trim());
+        this.setDataValue('categoryName', val.trim());
       },
     },
     itemName: {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setItemName(val) {
-        this.setDataValue('itemName', val.toLocaleLowerCase().trim());
+        this.setDataValue('itemName', val.trim());
       },
     },
     itemDescription: {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setItemDescription(val) {
-        this.setDataValue('itemDescription', val.toLocaleLowerCase().trim());
+        this.setDataValue('itemDescription', val.trim());
       },
     },
     itemPrice: {
@@ -66,10 +66,7 @@ module.exports = (sequelize, DataTypes) => {
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      default: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
+      default: true
     }
   }, {
     sequelize,

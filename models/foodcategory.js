@@ -32,16 +32,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       set: function setCategoryName(val) {
-        this.setDataValue('categoryName', val.toLocaleLowerCase().trim());
+        this.setDataValue('categoryName', val.trim());
       },
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      default: true,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
+      default: true
     }
   }, {
     sequelize,

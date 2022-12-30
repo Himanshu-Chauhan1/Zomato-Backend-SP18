@@ -8,10 +8,10 @@ const { create, update, destroy, login, get, index } = require("../../controller
 
 
 customerSupportRouter.post('/customersupports', [validate.createCustomerSupport], create);
-customerSupportRouter.put('/customersupports/:id', [validate.updateCustomerSupport], update);
+customerSupportRouter.put('/customersupports/:customerSupportId', [validate.updateCustomerSupport], update);
 customerSupportRouter.get('/customersupports/filter', get);
 customerSupportRouter.get('/customersupports', index);
-customerSupportRouter.delete('/customersupports/:id', [validate.deleteCustomerSupport], destroy);
+customerSupportRouter.delete('/customersupports/:customerSupportId', [validate.deleteCustomerSupport], destroy);
 customerSupportRouter.post('/customersupports/login', [validate.login], login);
 
 module.exports = customerSupportRouter

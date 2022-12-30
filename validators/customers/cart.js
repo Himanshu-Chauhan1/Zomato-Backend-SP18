@@ -21,17 +21,6 @@ const isValidNumber = function (value) {
     return true;
 };
 
-//////////////// -FOR MOBILE- ///////////////////////
-const isValidPhone = (phone) => {
-    return /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/.test(phone);
-};
-
-//////////////// -FOR EMAIL- ///////////////////////
-const isValidEmail = (email) => {
-    return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email);
-};
-
-
 //========================================Create-A-Customer==========================================================//
 
 const createCart = async function (req, res, next) {

@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Query extends Model {
 
@@ -71,17 +70,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     isRequest: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
-      set: function setIsRequest(val) {
-        this.setDataValue('isRequest', val.toLocaleLowerCase().trim());
-      },
+      allowNull: false
     },
     isActive: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
-      set: function setIsActive(val) {
-        this.setDataValue('isActive', val.toLocaleLowerCase().trim());
-      },
+      allowNull: false
     },
   }, {
     sequelize,

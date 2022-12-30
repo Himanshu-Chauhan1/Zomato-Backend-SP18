@@ -1,5 +1,4 @@
 const isvalidBirthdate = require("is-valid-birthdate")
-const validateDate = require("validate-date")
 const db = require("../../models")
 const bcrypt = require("bcrypt")
 const { DeliveryPartner } = db
@@ -248,7 +247,7 @@ let login = async (req, res, next) => {
 const updateDeliveryPartner = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.deliveryPartnerId;
 
         let checkDeliveryPartnerId = enteredId.split('').length
 
@@ -463,7 +462,7 @@ const deleteDeliveryPartner = async function (req, res, next) {
     try {
 
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.deliveryPartnerId;
 
         let checkDeliveryPartnerId = enteredId.split('').length
 
