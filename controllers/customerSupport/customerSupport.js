@@ -1,5 +1,4 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const { CustomerSupport } = db
@@ -60,11 +59,11 @@ let login = async (req, res) => {
 
 const update = async function (req, res) {
     try {
-        const restaurantId = req.params.customerSupportId;
+        const customerSupportId = req.params.id;
         let data = req.body
 
         const values = data;
-        const condition = { where: { id: restaurantId } };
+        const condition = { where: { id: customerSupportId } };
         const options = { multi: true };
 
         const updateDetails = await CustomerSupport.update(values, condition, options)
@@ -134,11 +133,11 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let restaurantId = req.params.customerSupportId
+        let customerSupportId = req.params.id
 
-        let deleteRestaurant = await CustomerSupport.destroy({ where: { id: restaurantId } })
+        let deleteRestaurant = await CustomerSupport.destroy({ where: { id: customerSupportId } })
 
-        return res.status(200).send({ status: 1010, message: "The Customer has been deleted Successfully", data: deleteRestaurant })
+        return res.status(200).send({ status: 1010, message: "The customerSupport has been deleted Successfully", data: deleteRestaurant })
     }
     catch (err) {
         console.log(err.message);

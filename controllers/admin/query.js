@@ -21,7 +21,7 @@ const create = async function (req, res) {
 
 const update = async function (req, res) {
     try {
-        const orderQueryId = req.params.id;
+        const orderQueryId = req.params.queryId;
         let data = req.body
 
         const values = data;
@@ -83,7 +83,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let orderQueryId = req.params.id
+        let orderQueryId = req.params.queryId
 
         let deleteQuery = await Query.destroy({ where: { id: orderQueryId } })
 

@@ -48,9 +48,9 @@ const index = async function (req, res) {
     try {
 
         let data = req.query
-        let paramsRestaurantId = req.params.restaurantId
+        let paramsRestaurantId = req.params.id
 
-        const { categoryName, itemName, itemPrice, isActive } = data
+        const { categoryName, itemName, itemPrice } = data
 
         if (Object.keys(req.query).length > 0) {
             let findFoodItemsByFilter = await FoodItem.findAll({
@@ -96,9 +96,11 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
+
+        let paramsRestaurantId = req.params.id
         let foodItemId = req.params.foodItemId
 
-        let deleteFoodItem = await FoodItem.destroy({ where: { id: foodItemId } })
+        let deleteFoodItem = await FoodItem.destroy({ where: { id: foodItemId, restaurantId: paramsRestaurantId } })
 
         return res.status(200).send({ status: 1010, message: "The foodItem has been deleted Successfully", data: deleteFoodItem })
     }

@@ -61,7 +61,7 @@ let login = async (req, res) => {
 
 const update = async function (req, res) {
     try {
-        const customerId = req.params.customerId;
+        const customerId = req.params.id;
         let data = req.body
 
         const values = data;
@@ -133,7 +133,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let customerId = req.params.customerId
+        let customerId = req.params.id
 
         let deleteUser = await Customer.destroy({ where: { id: customerId } })
 

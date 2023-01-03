@@ -6,9 +6,9 @@ const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
 
-addressRouter.post('/restaurants/:restaurantId/address', [validate.createAddress], create);
-addressRouter.put('/restaurants/:restaurantId/address/:addressId', [validate.updateAddress], update);
-addressRouter.get('/restaurants/:restaurantId/address', [validate.getAddress], index);
-addressRouter.delete('/restaurants/:restaurantId/address/:addressId', [validate.deleteAddress], destroy);
+addressRouter.post('/restaurants/:id/address', [authentication, authorization, validate.createAddress], create);
+addressRouter.put('/restaurants/:id/address/:addressId', [authentication, authorization, validate.updateAddress], update);
+addressRouter.get('/restaurants/:id/address', [authentication, authorization, validate.getAddress], index);
+addressRouter.delete('/restaurants/:id/address/:addressId', [authentication, authorization, validate.deleteAddress], destroy);
 
 module.exports = addressRouter

@@ -1,5 +1,4 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const { Restaurant } = db
@@ -64,7 +63,7 @@ let login = async (req, res) => {
 
 const update = async function (req, res) {
     try {
-        const restaurantId = req.params.restaurantId
+        const restaurantId = req.params.id
         let data = req.body
 
         const values = data;
@@ -136,7 +135,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let restaurantId = req.params.restaurantId
+        let restaurantId = req.params.id
 
         let deleteRestaurant = await Restaurant.destroy({ where: { id: restaurantId } })
 

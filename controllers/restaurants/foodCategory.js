@@ -46,7 +46,7 @@ const index = async function (req, res) {
     try {
 
         let data = req.query
-        let paramsRestaurantId = req.params.restaurantId
+        let paramsRestaurantId = req.params.id
 
         const { categoryName, isActive } = data
 
@@ -85,7 +85,7 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-        let paramsRestaurantId = req.params.restaurantId
+        let paramsRestaurantId = req.params.id
         let foodCategoryId = req.params.categoryId
 
         let deleteFoodCategory = await FoodCategory.destroy({ where: { id: foodCategoryId, restaurantId: paramsRestaurantId } })

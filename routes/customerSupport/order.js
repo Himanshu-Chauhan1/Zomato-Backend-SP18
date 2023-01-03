@@ -6,8 +6,8 @@ const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
 
-orderRouter.post('/customersupport/:customerSupportId/orders', [validate.createOrder], create);
-orderRouter.put('/customersupport/:customerSupportId/orders/:orderId', [validate.updateOrder], update);
-orderRouter.get('/customersupport/:customerSupportId/orders', [validate.getOrder], index);
+orderRouter.post('/customersupport/:id/orders', [validate.createOrder], create);
+orderRouter.put('/customersupport/:id/orders/:orderId', [validate.updateOrder], update);
+orderRouter.get('/customersupport/:id/orders', [validate.getOrder], index);
 
 module.exports = orderRouter

@@ -28,7 +28,7 @@ const isActiveCategory = (isActive) => {
 const createFoodCategory = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -102,7 +102,7 @@ const createFoodCategory = async function (req, res, next) {
 const updateFoodCategory = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -209,7 +209,7 @@ const updateFoodCategory = async function (req, res, next) {
 const getFoodCategory = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -223,10 +223,6 @@ const getFoodCategory = async function (req, res, next) {
 
         if (!checkEnteredRestaurantId) {
             return res.status(422).send({ status: 1006, message: "There is no restaurant with this Restaurant-ID" })
-        }
-
-        if (checkEnteredRestaurantId.id != paramsRestaurantId) {
-            return res.status(400).send({ status: 1003, message: 'this category does not belongs to your restaurant! Enter appropriate categoryId' })
         }
 
         let data = req.query
@@ -283,7 +279,7 @@ const getFoodCategory = async function (req, res, next) {
 const deleteFoodCategory = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 

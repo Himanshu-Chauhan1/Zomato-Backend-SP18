@@ -1,5 +1,4 @@
 const db = require("../../models")
-const validUrl = require('valid-url')
 const { FoodCategory, FoodItem } = db
 
 
@@ -35,7 +34,7 @@ const isActiveItem = (isActive) => {
 const getMenu = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 

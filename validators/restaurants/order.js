@@ -20,7 +20,7 @@ const isValidRequestBody = function (requestBody) {
 const updateOrder = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -49,7 +49,7 @@ const updateOrder = async function (req, res, next) {
 const getOrder = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 

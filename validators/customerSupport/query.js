@@ -30,7 +30,7 @@ const isActiveRequest = (isActive) => {
 const createOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 
@@ -110,7 +110,7 @@ const createOrderQuery = async function (req, res, next) {
 const updateOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 
@@ -232,7 +232,7 @@ const updateOrderQuery = async function (req, res, next) {
 const getOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 

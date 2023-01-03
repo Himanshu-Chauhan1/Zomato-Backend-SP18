@@ -129,7 +129,7 @@ const createAddress = async function (req, res, next) {
 const updateAddress = async function (req, res, next) {
     try {
 
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 
@@ -257,7 +257,7 @@ const updateAddress = async function (req, res, next) {
 const getAddress = async function (req, res, next) {
     try {
 
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 
@@ -391,7 +391,7 @@ const getAddress = async function (req, res, next) {
 const deleteAddress = async function (req, res, next) {
     try {
 
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 

@@ -1,6 +1,6 @@
 require("dotenv").config();
 const db = require("../../models");
-const { Cart, Order, Customer } = db
+const { Customer } = db
 
 
 //========================================POST /CREATE-A-ORDER==========================================================//
@@ -42,7 +42,7 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 

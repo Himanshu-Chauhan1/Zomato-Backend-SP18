@@ -178,7 +178,7 @@ let login = async (req, res, next) => {
 const updateAdmin = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.adminId
+        const enteredId = req.params.id
 
         let checkAdminId = enteredId.split('').length
 
@@ -302,7 +302,7 @@ const updateAdmin = async function (req, res, next) {
 const deleteAdmin = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.adminId
+        const enteredId = req.params.id
 
         let checkAdminId = enteredId.split('').length
 

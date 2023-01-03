@@ -6,7 +6,7 @@ const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
 
-orderRouter.put('/deliverypartners/:deliveryPartnerId/orders/:orderId', [validate.updateOrder], update);
-orderRouter.get('/deliverypartners/:deliveryPartnerId/orders', [validate.getOrder], index);
+orderRouter.put('/deliverypartners/:id/orders/:orderId', [authentication, authorization, validate.updateOrder], update);
+orderRouter.get('/deliverypartners/:id/orders', [authentication, authorization, validate.getOrder], index);
 
 module.exports = orderRouter

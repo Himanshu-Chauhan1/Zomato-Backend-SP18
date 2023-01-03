@@ -26,7 +26,7 @@ const isValidNumber = function (value) {
 const createCart = async function (req, res, next) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
@@ -58,10 +58,6 @@ const createCart = async function (req, res, next) {
 
         if (!isRegisteredCustomer) {
             return res.status(422).send({ status: 1008, message: "This customer is not registered, Please enter a new one" })
-        }
-
-        if (checkEnteredCustomerId.id != customerId) {
-            return res.status(400).send({ status: 1003, message: 'this params customerId should match with customerId in body! Enter appropriate customertId in path params and requestbody' })
         }
 
         if (!isValid(restaurantId)) {
@@ -177,7 +173,7 @@ const createCart = async function (req, res, next) {
 const updateCart = async function (req, res, next) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
@@ -207,10 +203,6 @@ const updateCart = async function (req, res, next) {
 
         if (!enteredCartId) {
             return res.status(422).send({ status: 1006, message: "Provided Cart-ID does not exists" })
-        }
-
-        if (enteredCartId.customerId != customerId) {
-            return res.status(400).send({ status: 1003, message: 'this cart does not belongs to you! Enter appropriate cartId' })
         }
 
         let data = req.body
@@ -281,7 +273,7 @@ const deleteCart = async function (req, res, next) {
     try {
 
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
@@ -313,11 +305,7 @@ const deleteCart = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "Provided Cart-ID does not exists" })
         }
 
-        if (enteredCartId.customerId !== customerId) {
-            return res.status(400).send({ status: 1003, message: 'this cart does not belongs to you! Enter appropriate cartId' })
-        } else {
-            next()
-        }
+        next()
 
 
     }

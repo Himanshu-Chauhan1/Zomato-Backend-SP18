@@ -48,7 +48,7 @@ const isValidFutureDate = (dateCreated) => {
 const createFoodItem = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -77,11 +77,11 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1003, message: "Please enter restaurantId-Id in a valid format" })
         }
 
-        // const isRegisteredRestaurantId = await FoodCategory.findOne({ where: { restaurantId: restaurantId, categoryName: categoryName } });
+        const isRegisteredRestaurantId = await FoodCategory.findOne({ where: { restaurantId: restaurantId, categoryName: categoryName } });
 
-        // if (!isRegisteredRestaurantId) {
-        //     return res.status(422).send({ status: 1008, message: "This restaurantId is not registered under this category, Please enter a registered one" })
-        // }
+        if (!isRegisteredRestaurantId) {
+            return res.status(422).send({ status: 1008, message: "This restaurantId is not registered under this category, Please enter a registered one" })
+        }
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -91,11 +91,11 @@ const createFoodItem = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "categoryId is required" })
         }
 
-        // const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: restaurantId } });
+        const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: restaurantId } });
 
-        // if (!isRegisteredCategory) {
-        //     return res.status(422).send({ status: 1008, message: "This category is not registered under this restaurant, Please enter a registered category" })
-        // }
+        if (!isRegisteredCategory) {
+            return res.status(422).send({ status: 1008, message: "This category is not registered under this restaurant, Please enter a registered category" })
+        }
 
         if (!isValid(itemName)) {
             return res.status(422).send({ status: 1002, message: "itemName is required" })
@@ -156,7 +156,7 @@ const createFoodItem = async function (req, res, next) {
 const updateFoodItem = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -318,7 +318,7 @@ const updateFoodItem = async function (req, res, next) {
 const getFoodItem = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -332,10 +332,6 @@ const getFoodItem = async function (req, res, next) {
 
         if (!checkEnteredRestaurantId) {
             return res.status(422).send({ status: 1006, message: "There is no restaurant with this Restaurant-ID" })
-        }
-
-        if (checkEnteredRestaurantId.id != paramsRestaurantId) {
-            return res.status(400).send({ status: 1003, message: 'this category does not belongs to your restaurant! Enter appropriate categoryId' })
         }
 
         let data = req.query
@@ -416,7 +412,7 @@ const getFoodItem = async function (req, res, next) {
 const deleteFoodItem = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 

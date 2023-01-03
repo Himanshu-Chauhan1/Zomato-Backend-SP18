@@ -28,7 +28,7 @@ const isActiveRequest = (isActive) => {
 
 const createOrderQuery = async function (req, res, next) {
     try {
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 
@@ -104,7 +104,7 @@ const createOrderQuery = async function (req, res, next) {
 
 const updateOrderQuery = async function (req, res, next) {
     try {
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 
@@ -120,7 +120,7 @@ const updateOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
         }
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.queryId;
 
         let checkQueryId = enteredId.split('').length
 
@@ -233,7 +233,7 @@ const updateOrderQuery = async function (req, res, next) {
 const getOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 
@@ -348,7 +348,7 @@ const getOrderQuery = async function (req, res, next) {
 const deleteOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredAdminId = req.params.adminId
+        const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
 
@@ -364,7 +364,7 @@ const deleteOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
         }
 
-        const enteredId = req.params.id;
+        const enteredId = req.params.queryId;
 
         let checkQueryId = enteredId.split('').length
 

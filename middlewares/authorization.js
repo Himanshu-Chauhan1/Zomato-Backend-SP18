@@ -1,5 +1,3 @@
-const jwt = require("jsonwebtoken")
-const db = require("../models")
 
 
 //==============================================authorization=========================================================//
@@ -8,10 +6,11 @@ const authorization = async function (req, res, next) {
     try {
 
         const verifiedtoken = req.verifiedtoken
-        let idFromToken = verifiedtoken.payload.id
+        let idFromToken = verifiedtoken.aud
+        let userId = req.params.id
 
-        if (customerId !== idFromToken) {
-            return res.status(401).send({ Status: 1010, message: "Access Denied! You dont have correct privilege to perform this operation" });
+        if (userId !== idFromToken) {
+            return res.status(401).send({ Status: 1010, message: "Unauthorized Access! You dont have correct privilege to perform this operation" });
         } else {
             next()
         }

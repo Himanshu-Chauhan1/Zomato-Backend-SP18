@@ -216,7 +216,7 @@ let login = async (req, res, next) => {
 const updateRestaurant = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.restaurantId
+        const enteredId = req.params.id
 
         let checkRestaurantId = enteredId.split('').length
 
@@ -395,7 +395,7 @@ const deleteRestaurant = async function (req, res, next) {
     try {
 
 
-        const enteredId = req.params.restaurantId
+        const enteredId = req.params.id
 
         let checkRestaurantId = enteredId.split('').length
 

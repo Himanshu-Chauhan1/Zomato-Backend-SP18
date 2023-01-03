@@ -40,7 +40,7 @@ const isValidPincode = (pincode) => {
 const createAddress = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 
@@ -129,7 +129,7 @@ const createAddress = async function (req, res, next) {
 const updateAddress = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 
@@ -257,7 +257,7 @@ const updateAddress = async function (req, res, next) {
 const getAddress = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 
@@ -396,7 +396,7 @@ const getAddress = async function (req, res, next) {
 const deleteAddress = async function (req, res, next) {
     try {
 
-        const enteredCustomerSupportId = req.params.customerSupportId
+        const enteredCustomerSupportId = req.params.id
 
         let checkCustomerSupportId = enteredCustomerSupportId.split('').length
 

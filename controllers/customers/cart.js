@@ -44,7 +44,7 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
@@ -85,7 +85,7 @@ const destroy = async function (req, res) {
     try {
 
         const cartId = req.params.cartId
-        const customerId = req.params.customerId
+        const customerId = req.params.id
 
         let findCustomerCart = await Cart.findAll({
             where: { [Op.and]: [{ customerId: customerId, isActive: true }] }

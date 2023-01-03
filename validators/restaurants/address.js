@@ -40,7 +40,7 @@ const isValidPincode = (pincode) => {
 const createAddress = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -126,7 +126,7 @@ const createAddress = async function (req, res, next) {
 const updateAddress = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -156,10 +156,6 @@ const updateAddress = async function (req, res, next) {
 
         if (!enteredAddressId) {
             return res.status(422).send({ status: 1006, message: "Provided Address-ID does not exists" })
-        }
-
-        if (enteredAddressId.userId != paramsRestaurantId) {
-            return res.status(400).send({ status: 1003, message: 'this address does not belongs to you! Enter appropriate addressId' })
         }
 
         const data = req.body
@@ -257,7 +253,7 @@ const updateAddress = async function (req, res, next) {
 
 const getAddress = async function (req, res, next) {
     try {
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -271,10 +267,6 @@ const getAddress = async function (req, res, next) {
 
         if (!checkEnteredRestaurantId) {
             return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
-        }
-
-        if (enteredAddressId.userId != paramsRestaurantId) {
-            return res.status(400).send({ status: 1003, message: 'this address does not belongs to you! Enter appropriate addressId' })
         }
 
         let data = req.query
@@ -380,7 +372,7 @@ const getAddress = async function (req, res, next) {
 const deleteAddress = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -410,10 +402,6 @@ const deleteAddress = async function (req, res, next) {
 
         if (!enteredAddressId) {
             return res.status(422).send({ status: 1006, message: "Provided Address-ID does not exists" })
-        }
-
-        if (enteredAddressId.userId != paramsRestaurantId) {
-            return res.status(400).send({ status: 1003, message: 'this address does not belongs to you! Enter appropriate addressId' })
         }
 
         next()

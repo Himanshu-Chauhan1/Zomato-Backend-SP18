@@ -18,7 +18,7 @@ const isValidRequestBody = function (requestBody) {
 const createOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
@@ -84,7 +84,7 @@ const createOrderQuery = async function (req, res, next) {
 const updateOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
@@ -182,7 +182,7 @@ const updateOrderQuery = async function (req, res, next) {
 const getOrderQuery = async function (req, res, next) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 

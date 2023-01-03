@@ -6,8 +6,8 @@ const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
 
-orderQueryRouter.post('/customers/:customerId/orderqueries', [validate.createOrderQuery], create);
-orderQueryRouter.put('/customers/:customerId/orderqueries/:queryId', [validate.updateOrderQuery], update);
-orderQueryRouter.get('/customers/:customerId/orderqueries', [validate.getOrderQuery], index);
+orderQueryRouter.post('/customers/:id/orderqueries', [authentication, authorization, validate.createOrderQuery], create);
+orderQueryRouter.put('/customers/:id/orderqueries/:queryId', [authentication, authorization, validate.updateOrderQuery], update);
+orderQueryRouter.get('/customers/:id/orderqueries', [authentication, authorization, validate.getOrderQuery], index);
 
 module.exports = orderQueryRouter

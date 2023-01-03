@@ -247,7 +247,7 @@ let login = async (req, res, next) => {
 const updateDeliveryPartner = async function (req, res, next) {
     try {
 
-        const enteredId = req.params.deliveryPartnerId;
+        const enteredId = req.params.id;
 
         let checkDeliveryPartnerId = enteredId.split('').length
 
@@ -462,7 +462,7 @@ const deleteDeliveryPartner = async function (req, res, next) {
     try {
 
 
-        const enteredId = req.params.deliveryPartnerId;
+        const enteredId = req.params.id;
 
         let checkDeliveryPartnerId = enteredId.split('').length
 

@@ -43,7 +43,7 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
 
-        const enteredCustomerId = req.params.customerId
+        const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
 
