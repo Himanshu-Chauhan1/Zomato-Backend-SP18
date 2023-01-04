@@ -44,13 +44,14 @@ const index = async function (req, res) {
     try {
         let data = req.query
         const { userId, streetName, cityName, stateName, pincode } = data
+        let customerId = req.params.id
 
         if (Object.keys(req.query).length > 0) {
             let findOrderAddressByFilter = await Address.findAll({
                 where: {
                     userRole: { [Op.eq]: "customer" },
                     [Op.or]: [
-                        { userId: { [Op.eq]: userId } },
+                        { userId: { [Op.eq]: customerId } },
                         { streetName: { [Op.eq]: streetName } },
                         { cityName: { [Op.eq]: cityName } },
                         { stateName: { [Op.eq]: stateName } },
@@ -64,12 +65,12 @@ const index = async function (req, res) {
 
             return res.status(200).send({ status: 1010, Menu: findOrderAddressByFilter })
         } else {
-            let findAllAddressQuery = await Address.findAll({ where: { userRole: "customer" } })
+            let findAllAddress = await Address.findAll({ where: { userRole: "customer", userId: customerId } })
 
-            if (!findAllAddressQuery.length)
+            if (!findAllAddress.length)
                 return res.status(404).send({ status: 1006, message: "No Addresses found" })
 
-            return res.status(200).send({ status: 1010, data: findAllAddressQuery })
+            return res.status(200).send({ status: 1010, data: findAllAddress })
         }
 
     }

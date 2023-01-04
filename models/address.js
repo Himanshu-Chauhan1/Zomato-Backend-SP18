@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
   }
   Address.init({
-    id: { 
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,

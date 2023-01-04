@@ -58,7 +58,7 @@ const index = async function (req, res) {
 
         const customerCart = await Cart.findAll({
             where: { customerId: { [Op.eq]: enteredCustomerId } },
-            attributes: ['itemId','itemPrice', 'totalItems', 'totalPrice'],
+            attributes: ['restaurantId', 'itemId', 'totalItems', 'totalPrice'],
         })
 
         return res.status(200).send({ status: 1010, CartData: customerCart })

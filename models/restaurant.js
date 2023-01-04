@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "query",
         foreignKey: "userId"
       })
+      this.hasMany(models.order, {
+        as: "order",
+        foreignKey: "restaurantId"
+      })
     }
   }
   restaurant.init({

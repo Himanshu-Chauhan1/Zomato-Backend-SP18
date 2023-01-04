@@ -10,7 +10,7 @@ const { authorization } = require("../../middlewares/authorization");
 customerRouter.post('/customers', [validate.createCustomer], create);
 customerRouter.put('/customers/:id', [authentication, authorization, validate.updateCustomer], update);
 customerRouter.get('/customers/filter', get);
-customerRouter.get('/customers', [authentication, authorization], index);
+customerRouter.get('/customers', [authentication], index);
 customerRouter.delete('/customers/:id', [authentication, authorization, validate.deleteCustomer], destroy);
 customerRouter.post('/customers/login', [validate.login], login);
 

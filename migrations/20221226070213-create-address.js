@@ -10,13 +10,9 @@ module.exports = {
         primaryKey: true
       },
       userId: {
-        type: Sequelize.DataTypes.UUID,
+        type: Sequelize.UUID,
         references: {
           model: "customers",
-          model: "restaurants",
-          model: "admins",
-          model: "customersupports",
-          model: "deliverypartners",
           key: 'id'
         },
         allowNull: false

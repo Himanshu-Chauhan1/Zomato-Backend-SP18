@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "query",
         foreignKey: "userId"
       })
+      this.hasMany(models.order, {
+        as: "order",
+        foreignKey: "customerId"
+      })
     }
   }
   Customer.init({
@@ -47,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       set: function trimValue(val) {
         this.setDataValue('phone', val.trim());
       },
-    }, //0 to 15 
+    }, 
     password: {
       type: DataTypes.STRING,
       set: function setPassword(val) {

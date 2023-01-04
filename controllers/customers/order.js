@@ -1,6 +1,8 @@
 require("dotenv").config();
 const db = require("../../models");
 const { Cart, Order, Customer } = db
+const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
 
 //========================================POST /CREATE-A-ORDER==========================================================//
@@ -10,7 +12,7 @@ const create = async function (req, res) {
 
         const orderCreated = await Order.create(req.body)
 
-        res.status(201).send({ status: 1009, message: "Your cart has been created successfully", data: orderCreated })
+        res.status(201).send({ status: 1009, message: "Your order has been placed successfully", data: orderCreated })
     } catch (err) {
         console.log(err.message);
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
@@ -45,27 +47,18 @@ const index = async function (req, res) {
 
         const enteredCustomerId = req.params.id
 
-        let checkCustomerId = enteredCustomerId.split('').length
+        let valuesFromOrder = await Order.findOne({ where: { customerId: enteredCustomerId } })
 
-        if (checkCustomerId != 36) {
-            return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
+        if (!valuesFromOrder) {
+            return res.status(422).send({ status: 1006, message: "No Orders Found for this customer" })
         }
 
-        let customerId = enteredCustomerId
+        const customerOrder = await Order.findAndCountAll({
+            where: { customerId: { [Op.eq]: enteredCustomerId } },
+            attributes: ['id', 'customerId', 'restaurantId', 'cartItems', 'offerId', 'placedTime', 'price', 'discount', 'finalPrice', 'deliveryAddress'],
+        })
 
-        const checkEnteredCustomerId = await Customer.findOne({ where: { id: customerId } });
-
-        if (!checkEnteredCustomerId) {
-            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
-        }
-
-        const enteredCustomer = await Order.findOne({ where: { customerId: customerId } })
-
-        if (!enteredCustomer) {
-            return res.status(422).send({ status: 1006, message: "There is no order for this customer" })
-        }
-
-        return res.status(200).send({ status: 1010, data: enteredCustomer })
+        return res.status(200).send({ status: 1010, Orders: customerOrder })
 
     }
     catch (err) {

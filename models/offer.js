@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "restaurant",
         foreignKey: "restaurantId"
       })
+      this.belongsTo(models.order, {
+        as: "order",
+        foreignKey: "offerId"
+      })
     }
   }
   Offer.init({
