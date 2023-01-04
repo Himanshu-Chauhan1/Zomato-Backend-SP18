@@ -47,7 +47,7 @@ const createOrder = async function (req, res, next) {
 
         const data = req.body
 
-        const { customerId, restaurantId, offerId, cartItems, placedTime, price, discount, finalPrice, deliveryAddress, orderStatus } = data
+        const { restaurantId, offerId, deliveryAddress } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -91,9 +91,6 @@ const createOrder = async function (req, res, next) {
                 return res.status(422).send({ status: 1008, message: "This offerId is not registered with this restaurant, Please enter a registered one" })
             }
         }
-
-        const isRegisteredCart = await Cart.findOne({ where: { customerId: { [Op.eq]: enteredCustomerId } } });
-        console.log(isRegisteredCart.totalPrice);
 
         const totalAmount = await Cart.findOne({
             where: { customerId: { [Op.eq]: enteredCustomerId } },

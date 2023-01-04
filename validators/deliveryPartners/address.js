@@ -58,25 +58,13 @@ const createAddress = async function (req, res, next) {
 
         const data = req.body
 
-        const { userId, userRole, streetName, cityName, stateName, pincode } = data
+        const { streetName, cityName, stateName, pincode } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
 
-        if (!isValid(userId)) {
-            return res.status(422).send({ status: 1002, message: "userId is required" })
-        }
-
-        if (userId.length != 36) {
-            return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
-        }
-
-        const isRegisteredUserId = await DeliveryPartner.findOne({ where: { id: userId } });
-
-        if (!isRegisteredUserId) {
-            return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the delivery partners" })
-        }
+        data.userId = paramsDeliveryPartnerId
 
         data.userRole = "deliverypartner".toLocaleLowerCase()
 
@@ -164,33 +152,13 @@ const updateAddress = async function (req, res, next) {
 
         const data = req.body
 
-        const { userId, streetName, cityName, stateName, pincode } = data
+        const { streetName, cityName, stateName, pincode } = data
 
         const dataObject = {};
 
         if (!Object.keys(data).length && typeof files === 'undefined') {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
         }
-
-        if ("userId" in data) {
-
-            if (!isValid(userId)) {
-                return res.status(422).send({ status: 1002, message: "userId is required" })
-            }
-
-            if (userId.length != 36) {
-                return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
-            }
-
-            const isRegisteredUserId = await DeliveryPartner.findOne({ where: { id: userId } });
-
-            if (!isRegisteredUserId) {
-                return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the delivery partners" })
-            }
-
-            dataObject['userId'] = userId
-        }
-
 
         if ("streetName" in data) {
 
@@ -288,7 +256,7 @@ const getAddress = async function (req, res, next) {
                 return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
             }
 
-            const isRegisteredUserId = await Address.findOne({ where: { id: userId, userRole: { [Op.eq]: 'deliverypartner' } } });
+            const isRegisteredUserId = await Address.findOne({ where: { id: paramsDeliveryPartnerId, userRole: { [Op.eq]: 'deliverypartner' } } });
 
             if (!isRegisteredUserId) {
                 return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the deliverypartner" })

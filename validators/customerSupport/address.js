@@ -58,25 +58,13 @@ const createAddress = async function (req, res, next) {
 
         const data = req.body
 
-        const { userId, userRole, streetName, cityName, stateName, pincode } = data
+        const { streetName, cityName, stateName, pincode } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
 
-        if (!isValid(userId)) {
-            return res.status(422).send({ status: 1002, message: "userId is required" })
-        }
-
-        if (userId.length != 36) {
-            return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
-        }
-
-        const isRegisteredUserId = await CustomerSupport.findOne({ where: { id: userId } });
-
-        if (!isRegisteredUserId) {
-            return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the customersupports" })
-        }
+        data.userId=paramsCustomerSupportId
 
         data.userRole = "customersupport".toLocaleLowerCase()
 
@@ -163,33 +151,13 @@ const updateAddress = async function (req, res, next) {
 
         const data = req.body
 
-        const { userId, streetName, cityName, stateName, pincode } = data
+        const { streetName, cityName, stateName, pincode } = data
 
         const dataObject = {};
 
         if (!Object.keys(data).length && typeof files === 'undefined') {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
         }
-
-        if ("userId" in data) {
-
-            if (!isValid(userId)) {
-                return res.status(422).send({ status: 1002, message: "userId is required" })
-            }
-
-            if (userId.length != 36) {
-                return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
-            }
-
-            const isRegisteredUserId = await CustomerSupport.findOne({ where: { id: userId } });
-
-            if (!isRegisteredUserId) {
-                return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the customersupports" })
-            }
-
-            dataObject['userId'] = userId
-        }
-
 
         if ("streetName" in data) {
 
