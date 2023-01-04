@@ -1,7 +1,8 @@
 require("dotenv").config();
 const db = require("../../models");
-const { Cart, Customer } = db
+const { Cart, Customer, FoodItem } = db
 const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
 
 //========================================POST /CREATE-A-CART==========================================================//
@@ -22,11 +23,14 @@ const create = async function (req, res) {
 
 const update = async function (req, res) {
     try {
-        const cartId = req.params.cartId;
+        const customerId = req.params.id;
         let data = req.body
 
+
+        let valuesFromCart = await Cart.findOne({ where: { customerId: customerId } })
+
         const values = data;
-        const condition = { where: { id: cartId } };
+        const condition = { where: { customerId: customerId, restaurantId: valuesFromCart.restaurantId, itemId: valuesFromCart.itemId } };
         const options = { multi: true };
 
         const updateDetails = await Cart.update(values, condition, options)
@@ -46,31 +50,18 @@ const index = async function (req, res) {
 
         const enteredCustomerId = req.params.id
 
-        let checkCustomerId = enteredCustomerId.split('').length
+        let valuesFromCart = await Cart.findOne({ where: { customerId: enteredCustomerId } })
 
-        if (checkCustomerId != 36) {
-            return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
+        if (!valuesFromCart) {
+            return res.status(422).send({ status: 1006, message: "No Customer Cart Found..." })
         }
 
-        let customerId = enteredCustomerId
-
-        const checkEnteredCustomerId = await Customer.findOne({ where: { id: customerId } });
-
-        if (!checkEnteredCustomerId) {
-            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
-        }
-
-        let findRestaurantId = await Cart.findOne({ where: { customerId: customerId } })
-
-        let findCustomerCart = await Cart.findAll({
-            where: { [Op.and]: [{ customerId: customerId, isActive: true, restaurantId: findRestaurantId.restaurantId }] }
+        const customerCart = await Cart.findAll({
+            where: { customerId: { [Op.eq]: enteredCustomerId } },
+            attributes: ['itemId','itemPrice', 'totalItems', 'totalPrice'],
         })
 
-        if (!findCustomerCart) {
-            return res.status(422).send({ status: 1006, message: "There is no cart for this customer" })
-        }
-
-        return res.status(200).send({ status: 1010, CartData: findCustomerCart })
+        return res.status(200).send({ status: 1010, CartData: customerCart })
 
     }
     catch (err) {
@@ -87,9 +78,9 @@ const destroy = async function (req, res) {
         const cartId = req.params.cartId
         const customerId = req.params.id
 
-        let findCustomerCart = await Cart.findAll({
-            where: { [Op.and]: [{ customerId: customerId, isActive: true }] }
-        })
+        let valuesFromCart = await Cart.findOne({ where: { customerId: customerId } })
+
+        let findCustomerCart = await Cart.destroy({ customerId: customerId, restaurantId: valuesFromCart.restaurantId })
 
         if (!findCustomerCart) {
             return res.status(422).send({ status: 1006, message: "There is no cart for this customer" })

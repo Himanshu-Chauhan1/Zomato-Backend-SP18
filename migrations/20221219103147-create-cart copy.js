@@ -34,7 +34,11 @@ module.exports = {
         allowNull: false
       },
       itemQuantity: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL,
+      },
+      itemPrice: {
+        type: Sequelize.DECIMAL,
+        allowNull: false
       },
       totalPrice: {
         type: Sequelize.DECIMAL,

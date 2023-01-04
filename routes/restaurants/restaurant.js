@@ -9,7 +9,7 @@ const { authorization } = require("../../middlewares/authorization")
 restaurantRouter.post('/restaurants', [validate.createRestaurant], create);
 restaurantRouter.put('/restaurants/:id', [authentication, authorization, validate.updateRestaurant], update);
 restaurantRouter.get('/restaurants/filter', [authentication, authorization,], get);
-restaurantRouter.get('/restaurants', [authentication, authorization,], index);
+restaurantRouter.get('/restaurants', [authentication], index);
 restaurantRouter.delete('/restaurants/:id', [authentication, authorization, validate.deleteRestaurant], destroy);
 restaurantRouter.post('/restaurants/login', [validate.login], login);
 

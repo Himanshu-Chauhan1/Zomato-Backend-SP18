@@ -54,12 +54,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: false
     },
+    itemPrice: {
+      type: DataTypes.DECIMAL,
+      allowNull: false
+    },
     totalPrice: {
       type: DataTypes.DECIMAL,
       allowNull: true,
     },
     totalItems: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allownull: true,
     },
     isActive: {

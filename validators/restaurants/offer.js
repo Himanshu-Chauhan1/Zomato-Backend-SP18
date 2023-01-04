@@ -64,31 +64,15 @@ const createOffer = async function (req, res, next) {
 
         const data = req.body
 
-        const { restaurantId, categoryName, offerName, discount, dateActiveFrom, dateActiveTo, isActive } = req.body
+        const { categoryName, offerName, discount, dateActiveFrom, dateActiveTo, isActive } = req.body
 
-        if (checkEnteredRestaurantId.id != restaurantId) {
-            return res.status(400).send({ status: 1003, message: 'this params restaurantId should match with restaurantId in body! Enter appropriate restaurantId in path params and requestbody' })
-        }
-
-        if (!isValidRequestBody(data)) {
-            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
-        }
-
-        if (!isValid(restaurantId)) {
-            return res.status(422).send({ status: 1002, message: "restaurantId is required" })
-        }
-
-        const isRegisteredRestaurant = await Restaurant.findOne({ where: { id: restaurantId } });
-
-        if (!isRegisteredRestaurant) {
-            return res.status(422).send({ status: 1008, message: "This restaurantId is not registered, Please enter a registered one" })
-        }
+        data.restaurantId = paramsRestaurantId
 
         if (!isValid(categoryName)) {
             return res.status(422).send({ status: 1002, message: "categoryId is required" })
         }
 
-        const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: restaurantId } });
+        const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: paramsRestaurantId } });
 
         if (!isRegisteredCategory) {
             return res.status(422).send({ status: 1008, message: "This category is not registered for this restaurant, Please enter a registered one" })
@@ -98,7 +82,7 @@ const createOffer = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "offerName is required" })
         }
 
-        const isRegisteredOfferName = await Offer.findOne({ where: { offerName: offerName, restaurantId: restaurantId } });
+        const isRegisteredOfferName = await Offer.findOne({ where: { offerName: offerName, restaurantId: paramsRestaurantId } });
 
         if (isRegisteredOfferName) {
             return res.status(422).send({ status: 1008, message: "This offerName is already registered, Please enter a new one" })
@@ -173,7 +157,7 @@ const createOffer = async function (req, res, next) {
 const updateOffer = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -207,27 +191,12 @@ const updateOffer = async function (req, res, next) {
 
         const data = req.body
 
-        const { restaurantId, categoryName, offerName, discount, dateActiveFrom, dateActiveTo, isActive } = req.body
+        const { categoryName, offerName, discount, dateActiveFrom, dateActiveTo, isActive } = req.body
 
         const dataObject = {};
 
         if (!Object.keys(data).length && typeof files === 'undefined') {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
-        }
-
-        if ("restaurantId" in data) {
-
-            if (!isValid(restaurantId)) {
-                return res.status(422).send({ status: 1002, message: "restaurantId is required" })
-            }
-
-            const isRegisteredRestaurant = await Restaurant.findOne({ where: { id: restaurantId } });
-
-            if (!isRegisteredRestaurant) {
-                return res.status(422).send({ status: 1008, message: "This restaurantId is not registered, Please enter a registered one" })
-            }
-
-            dataObject['restaurantId'] = restaurantId
         }
 
         if ("categoryName" in data) {
@@ -346,7 +315,7 @@ const updateOffer = async function (req, res, next) {
 const getOffer = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -458,7 +427,7 @@ const getOffer = async function (req, res, next) {
 const deleteOffer = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.restaurantId
+        const enteredRestaurantId = req.params.id
 
         let checkRestaurantId = enteredRestaurantId.split('').length
 
@@ -484,7 +453,7 @@ const deleteOffer = async function (req, res, next) {
 
         let offerId = enteredId
 
-        const enteredOfferId = await Offer.findOne({ where: { id: offerId } })
+        const enteredOfferId = await Offer.findOne({ where: { id: offerId, restaurantId: paramsRestaurantId } })
 
         if (!enteredOfferId) {
             return res.status(422).send({ status: 1006, message: "Provided Offer-ID does not exists" })

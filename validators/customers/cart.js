@@ -48,17 +48,9 @@ const createCart = async function (req, res, next) {
 
         let data = req.body
 
-        let { customerId, restaurantId, itemId, itemQuantity, totalPrice, totalItems } = data
+        let { restaurantId, itemId, itemQuantity, itemPrice, totalPrice, totalItems } = data
 
-        if (!isValid(customerId)) {
-            return res.status(422).send({ status: 1002, message: "customerId is required" })
-        }
-
-        const isRegisteredCustomer = await Customer.findOne({ where: { id: customerId } });
-
-        if (!isRegisteredCustomer) {
-            return res.status(422).send({ status: 1008, message: "This customer is not registered, Please enter a new one" })
-        }
+        data.customerId = paramsCustomerId
 
         if (!isValid(restaurantId)) {
             return res.status(422).send({ status: 1002, message: "restaurantId is required" })
@@ -84,13 +76,30 @@ const createCart = async function (req, res, next) {
             return res.status(422).send({ status: 1008, message: "This itemId or item is not registered or not active for this restaurant, Please try a new one" })
         }
 
-        const isCart = await Cart.findOne({ where: { itemId: itemId, customerId: customerId, restaurantId: restaurantId } });
+        if (!isValidNumber(itemQuantity)) {
+            return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
+        }
 
-        if (!isCart) {
+        if (itemQuantity < 1) {
+            return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
+        }
+
+        const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
+        let itemCost = checkingItemPrice.itemPrice
+
+        data.itemPrice = itemCost
+        data.totalPrice = (+itemQuantity * +itemCost)
+        data.totalItems = +itemQuantity
+
+        const isAlreadyExistItem = await Cart.findOne({ where: { itemId: itemId, restaurantId: restaurantId, customerId: enteredCustomerId } });
+
+        if (isAlreadyExistItem) {
 
             let data = req.body
 
-            let { itemId, itemQuantity } = data
+            let { itemId, itemQuantity, itemPrice, totalPrice, totalItems } = data
+
+            console.log(itemQuantity);
 
             if (!isValidNumber(itemQuantity)) {
                 return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
@@ -103,64 +112,25 @@ const createCart = async function (req, res, next) {
             const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
             let itemCost = checkingItemPrice.itemPrice
 
-            data.totalPrice = (+itemQuantity * +itemCost)
-            data.totalItems = +itemQuantity
+            data.itemPrice = itemCost
 
-            next()
+            const checkingItemQuantity = await Cart.findOne({ where: { customerId: enteredCustomerId } })
+            let oldQuantity = checkingItemQuantity.itemQuantity
+            console.log(oldQuantity);
 
-        } else {
-
-            let data = req.body
-
-            let { cartId, customerId, itemId, itemQuantity } = data
-
-            if (!isValid(cartId)) {
-                return res.status(422).send({ status: 1002, message: "cartId is required" })
-            }
-
-            if (cartId.length != 36) {
-                return res.status(422).send({ status: 1003, message: "Please enter cartId in a valid format" })
-            }
-
-            if (!isValid(customerId)) {
-                return res.status(422).send({ status: 1002, message: "customerId is required" })
-            }
-
-            const isRegisteredCustomerCart = await Cart.findOne({ where: { id: cartId, customerId: customerId } });
-
-            if (!isRegisteredCustomerCart) {
-                return res.status(422).send({ status: 1008, message: "A cart does not exists with this customer, Please create a cart first to add the user" })
-            }
-
-            if (!isValidNumber(itemQuantity)) {
-                return res.status(422).send({ status: 1002, message: "itemQuantity is required" })
-            }
-
-            if (itemQuantity < 1) {
-                return res.status(422).send({ status: 1002, message: "itemQuantity cannot be less than 1" })
-            }
-
-            const checkOldQuantity = await Cart.findOne({ where: { itemId: itemId } })
-            let oldQuantity = checkOldQuantity.itemQuantity
-
-            const checkingItemPrice = await FoodItem.findOne({ where: { id: itemId } })
-            let itemCost = checkingItemPrice.itemPrice
-
-            data.itemQuantity = (+oldQuantity + itemQuantity)
-            data.totalPrice = (itemQuantity + +oldQuantity) * (+itemCost)
-            data.totalItems = (itemQuantity + +oldQuantity)
+            data.totalPrice = (+oldQuantity + +itemQuantity) * itemCost
+            data.totalItems = (+itemQuantity + +oldQuantity)
 
             const values = data;
-            const condition = { where: { id: cartId } };
+            const condition = { where: { customerId: enteredCustomerId, restaurantId: isAlreadyExistItem.restaurantId, itemId: isAlreadyExistItem.itemId } };
             const options = { multi: true };
 
             const updateDetails = await Cart.update(values, condition, options)
 
             return res.status(200).send({ status: 1010, message: "The entered cart details has been Updated Succesfully", updatedData: values })
-
         }
 
-
+        next()
 
     } catch (error) {
         console.log(error.message);
@@ -266,6 +236,35 @@ const updateCart = async function (req, res, next) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
+//========================================Update-A-Customer==========================================================//
+
+const getCart = async function (req, res, next) {
+    try {
+
+        const enteredCustomerId = req.params.id
+
+        let checkCustomerId = enteredCustomerId.split('').length
+
+        if (checkCustomerId != 36) {
+            return res.status(422).send({ status: 1003, message: "Customer-Id is not valid" })
+        }
+
+        let customerId = enteredCustomerId
+
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: customerId } });
+
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
+        }
+
+        next()
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
 
 //========================================Delete-A-Customer==========================================================//
 
@@ -319,6 +318,7 @@ const deleteCart = async function (req, res, next) {
 module.exports = {
     createCart,
     updateCart,
+    getCart,
     deleteCart
 }
 
