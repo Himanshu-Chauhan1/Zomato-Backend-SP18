@@ -108,7 +108,6 @@ const createOrder = async function (req, res, next) {
         data.placedTime = moment().format('MMMM Do YYYY, h:mm:ss a')
 
         data.price = totalAmount.totalPrice
-        console.log(data.price);
 
         let findOfferId = await Offer.findOne({ where: { restaurantId: restaurantId } })
 
