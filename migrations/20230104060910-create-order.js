@@ -53,8 +53,12 @@ module.exports = {
         type: Sequelize.DECIMAL,
         allowNull: false,
       },
-      deliveryAddress: {
+      deliveryAddressId: {
         type: Sequelize.UUID,
+        references: {
+          model: "addresses",
+          key: 'id'
+        },
         allowNull: false
       },
       orderStatus: {

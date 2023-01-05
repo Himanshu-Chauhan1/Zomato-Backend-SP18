@@ -1,13 +1,12 @@
 const express = require("express")
 const orderRouter = express.Router()
-const validate = require("../../validators/customers/order")
-const { create, update, index } = require("../../controllers/customers/order");
+const validate = require("../../validators/customerSupport/order")
+const { update, index } = require("../../controllers/customerSupport/order");
 const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
 
-orderRouter.post('/customersupport/:id/orders', [validate.createOrder], create);
-orderRouter.put('/customersupport/:id/orders/:orderId', [validate.updateOrder], update);
-orderRouter.get('/customersupport/:id/orders', [validate.getOrder], index);
+orderRouter.put('/customersupport/:id/orders/:orderId', [authentication, authorization, validate.updateOrder], update);
+orderRouter.get('/customersupport/:id/orders', [authentication, authorization, validate.getOrder], index);
 
 module.exports = orderRouter

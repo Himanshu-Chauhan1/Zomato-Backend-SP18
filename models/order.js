@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "offer",
         foreignKey: "offerId"
       })
+      this.belongsTo(models.address, {
+        as: "address",
+        foreignKey: "deliveryAddressId"
+      })
     }
   }
   order.init({
@@ -75,8 +79,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
-    deliveryAddress: {
+    deliveryAddressId: {
       type: DataTypes.UUID,
+      references: {
+        model: "address",
+        key: 'id'
+      },
       allowNull: false
     },
     orderStatus: {

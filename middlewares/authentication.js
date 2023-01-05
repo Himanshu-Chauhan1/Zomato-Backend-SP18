@@ -7,12 +7,12 @@ const authentication = async function (req, res, next) {
     try {
 
         let token = req.header('Authorization', 'Bearer Token');
-        if (!token) return res.status(400).send({ status: 1002, message: "Login is Required!" })
+        if (!token) return res.status(422).send({ status: 1002, message: "Login is Required!" })
 
         let splitToken = token.split(" ")
 
         let verifiedtoken = jwt.verify(splitToken[1], process.env.JWT_SECRET_KEY)
-        if (!verifiedtoken) return res.status(400).send({ status: 1003, message: "Invalid Token!" })
+        if (!verifiedtoken) return res.status(422).send({ status: 1003, message: "Invalid Token!" })
 
         let exp = verifiedtoken.exp
         let iatNow = Math.floor(Date.now() / 1000)

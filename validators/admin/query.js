@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Query } = db
+const { Query, Order, Admin, Customer, CustomerSupport, Restaurant, DeliveryPartner } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -46,7 +46,7 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, userId, queryDescription, userRole, isRequest, isActive } = data
+        const { orderId, userId, queryDescription, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -56,7 +56,7 @@ const createOrderQuery = async function (req, res, next) {
             return res.status(422).send({ status: 1002, message: "orderId is required" })
         }
 
-        const isRegisteredOrderId = await db.Admin.findOne({ where: { id: orderId } });
+        const isRegisteredOrderId = await Order.findOne({ where: { id: orderId } });
 
         if (!isRegisteredOrderId) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
@@ -65,9 +65,35 @@ const createOrderQuery = async function (req, res, next) {
         if (!isValid(userId)) {
             return res.status(422).send({ status: 1002, message: "orderId is required" })
         }
-        const isIdUnique = id =>
-            db.findOne({ where: { id: userId }, attributes: ['id'] })
-                .then(console.log("Yes"))
+
+        const isRegisteredCustomerUserId = await Customer.findOne({ where: { id: userId } });
+
+        if (!isRegisteredCustomerUserId) {
+            console.log("c");
+            return res.status(422).send({ status: 1002, message: "userId does not exists" })
+        }
+
+        const isRegisteredCustomerSupportUserId = await CustomerSupport.findOne({ where: { id: userId } });
+
+
+        if (!isRegisteredCustomerSupportUserId) {
+            console.log("cs");
+            return res.status(422).send({ status: 1002, message: "userId does not exists" })
+        }
+
+        const isRegisteredDeliveryPartnerUserId = await DeliveryPartner.findOne({ where: { id: userId } });
+
+        if (!isRegisteredDeliveryPartnerUserId) {
+            console.log("d");
+            return res.status(422).send({ status: 1002, message: "userId does not exists" })
+        }
+
+        const isRegisteredRestaurantUserId = await Restaurant.findOne({ where: { id: userId } });
+
+        if (!isRegisteredRestaurantUserId) {
+            console.log("r");
+            return res.status(422).send({ status: 1002, message: "userId does not exists" })
+        }
 
         if (!isValid(queryDescription)) {
             return res.status(422).send({ status: 1002, message: "queryDescription is required" })
@@ -104,6 +130,7 @@ const createOrderQuery = async function (req, res, next) {
 
 const updateOrderQuery = async function (req, res, next) {
     try {
+
         const enteredAdminId = req.params.id
 
         let checkAdminId = enteredAdminId.split('').length
@@ -251,7 +278,20 @@ const getOrderQuery = async function (req, res, next) {
 
         let data = req.query
 
-        const { orderId, userId, queryDescription, isRequest, isActive } = data
+        const { queryId, orderId, userId, queryDescription, isRequest, isActive } = data
+
+        if ("queryId" in data) {
+
+            if (!isValid(queryId)) {
+                return res.status(422).send({ status: 1002, message: "queryId is required" })
+            }
+
+            const isRegisteredQueryId = await Query.findOne({ where: { id: queryId } });
+
+            if (!isRegisteredQueryId) {
+                return res.status(422).send({ status: 1008, message: "This queryId does not exists" })
+            }
+        }
 
         if ("orderId" in data) {
 
@@ -259,7 +299,7 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
-            const isRegisteredOrderId = await OrderStatus.findOne({ where: { id: orderId } });
+            const isRegisteredOrderId = await Order.findOne({ where: { id: orderId } });
 
             if (!isRegisteredOrderId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
@@ -272,9 +312,11 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
-            const isIdUnique = id =>
-                db.findOne({ where: { id: userId }, attributes: ['id'] })
-                    .then(console.log("Yes"))
+            const isRegisteredOrderId = await db.findOne({ where: { id: userId } });
+
+            if (!isRegisteredOrderId) {
+                return res.status(422).send({ status: 1008, message: "This userId does not exists" })
+            }
 
         }
 
@@ -343,58 +385,12 @@ const getOrderQuery = async function (req, res, next) {
     }
 }
 
-//========================================Delete-A-Order-Query==========================================================//
-
-const deleteOrderQuery = async function (req, res, next) {
-    try {
-
-        const enteredAdminId = req.params.id
-
-        let checkAdminId = enteredAdminId.split('').length
-
-        if (checkAdminId != 36) {
-            return res.status(422).send({ status: 1003, message: "admin-Id is not valid" })
-        }
-
-        let paramsAdminId = enteredAdminId
-
-        const checkEnteredAdminId = await Admin.findOne({ where: { id: paramsAdminId } });
-
-        if (!checkEnteredAdminId) {
-            return res.status(422).send({ status: 1006, message: "admin-ID does not exists" })
-        }
-
-        const enteredId = req.params.queryId;
-
-        let checkQueryId = enteredId.split('').length
-
-        if (checkQueryId != 36) {
-            return res.status(422).send({ status: 1003, message: "queryId is not valid" })
-        }
-
-        let queryId = enteredId
-
-        const enteredOueryId = await Query.findOne({ where: { id: queryId } })
-
-        if (!enteredOueryId) {
-            return res.status(422).send({ status: 1006, message: "Provided query-ID does not exists" })
-        }
-
-        next()
-
-
-    } catch (error) {
-        console.log(error.message);
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-}
 
 
 module.exports = {
     createOrderQuery,
     updateOrderQuery,
-    getOrderQuery,
-    deleteOrderQuery
+    getOrderQuery
 }
 
 

@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Order, Customer, Restaurant, Cart, Offer, Address } = db
+const { Order, Customer, Cart, Offer, Address } = db
 const moment = require('moment');
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
@@ -17,12 +17,6 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-////////////////////////// -GLOBAL- //////////////////////
-const isValidNumber = function (value) {
-    if (!value || typeof value != "number")
-        return false;
-    return true;
-};
 
 //========================================Create-A-Order==========================================================//
 
@@ -47,7 +41,7 @@ const createOrder = async function (req, res, next) {
 
         const data = req.body
 
-        const { restaurantId, offerId, deliveryAddress } = data
+        const { restaurantId, offerId, deliveryAddressId } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -57,10 +51,6 @@ const createOrder = async function (req, res, next) {
 
         if (!isValid(restaurantId)) {
             return res.status(422).send({ status: 1002, message: "restaurantId is required" })
-        }
-
-        if (restaurantId.length != 36) {
-            return res.status(422).send({ status: 1003, message: "Please enter restaurant-Id in a valid format" })
         }
 
         const isRegisteredRestaurantId = await Cart.findOne({ where: { restaurantId: restaurantId, customerId: paramsCustomerId } });
@@ -93,14 +83,14 @@ const createOrder = async function (req, res, next) {
         }
 
         const totalAmount = await Cart.findOne({
-            where: { customerId: { [Op.eq]: enteredCustomerId } },
+            where: { customerId: { [Op.eq]: enteredCustomerId }, restaurantId: { [Op.eq]: restaurantId } },
             attributes: [
                 [sequelize.fn('sum', sequelize.col('totalPrice')), 'totalPrice'],
             ]
         });
 
         const customerCart = await Cart.findAll({
-            where: { customerId: { [Op.eq]: enteredCustomerId } },
+            where: { customerId: { [Op.eq]: enteredCustomerId }, restaurantId: { [Op.eq]: restaurantId } },
             attributes: ['restaurantId', 'itemId', 'totalItems', 'totalPrice'],
         })
 
@@ -118,26 +108,24 @@ const createOrder = async function (req, res, next) {
 
             data.discount = discountPercentage
             let changedPrice = (data.price - (data.price * discountPercentage / 100))
-
             data.finalPrice = changedPrice
 
         } else {
+
             data.discount = 0
-
             let changedPrice = (data.price - (data.price * data.discount / 100))
-
             data.finalPrice = changedPrice
         }
 
-        if (!isValid(deliveryAddress)) {
-            return res.status(422).send({ status: 1002, message: "deliveryAddress is required" })
+        if (!isValid(deliveryAddressId)) {
+            return res.status(422).send({ status: 1002, message: "deliveryAddressId is required" })
         }
 
-        if (deliveryAddress.length != 36) {
+        if (deliveryAddressId.length != 36) {
             return res.status(422).send({ status: 1003, message: "Please enter deliveryAddress-Id in a valid format" })
         }
 
-        const isRegisteredAddress = await Address.findOne({ where: { id: deliveryAddress, userId: paramsCustomerId, userRole: "customer" } });
+        const isRegisteredAddress = await Address.findOne({ where: { id: deliveryAddressId, userId: paramsCustomerId, userRole: "customer" } });
 
         if (!isRegisteredAddress) {
             return res.status(422).send({ status: 1008, message: "This address is not registered with this customer, Please enter a registered one" })
@@ -158,6 +146,7 @@ const createOrder = async function (req, res, next) {
 
 const updateOrder = async function (req, res, next) {
     try {
+
         const enteredCustomerId = req.params.id
 
         let checkCustomerId = enteredCustomerId.split('').length
@@ -174,7 +163,7 @@ const updateOrder = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "Customer-ID does not exists" })
         }
 
-        const enteredId = req.params.cartId
+        const enteredId = req.params.orderId
 
         let checkOrderId = enteredId.split('').length
 
@@ -192,12 +181,26 @@ const updateOrder = async function (req, res, next) {
 
         let data = req.body
 
-        let { orderStatus } = data
+        let { restaurantId, orderStatus } = data
 
         const dataObject = {};
 
         if (!Object.keys(data).length && typeof files === 'undefined') {
             return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
+        }
+
+        if (!isValid(restaurantId)) {
+            return res.status(422).send({ status: 1002, message: "restaurantId is required" })
+        }
+
+        if (restaurantId.length != 36) {
+            return res.status(422).send({ status: 1003, message: "Please enter restaurant-Id in a valid format" })
+        }
+
+        const isRegisteredRestaurantId = await Order.findOne({ where: { restaurantId: restaurantId, customerId: enteredCustomerId } });
+
+        if (!isRegisteredRestaurantId) {
+            return res.status(422).send({ status: 1008, message: "This restaurantId is not registered with your order, Please enter a registered one" })
         }
 
         if ("orderStatus" in data) {

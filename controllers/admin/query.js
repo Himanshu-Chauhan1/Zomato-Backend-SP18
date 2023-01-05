@@ -43,15 +43,16 @@ const update = async function (req, res) {
 const index = async function (req, res) {
     try {
         let data = req.query
-        const { orderId, roleId, queryDescription, isRequest, isActive } = data
+
+        const { queryId, orderId, userId, isRequest, isActive } = data
 
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
                 where: {
                     [Op.or]: [
+                        { queryId: { [Op.eq]: queryId } },
                         { orderId: { [Op.eq]: orderId } },
-                        { roleId: { [Op.eq]: roleId } },
-                        { queryDescription: { [Op.eq]: queryDescription } },
+                        { roleId: { [Op.eq]: userId } },
                         { isRequest: { [Op.eq]: isRequest } },
                         { isActive: { [Op.eq]: isActive } },
                     ],
@@ -59,7 +60,7 @@ const index = async function (req, res) {
             })
 
             if (!findOrderQueryByFilter.length)
-                return res.status(404).send({ status: 1006, message: "No order queries found" })
+                return res.status(404).send({ status: 1006, message: "No order queries found as per the filters applied" })
 
             return res.status(200).send({ status: 1010, Menu: findOrderQueryByFilter })
         } else {
@@ -78,27 +79,9 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-ORDER-STATUS==========================================================//
-
-const destroy = async function (req, res) {
-    try {
-
-        let orderQueryId = req.params.queryId
-
-        let deleteQuery = await Query.destroy({ where: { id: orderQueryId } })
-
-        return res.status(200).send({ status: 1010, message: "The order query has been deleted Successfully", data: deleteQuery })
-    }
-    catch (err) {
-        console.log(err.message);
-        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-    }
-}
-
 
 module.exports = {
     create,
     update,
-    index,
-    destroy
+    index
 }

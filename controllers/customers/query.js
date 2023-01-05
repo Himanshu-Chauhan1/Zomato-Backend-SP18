@@ -1,7 +1,6 @@
 const db = require("../../models");
 const { Query } = db
 const { Op } = require("sequelize");
-const customer = require("../../models/customer");
 
 //========================================POST /CREATE-A-ORDER-QUERY==========================================================//
 

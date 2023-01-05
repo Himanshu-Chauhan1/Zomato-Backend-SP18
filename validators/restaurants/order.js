@@ -1,5 +1,8 @@
 const db = require("../../models")
-const { Order, Admin, Customer } = db
+const { Order, Restaurant } = db
+const moment = require('moment');
+const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -34,6 +37,35 @@ const updateOrder = async function (req, res, next) {
 
         if (!checkEnteredRestaurantId) {
             return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
+        }
+
+        let data = req.body
+
+        let { orderStatus } = data
+
+        const dataObject = {};
+
+        if (!Object.keys(data).length && typeof files === 'undefined') {
+            return res.status(422).send({ status: 1002, msg: " Please provide some data to update" })
+        }
+
+        if ("orderStatus" in data) {
+
+            if (!isValid(orderStatus)) {
+                return res.status(422).send({ status: 1002, message: "orderStatus is required" })
+            }
+
+            if (!(
+                orderStatus == 'accepted' ||
+                orderStatus == 'rejected' ||
+                orderStatus == 'preparing' ||
+                orderStatus == 'prepared' ||
+                orderStatus == 'handedOver'
+            )) {
+                return res.status(422).send({ status: 1003, message: "orderStatus can only be accepted, rejected, preparing, prepared and handedOver only" })
+            }
+
+            dataObject['orderStatus'] = orderStatus
         }
 
         next()
