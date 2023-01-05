@@ -79,50 +79,41 @@ const update = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
-//========================================GET/GET-ALL-ADMIN-By_Id==========================================================//
 
-const get = async function (req, res) {
-    try {
-        let data = req.query
-
-        // let findByFilter = await Admin.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             { phone: { [Op.eq]: data.phone } },
-        //             { email: { [Op.eq]: data.email } },
-        //             { city: { [Op.eq]: data.city } },
-        //             { locality: { [Op.eq]: data.locality } },
-        //             { ordered: { [Op.eq]: data.ordered } },
-        //             { unordered: { [Op.eq]: data.unordered } },
-        //             { date: { [Op.eq]: data.date } },
-        //         ],
-        //     },
-        // })
-
-        if (!findByFilter) {
-            return res.status(404).send({ status: 1008, msg: "No such Data found" })
-        }
-
-        return res.status(200).send({ status: 1010, message: 'Timetable for the given the parameters:', data: findByFilter })
-
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-};
 //========================================GET/GET-A-ADMIN==========================================================//
 
 const index = async function (req, res) {
     try {
 
-        let admins = await Admin.findAll()
+        let data = req.query
+        const { adminId, fullName, email, phone } = data
 
-        if (admins.length === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Admins found....." })
+        if (Object.keys(req.query).length > 0) {
+            let findAdminByFilter = await Admin.findAll({
+                where: {
+                    [Op.or]: [
+                        { adminId: { [Op.eq]: adminId } },
+                        { fullName: { [Op.eq]: fullName } },
+                        { email: { [Op.eq]: email } },
+                        { phone: { [Op.eq]: phone } }
+                    ]
+                }
+            })
+
+            if (!findAdminByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No Admins found as per the filters applied" })
+
+            return res.status(200).send({ status: 1010, Menu: findAdminByFilter })
+        } else {
+
+            let findAllAdmins = await Admin.findAll()
+
+            if (!findAllAdmins.length)
+                return res.status(404).send({ status: 1006, message: "No Admins found" })
+
+            return res.status(200).send({ status: 1010, data: findAllAdmins })
         }
 
-        return res.status(200).send({ status: 1010, message: 'All Admins:', data: admins })
     }
     catch (err) {
         console.log(err.message)
@@ -153,7 +144,6 @@ module.exports = {
     create,
     login,
     update,
-    get,
     index,
     destroy
 }

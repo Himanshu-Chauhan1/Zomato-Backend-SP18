@@ -58,7 +58,6 @@ const isValidBikeAvailable = (bikeAvailable) => {
     return /^(true|false|True|False)$/.test(bikeAvailable);
 };
 
-
 //////////////// -FOR BIKEAVAILAVBLE- ///////////////////////
 const isValidIndianLanguage = (languagesKnown) => {
     return /^(hindi|english|English|Hindi|other|Other)$/.test(languagesKnown);
@@ -188,7 +187,7 @@ const createDeliveryPartner = async function (req, res, next) {
         }
 
         // let array = ["Hindi", "Enlish", "Other"]
-        
+
         // for (let i = 0; i <= array.length; i++){
         //     if (languagesKnown.includes(array[i])) {
         //         console.log(true)
@@ -205,7 +204,7 @@ const createDeliveryPartner = async function (req, res, next) {
     }
 }
 
-//========================================Login-For-A-DeliveryPartner==========================================================//
+//========================================Login-For-A-DeliveryPartner=======================================================//
 
 let login = async (req, res, next) => {
     try {
@@ -402,11 +401,11 @@ const updateDeliveryPartner = async function (req, res, next) {
         }
 
         if ("languagesKnown" in data) {
-            
+
             if (!isValidArray(languagesKnown)) {
                 return res.status(422).send({ status: 1002, message: "LanguagesKnown is Required" })
             }
-    
+
             if (!Array.isArray(languagesKnown)) {
                 return res.status(422).send({ status: 1002, message: "LanguagesKnown is must be an array of String" })
             }
@@ -456,6 +455,136 @@ const updateDeliveryPartner = async function (req, res, next) {
     }
 }
 
+//========================================Get-A-CustomerSupport====================================================================//
+
+const getDeliveryPartner = async function (req, res, next) {
+    try {
+
+        let data = req.query
+
+        const { deliveryPartnerId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data
+
+        if ("deliveryPartnerId" in data) {
+
+            if (!isValid(deliveryPartnerId)) {
+                return res.status(422).send({ status: 1002, message: "deliveryPartnerId is required" })
+            }
+
+            let checkDeliveryPartnerId = deliveryPartnerId.split('').length
+
+            if (checkDeliveryPartnerId != 36) {
+                return res.status(422).send({ status: 1003, message: "deliveryPartnerId-Id is not valid" })
+            }
+
+        }
+
+        if ("firstName" in data) {
+
+            if (!isValid(firstName)) {
+                return res.status(422).send({ status: 1002, message: "firstName is required" })
+            }
+
+            if (!isValidFullName(firstName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid firstName" })
+            }
+
+        }
+
+        if ("lastName" in data) {
+
+            if (!isValid(lastName)) {
+                return res.status(422).send({ status: 1002, message: "lastName is required" })
+            }
+
+            if (!isValidFullName(lastName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid lastName" })
+            }
+
+        }
+
+        if ("email" in data) {
+
+            if (!isValid(email)) {
+                return res.status(422).send({ status: 1002, message: "Email is required" })
+            }
+
+            if (!isValidEmail(email)) {
+                return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+            }
+
+        }
+
+        if ("phone" in data) {
+
+            if (!isValid(phone)) {
+                return res.status(422).send({ status: 1002, message: "Phone No. is required" })
+            }
+
+            if (!isValidPhone(phone)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid Phone no" })
+            }
+
+        }
+
+        if ("joiningDate" in data) {
+
+            if (!isValid(joiningDate)) {
+                return res.status(422).send({ status: 1002, message: "Date of Joining is Required" })
+            }
+
+            if (!validateDate(joiningDate)) {
+                return res.status(422).send({ status: 1003, message: "Invalid Joining Date or Please enter date of joining in the correct format" })
+            }
+
+        }
+
+        if ("departmentName" in data) {
+            if
+                (!isValid(departmentName)) {
+                return res.status(422).send({ status: 1002, message: "departmentName is required" })
+            }
+
+            if (!isValidFullName(departmentName)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid departmentName" })
+            }
+
+        }
+
+        if ("isApproved" in data) {
+
+
+            if (!isValid(isApproved)) {
+                return res.status(422).send({ status: 1002, message: "isApproved is required" })
+            }
+
+            if (!isActiveRequest(isApproved)) {
+                return res.status(422).send({ status: 1003, message: "Please provide isApproved like True or false etc" })
+            }
+
+        }
+
+        if ("isActive" in data) {
+
+
+            if (!isValid(isActive)) {
+                return res.status(422).send({ status: 1002, message: "isRequest is required" })
+            }
+
+            if (!isActiveRequest(isActive)) {
+                return res.status(422).send({ status: 1003, message: "Please provide isActive like True or false etc" })
+            }
+
+        }
+
+        next()
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
+
 //========================================Delete-A-DeliveryPartner==========================================================//
 
 const deleteDeliveryPartner = async function (req, res, next) {
@@ -489,6 +618,7 @@ const deleteDeliveryPartner = async function (req, res, next) {
 module.exports = {
     createDeliveryPartner,
     updateDeliveryPartner,
+    getDeliveryPartner,
     deleteDeliveryPartner,
     login
 }

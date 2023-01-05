@@ -7,7 +7,7 @@ const { signAccessToken } = require("../../Utils/jwt")
 const nodeKey = process.env.NODE_KEY
 
 
-//========================================POST /CREATE-A-CUSTOMER-SUPPORT==========================================================//
+//========================================POST /CREATE-A-CUSTOMER-SUPPORT====================================================//
 
 const create = async function (req, res) {
     try {
@@ -22,7 +22,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-CUSTOMER-SUPPORT==========================================================
+//========================================POST /LOGIN-FOR-A-CUSTOMER-SUPPORT================================================//
 
 let login = async (req, res) => {
     try {
@@ -55,7 +55,7 @@ let login = async (req, res) => {
     }
 }
 
-//========================================POST/UPDATE-A-CUSTOMER-SUPPORT==========================================================//
+//========================================POST/UPDATE-A-CUSTOMER-SUPPORT====================================================//
 
 const update = async function (req, res) {
     try {
@@ -76,51 +76,45 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-A-CUSTOMERSUPPORT==========================================================//
-
-const get = async function (req, res) {
-    try {
-
-        let data = req.query
-
-        // let findByFilter = await Customer.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             { phone: { [Op.eq]: data.phone } },
-        //             { email: { [Op.eq]: data.email } },
-        //             { city: { [Op.eq]: data.city } },
-        //             { locality: { [Op.eq]: data.locality } },
-        //             { ordered: { [Op.eq]: data.ordered } },
-        //             { unordered: { [Op.eq]: data.unordered } },
-        //             { date: { [Op.eq]: data.date } },
-        //         ],
-        //     },
-        // })
-
-        if (!findByFilter) {
-            return res.status(404).send({ status: 1008, msg: "No such Data found" })
-        }
-
-        return res.status(200).send({ status: 1010, message: 'Timetable for the given the parameters:', data: findByFilter })
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-};
-
-//========================================GET/GET-ALL-CUSTOMER-SUPPORTS==========================================================//
+//========================================GET/GET-ALL-CUSTOMER-SUPPORTS=====================================================//
 
 const index = async function (req, res) {
     try {
 
-        let customerSupport = await CustomerSupport.findAll()
+        const data = req.query
 
-        if (customerSupport === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Customer Supports Executives found....." })
+        const { customerSupportId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data
+
+        if (Object.keys(req.query).length > 0) {
+            let findCustomerSupportByFilter = await CustomerSupport.findAll({
+                where: {
+                    [Op.or]: [
+                        { customerSupportId: { [Op.eq]: customerSupportId } },
+                        { firstName: { [Op.eq]: firstName } },
+                        { lastName: { [Op.eq]: lastName } },
+                        { email: { [Op.eq]: email } },
+                        { phone: { [Op.eq]: phone } },
+                        { joiningDate: { [Op.eq]: joiningDate } },
+                        { departmentName: { [Op.eq]: departmentName } },
+                        { isApproved: { [Op.eq]: isApproved } },
+                        { isActive: { [Op.eq]: isActive } },
+                    ]
+                }
+            })
+
+            if (!findCustomerSupportByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No customerSupports found as per the filters applied" })
+
+            return res.status(200).send({ status: 1010, data: findCustomerSupportByFilter })
+        } else {
+
+            let findAllCustomerSupports = await CustomerSupport.findAll()
+
+            if (!findAllCustomerSupports.length)
+                return res.status(404).send({ status: 1006, message: "No customerSupports found" })
+
+            return res.status(200).send({ status: 1010, data: findAllCustomerSupports })
         }
-
-        return res.status(200).send({ status: 1010, message: 'All Customer Supports:', data: customerSupport })
     }
     catch (err) {
         console.log(err.message)
@@ -128,7 +122,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-CUSTOMER-SUPPORT==========================================================//
+//========================================DELETE/DELETE-A-CUSTOMER-SUPPORT==================================================//
 
 const destroy = async function (req, res) {
     try {
@@ -150,7 +144,6 @@ module.exports = {
     create,
     login,
     update,
-    get,
     index,
     destroy
 }

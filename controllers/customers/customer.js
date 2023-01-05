@@ -77,50 +77,41 @@ const update = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
-//========================================GET/GET-A-CUSTOMER==========================================================//
 
-const get = async function (req, res) {
-    try {
-
-        let data = req.query
-
-        // let findByFilter = await Customer.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             { phone: { [Op.eq]: data.phone } },
-        //             { email: { [Op.eq]: data.email } },
-        //             { city: { [Op.eq]: data.city } },
-        //             { locality: { [Op.eq]: data.locality } },
-        //             { ordered: { [Op.eq]: data.ordered } },
-        //             { unordered: { [Op.eq]: data.unordered } },
-        //             { date: { [Op.eq]: data.date } },
-        //         ],
-        //     },
-        // })
-
-        if (!findByFilter) {
-            return res.status(404).send({ status: 1008, msg: "No such Data found" })
-        }
-
-        return res.status(200).send({ status: 1010, message: 'Timetable for the given the parameters:', data: findByFilter })
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-};
 //========================================GET/GET-ALL-CUSTOMERS==========================================================//
 
 const index = async function (req, res) {
     try {
 
-        let customers = await Customer.findAll()
+        let data = req.query
+        const {customerId, fullName, email, phone } = data
 
-        if (customers.length === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Customers found....." })
+        if (Object.keys(req.query).length > 0) {
+            let findCustomerByFilter = await Customer.findAll({
+                where: {
+                    [Op.or]: [
+                        { customerId: { [Op.eq]: customerId } },
+                        { fullName: { [Op.eq]: fullName } },
+                        { email: { [Op.eq]: email } },
+                        { phone: { [Op.eq]: phone } }
+                    ]
+                }
+            })
+
+            if (!findCustomerByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No customers found as per the filters applied" })
+
+            return res.status(200).send({ status: 1010, Menu: findCustomerByFilter })
+        } else {
+
+            let findAllCustomers = await Customer.findAll()
+
+            if (!findAllCustomers.length)
+                return res.status(404).send({ status: 1006, message: "No customers found" })
+
+            return res.status(200).send({ status: 1010, data: findAllCustomers })
         }
 
-        return res.status(200).send({ status: 1010, message: 'All Customers:', data: customers })
     }
     catch (err) {
         console.log(err.message)
@@ -149,7 +140,6 @@ module.exports = {
     create,
     login,
     update,
-    get,
     index,
     destroy
 }

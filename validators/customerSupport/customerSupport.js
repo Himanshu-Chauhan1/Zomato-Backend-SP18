@@ -57,7 +57,7 @@ const createCustomerSupport = async function (req, res, next) {
     try {
         const data = req.body
 
-        const { firstName, lastName, gender, dob, email, phone, confirmPassword, password, bloodGroup, joiningDate, departmentName } = req.body
+        const { firstName, lastName, gender, dob, email, phone, confirmPassword, password, bloodGroup, joiningDate, departmentName } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -173,7 +173,7 @@ const createCustomerSupport = async function (req, res, next) {
     }
 }
 
-//========================================Login-For-A-CustomerSupport==========================================================//
+//========================================Login-For-A-CustomerSupport=======================================================//
 
 let login = async (req, res, next) => {
     try {
@@ -411,6 +411,148 @@ const updateCustomerSupport = async function (req, res, next) {
     }
 }
 
+//========================================Get-A-CustomerSupport==============================================================//
+
+const getCustomerSupport = async function (req, res, next) {
+    try {
+
+        let data = req.query
+
+        const { customerSupportId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data
+
+        if ("customerSupportId" in data) {
+
+            if (!isValid(customerSupportId)) {
+                return res.status(422).send({ status: 1002, message: "firstName is required" })
+            }
+
+            let checkCustomerSupportId = customerSupportId.split('').length
+
+            if (checkCustomerSupportId != 36) {
+                return res.status(422).send({ status: 1003, message: "CustomerSupport-Id is not valid" })
+            }
+
+        }
+
+        if ("firstName" in data) {
+
+            if (!isValid(firstName)) {
+                return res.status(422).send({ status: 1002, message: "firstName is required" })
+            }
+
+            if (!isValidFullName(firstName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid firstName" })
+            }
+
+        }
+
+        if ("lastName" in data) {
+
+            if (!isValid(lastName)) {
+                return res.status(422).send({ status: 1002, message: "lastName is required" })
+            }
+
+            if (!isValidFullName(lastName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid lastName" })
+            }
+
+        }
+
+        if ("email" in data) {
+
+            if (!isValid(email)) {
+                return res.status(422).send({ status: 1002, message: "Email is required" })
+            }
+
+            if (!isValidEmail(email)) {
+                return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+            }
+
+        }
+
+        if ("phone" in data) {
+
+            if (!isValid(phone)) {
+                return res.status(422).send({ status: 1002, message: "Phone No. is required" })
+            }
+
+            if (!isValidPhone(phone)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid Phone no" })
+            }
+
+        }
+        
+        if ("joiningDate" in data) {
+
+            if (!isValid(joiningDate)) {
+                return res.status(422).send({ status: 1002, message: "Date of Joining is Required" })
+            }
+
+            if (!validateDate(joiningDate)) {
+                return res.status(422).send({ status: 1003, message: "Invalid Joining Date or Please enter date of joining in the correct format" })
+            }
+
+        }
+
+        if ("joiningDate" in data) {
+
+            if (!isValid(joiningDate)) {
+                return res.status(422).send({ status: 1002, message: "Date of Joining is Required" })
+            }
+
+            if (!validateDate(joiningDate)) {
+                return res.status(422).send({ status: 1003, message: "Invalid Joining Date or Please enter date of joining in the correct format" })
+            }
+
+        }
+
+        if ("departmentName" in data) {
+            if
+                (!isValid(departmentName)) {
+                return res.status(422).send({ status: 1002, message: "departmentName is required" })
+            }
+
+            if (!isValidFullName(departmentName)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid departmentName" })
+            }
+
+        }
+
+        if ("isApproved" in data) {
+
+
+            if (!isValid(isApproved)) {
+                return res.status(422).send({ status: 1002, message: "isApproved is required" })
+            }
+
+            if (!isActiveRequest(isApproved)) {
+                return res.status(422).send({ status: 1003, message: "Please provide isApproved like True or false etc" })
+            }
+
+        }
+
+        if ("isActive" in data) {
+
+
+            if (!isValid(isActive)) {
+                return res.status(422).send({ status: 1002, message: "isRequest is required" })
+            }
+
+            if (!isActiveRequest(isActive)) {
+                return res.status(422).send({ status: 1003, message: "Please provide isActive like True or false etc" })
+            }
+
+        }
+
+        next()
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
+
 //========================================Delete-A-CustomerSupport==========================================================//
 
 const deleteCustomerSupport = async function (req, res, next) {
@@ -444,6 +586,7 @@ const deleteCustomerSupport = async function (req, res, next) {
 module.exports = {
     createCustomerSupport,
     updateCustomerSupport,
+    getCustomerSupport,
     deleteCustomerSupport,
     login
 }

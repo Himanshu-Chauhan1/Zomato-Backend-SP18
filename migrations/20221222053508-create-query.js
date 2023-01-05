@@ -13,18 +13,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      userId: {
-        type: Sequelize.DataTypes.UUID,
-        references: {
-          model: "customers",
-          model: "restaurants",
-          model: "admins",
-          model: "customersupports",
-          model: "deliverypartners",
-          key: 'id'
-        },
-        allowNull: false
-      },
       queryDescription: {
         type: Sequelize.STRING,
         allowNull: true

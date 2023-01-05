@@ -7,7 +7,7 @@ const { signAccessToken } = require("../../Utils/jwt")
 const nodeKey = process.env.NODE_KEY
 
 
-//========================================POST /CREATE-A-DELIVERY-PARTNER==========================================================//
+//========================================POST /CREATE-A-DELIVERY-PARTNER===================================================//
 
 const create = async function (req, res) {
     try {
@@ -22,7 +22,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-DELIVERY-PARTNER==========================================================
+//========================================POST /LOGIN-FOR-A-DELIVERY-PARTNER================================================//
 
 let login = async (req, res) => {
     try {
@@ -56,7 +56,7 @@ let login = async (req, res) => {
     }
 }
 
-//========================================POST/UPDATE-A-DELIVERY-PARTNER==========================================================//
+//========================================POST/UPDATE-A-DELIVERY-PARTNER====================================================//
 
 const update = async function (req, res) {
     try {
@@ -77,52 +77,45 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-A-DELIVERY-PARTNER==========================================================//
-
-const get = async function (req, res) {
-    try {
-
-        let data = req.query
-
-        // let findByFilter = await Customer.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             { phone: { [Op.eq]: data.phone } },
-        //             { email: { [Op.eq]: data.email } },
-        //             { city: { [Op.eq]: data.city } },
-        //             { locality: { [Op.eq]: data.locality } },
-        //             { ordered: { [Op.eq]: data.ordered } },
-        //             { unordered: { [Op.eq]: data.unordered } },
-        //             { date: { [Op.eq]: data.date } },
-        //         ],
-        //     },
-        // })
-
-        if (!findByFilter) {
-            return res.status(404).send({ status: 1008, msg: "No such Data found" })
-        }
-
-        return res.status(200).send({ status: 1010, message: 'Timetable for the given the parameters:', data: findByFilter })
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-};
-
-
-//========================================GET/GET-ALL-DELIVERY-PARTNER==========================================================//
+//========================================GET/GET-ALL-DELIVERY-PARTNERS=====================================================//
 
 const index = async function (req, res) {
     try {
 
-        let deliveryPartner = await DeliveryPartner.findAll()
+        const data = req.query
 
-        if (deliveryPartner.lenght === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Delivery Partners found....." })
+        const { deliveryPartnerId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data
+
+        if (Object.keys(req.query).length > 0) {
+            let findDeliveryPartnerByFilter = await DeliveryPartner.findAll({
+                where: {
+                    [Op.or]: [
+                        { deliveryPartnerId: { [Op.eq]: deliveryPartnerId } },
+                        { firstName: { [Op.eq]: firstName } },
+                        { lastName: { [Op.eq]: lastName } },
+                        { email: { [Op.eq]: email } },
+                        { phone: { [Op.eq]: phone } },
+                        { joiningDate: { [Op.eq]: joiningDate } },
+                        { departmentName: { [Op.eq]: departmentName } },
+                        { isApproved: { [Op.eq]: isApproved } },
+                        { isActive: { [Op.eq]: isActive } },
+                    ]
+                }
+            })
+
+            if (!findDeliveryPartnerByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No deliveryPartners found as per the filters applied" })
+
+            return res.status(200).send({ status: 1010, data: findDeliveryPartnerByFilter })
+        } else {
+
+            let findAllDeliveryPartners = await DeliveryPartner.findAll()
+
+            if (!findAllDeliveryPartners.length)
+                return res.status(404).send({ status: 1006, message: "No deliveryPartners found" })
+
+            return res.status(200).send({ status: 1010, data: findAllDeliveryPartners })
         }
-
-        return res.status(200).send({ status: 1010, message: 'All Delivery Partners:', data: deliveryPartner })
     }
     catch (err) {
         console.log(err.message)
@@ -130,7 +123,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-DELIVERY-PARTNER==========================================================//
+//========================================DELETE/DELETE-A-DELIVERY-PARTNER==================================================//
 
 const destroy = async function (req, res) {
     try {
@@ -148,12 +141,10 @@ const destroy = async function (req, res) {
 }
 
 
-
 module.exports = {
     create,
     login,
     update,
-    get,
     index,
     destroy
 }

@@ -42,18 +42,6 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('orderId', val.trim());
       },
     },
-    userId: {
-      type: DataTypes.UUID,
-      references: {
-        model: "customer",
-        model: "restaurant",
-        model: "admin",
-        model: "customersupport",
-        model: "deliverypartner",
-        key: 'id'
-      },
-      allowNull: false
-    },
     queryDescription: {
       type: DataTypes.STRING,
       allowNull: true,

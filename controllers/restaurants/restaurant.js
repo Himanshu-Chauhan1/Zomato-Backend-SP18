@@ -22,7 +22,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-RESTAURANT==========================================================
+//========================================POST /LOGIN-FOR-A-RESTAURANT======================================================//
 
 let login = async (req, res) => {
     try {
@@ -59,7 +59,7 @@ let login = async (req, res) => {
     }
 }
 
-//========================================POST/UPDATE-A-RESTAURANT==========================================================//
+//========================================POST/UPDATE-A-RESTAURANT=========================================================//
 
 const update = async function (req, res) {
     try {
@@ -79,50 +79,45 @@ const update = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
-//========================================GET/GET-A-RESTAURANT==========================================================//
 
-const get = async function (req, res) {
-    try {
-
-        let data = req.query
-
-        // let findByFilter = await Restaurant.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             { phone: { [Op.eq]: data.phone } },
-        //             { email: { [Op.eq]: data.email } },
-        //             { city: { [Op.eq]: data.city } },
-        //             { locality: { [Op.eq]: data.locality } },
-        //             { ordered: { [Op.eq]: data.ordered } },
-        //             { unordered: { [Op.eq]: data.unordered } },
-        //             { date: { [Op.eq]: data.date } },
-        //         ],
-        //     },
-        // })
-
-        if (!findByFilter) {
-            return res.status(404).send({ status: 1008, msg: "No such Data found" })
-        }
-
-        return res.status(200).send({ status: 1010, message: 'Timetable for the given the parameters:', data: findByFilter })
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
-    }
-};
 //========================================GET/GET-ALL-RESTAURANTS==========================================================//
 
 const index = async function (req, res) {
     try {
 
-        let restaurant = await Restaurant.findAll()
+        const data = req.query
+        const { restaurantId, name, email, phone, landline, ownerFullName, ownerEmail, isApproved, isActive } = data
 
-        if (restaurant.length === 0) {
-            return res.status(404).send({ status: 1008, msg: "No Restaurants found....." })
+        if (Object.keys(req.query).length > 0) {
+            let findRestaurantByFilter = await Restaurant.findAll({
+                where: {
+                    [Op.or]: [
+                        { restaurantId: { [Op.eq]: restaurantId } },
+                        { name: { [Op.eq]: name } },
+                        { email: { [Op.eq]: email } },
+                        { phone: { [Op.eq]: phone } },
+                        { landline: { [Op.eq]: landline } },
+                        { ownerFullName: { [Op.eq]: ownerFullName } },
+                        { ownerEmail: { [Op.eq]: ownerEmail } },
+                        { isApproved: { [Op.eq]: isApproved } },
+                        { isActive: { [Op.eq]: isActive } },
+                    ]
+                }
+            })
+
+            if (!findRestaurantByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No restaurants found as per the filters applied" })
+
+            return res.status(200).send({ status: 1010, data: findRestaurantByFilter })
+        } else {
+
+            let findAllRestaurants = await Restaurant.findAll()
+
+            if (!findAllRestaurants.length)
+                return res.status(404).send({ status: 1006, message: "No restaurants found" })
+
+            return res.status(200).send({ status: 1010, data: findAllRestaurants })
         }
-
-        return res.status(200).send({ status: 1010, message: 'All Restaurants:', data: restaurant })
     }
     catch (err) {
         console.log(err.message)
@@ -130,7 +125,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-RESTAURANT==========================================================//
+//========================================DELETE/DELETE-A-RESTAURANT=======================================================//
 
 const destroy = async function (req, res) {
     try {
@@ -152,7 +147,6 @@ module.exports = {
     create,
     login,
     update,
-    get,
     index,
     destroy
 }

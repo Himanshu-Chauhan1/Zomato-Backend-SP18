@@ -41,7 +41,7 @@ const isValidEmail = (email) => {
 };
 
 
-//========================================Create-A-Restaurant==========================================================//
+//========================================Create-A-Restaurant=============================================================//
 
 const createRestaurant = async function (req, res, next) {
     try {
@@ -211,7 +211,7 @@ let login = async (req, res, next) => {
     }
 }
 
-//========================================Update-A-Restaurant==========================================================//
+//========================================Update-A-Restaurant============================================================//
 
 const updateRestaurant = async function (req, res, next) {
     try {
@@ -389,7 +389,150 @@ const updateRestaurant = async function (req, res, next) {
     }
 }
 
-//========================================Delete-A-Restaurant==========================================================//
+//========================================Get-A-Restaurant==============================================================//
+
+const getRestaurant = async function (req, res) {
+    try {
+
+
+        const data = req.query
+
+        const { restaurantId, name, email, phone, landline, ownerFullName, ownerEmail, isApproved, isActive } = data
+
+        if ("restaurantId" in data) {
+
+            if (!isValid(restaurantId)) {
+                return res.status(422).send({ status: 1002, message: "restaurantId is required" })
+            }
+
+            let checkRestaurantId = restaurantId.split('').length
+
+            if (checkRestaurantId != 36) {
+                return res.status(422).send({ status: 1003, message: "restaurant-Id is not valid" })
+            }
+
+        }
+
+        if ("name" in data) {
+
+            if (!isValid(firstName)) {
+                return res.status(422).send({ status: 1002, message: "firstName is required" })
+            }
+
+            if (!isValidFullName(firstName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid firstName" })
+            }
+
+        }
+
+        if ("lastName" in data) {
+
+            if (!isValid(lastName)) {
+                return res.status(422).send({ status: 1002, message: "lastName is required" })
+            }
+
+            if (!isValidFullName(lastName)) {
+                return res.status(422).send({ status: 1003, message: "Please provide a valid lastName" })
+            }
+
+        }
+
+        if ("email" in data) {
+
+            if (!isValid(email)) {
+                return res.status(422).send({ status: 1002, message: "Email is required" })
+            }
+
+            if (!isValidEmail(email)) {
+                return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+            }
+
+        }
+
+        if ("phone" in data) {
+
+            if (!isValid(phone)) {
+                return res.status(422).send({ status: 1002, message: "Phone No. is required" })
+            }
+
+            if (!isValidPhone(phone)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid Phone no" })
+            }
+
+        }
+
+        if ("landline" in data) {
+
+
+            if (!isValid(landline)) {
+                return res.status(422).send({ status: 1002, message: "Restaurant-Landline No. is required" })
+            }
+
+            if (!isValidLandline(landline)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid Restautrant-Landline no" })
+            }
+
+        }
+
+        if ("ownerFullName" in data) {
+
+            if (!isValid(ownerFullName)) {
+                return res.status(422).send({ status: 1002, message: "ownerFullName is required" })
+            }
+
+            if (!isValidFullName(ownerFullName)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid ownerFullName" })
+            }
+
+        }
+
+
+        if ("ownerEmail" in data) {
+
+            if (!isValid(ownerEmail)) {
+                return res.status(422).send({ status: 1002, message: "owner-Email is required" })
+            }
+
+            if (!isValidEmail(ownerEmail)) {
+                return res.status(422).send({ status: 1003, message: "owner-Email should be a valid email address" })
+            }
+
+        }
+
+        if ("isApproved" in data) {
+
+
+            if (!isValid(isApproved)) {
+                return res.status(422).send({ status: 1002, message: "isApproved is required" })
+            }
+
+            if (!isActiveRequest(isApproved)) {
+                return res.status(422).send({ status: 1003, message: "Please provide isApproved like True or false etc" })
+            }
+
+        }
+
+        if ("isActive" in data) {
+
+            if (!isValid(isActive)) {
+                return res.status(422).send({ status: 1002, message: "isRequest is required" })
+            }
+
+            if (!isActiveRequest(isActive)) {
+                return res.status(422).send({ status: 1003, message: "Please provide isActive like True or false etc" })
+            }
+
+        }
+
+        next()
+    }
+    catch (err) {
+        console.log(err.message)
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+};
+
+//========================================Delete-A-Restaurant===========================================================//
 
 const deleteRestaurant = async function (req, res, next) {
     try {
@@ -423,6 +566,7 @@ const deleteRestaurant = async function (req, res, next) {
 module.exports = {
     createRestaurant,
     updateRestaurant,
+    getRestaurant,
     deleteRestaurant,
     login
 }

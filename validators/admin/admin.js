@@ -36,7 +36,7 @@ const createAdmin = async function (req, res, next) {
     try {
         const data = req.body
 
-        const { fullName, email, phone, confirmPassword, password } = req.body
+        const { fullName, email, phone, confirmPassword, password } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -297,6 +297,56 @@ const updateAdmin = async function (req, res, next) {
     }
 }
 
+//========================================Get-A-Admin==========================================================//
+
+const getAdmin = async function (req, res, next) {
+    try {
+
+        let data = req.query
+
+        const { fullName, email, phone } = data
+
+        if ("fullName" in data) {
+
+            if (!isValid(fullName)) {
+                return res.status(422).send({ status: 1002, message: "fullName is required" })
+            }
+
+        }
+
+        if ("email" in data) {
+
+            if (!isValid(email)) {
+                return res.status(422).send({ status: 1002, message: "Email is required" })
+            }
+
+            if (!isValidEmail(email)) {
+                return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+            }
+
+        }
+
+        if ("phone" in data) {
+
+            if (!isValid(phone)) {
+                return res.status(422).send({ status: 1002, message: "Phone No. is required" })
+            }
+
+            if (!isValidPhone(phone)) {
+                return res.status(422).send({ status: 1003, message: "Please enter a valid Phone no" })
+            }
+
+        }
+
+        next()
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
+
 //========================================Delete-A-Admin==========================================================//
 
 const deleteAdmin = async function (req, res, next) {
@@ -330,6 +380,7 @@ const deleteAdmin = async function (req, res, next) {
 module.exports = {
     createAdmin,
     updateAdmin,
+    getAdmin,
     deleteAdmin,
     login
 }

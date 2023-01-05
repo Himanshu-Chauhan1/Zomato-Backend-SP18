@@ -46,7 +46,7 @@ const createOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, userId, queryDescription, isRequest, isActive } = data
+        const { orderId, queryDescription, isRequest, isActive } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -60,39 +60,6 @@ const createOrderQuery = async function (req, res, next) {
 
         if (!isRegisteredOrderId) {
             return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
-        }
-
-        if (!isValid(userId)) {
-            return res.status(422).send({ status: 1002, message: "orderId is required" })
-        }
-
-        const isRegisteredCustomerUserId = await Customer.findOne({ where: { id: userId } });
-
-        if (!isRegisteredCustomerUserId) {
-            console.log("c");
-            return res.status(422).send({ status: 1002, message: "userId does not exists" })
-        }
-
-        const isRegisteredCustomerSupportUserId = await CustomerSupport.findOne({ where: { id: userId } });
-
-
-        if (!isRegisteredCustomerSupportUserId) {
-            console.log("cs");
-            return res.status(422).send({ status: 1002, message: "userId does not exists" })
-        }
-
-        const isRegisteredDeliveryPartnerUserId = await DeliveryPartner.findOne({ where: { id: userId } });
-
-        if (!isRegisteredDeliveryPartnerUserId) {
-            console.log("d");
-            return res.status(422).send({ status: 1002, message: "userId does not exists" })
-        }
-
-        const isRegisteredRestaurantUserId = await Restaurant.findOne({ where: { id: userId } });
-
-        if (!isRegisteredRestaurantUserId) {
-            console.log("r");
-            return res.status(422).send({ status: 1002, message: "userId does not exists" })
         }
 
         if (!isValid(queryDescription)) {
@@ -165,7 +132,7 @@ const updateOrderQuery = async function (req, res, next) {
 
         const data = req.body
 
-        const { orderId, userId, queryDescription, isRequest, isActive } = data
+        const { orderId, queryDescription, isRequest, isActive } = data
 
         const dataObject = {};
 
@@ -179,7 +146,7 @@ const updateOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
-            const isRegisteredOrderId = await OrderStatus.findOne({ where: { id: orderId } });
+            const isRegisteredOrderId = await Order.findOne({ where: { id: orderId } });
 
             if (!isRegisteredOrderId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
@@ -187,31 +154,9 @@ const updateOrderQuery = async function (req, res, next) {
             dataObject['orderId'] = orderId
         }
 
-        if ("userId" in data) {
-
-            if (isValid(userId)) {
-                return res.status(422).send({ status: 1002, message: "orderId is required" })
-            }
-
-            const isIdUnique = id =>
-                db.findOne({ where: { id: userId }, attributes: ['id'] })
-                    .then(console.log("Yes"))
-
-            dataObject['userId'] = userId
-        }
-
         if ("queryDescription" in data) {
 
-            if (isValid(queryDescription)) {
-                return res.status(422).send({ status: 1002, message: "queryDescription is required" })
-            }
-
-            dataObject['queryDescription'] = queryDescription
-        }
-
-        if ("queryDescription" in data) {
-
-            if (isValid(queryDescription)) {
+            if (!isValid(queryDescription)) {
                 return res.status(422).send({ status: 1002, message: "queryDescription is required" })
             }
 
@@ -278,7 +223,7 @@ const getOrderQuery = async function (req, res, next) {
 
         let data = req.query
 
-        const { queryId, orderId, userId, queryDescription, isRequest, isActive } = data
+        const { queryId, orderId, queryDescription, isRequest, isActive } = data
 
         if ("queryId" in data) {
 
@@ -304,20 +249,6 @@ const getOrderQuery = async function (req, res, next) {
             if (!isRegisteredOrderId) {
                 return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
             }
-        }
-
-        if ("userId" in data) {
-
-            if (isValid(userId)) {
-                return res.status(422).send({ status: 1002, message: "orderId is required" })
-            }
-
-            const isRegisteredOrderId = await db.findOne({ where: { id: userId } });
-
-            if (!isRegisteredOrderId) {
-                return res.status(422).send({ status: 1008, message: "This userId does not exists" })
-            }
-
         }
 
         if ("queryDescription" in data) {
@@ -384,7 +315,6 @@ const getOrderQuery = async function (req, res, next) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
-
 
 
 module.exports = {

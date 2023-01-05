@@ -2,7 +2,7 @@ const db = require("../../models");
 const { Query } = db
 const { Op } = require("sequelize");
 
-//========================================POST /CREATE-A-ORDER-QUERY==========================================================//
+//========================================POST/CREATE-A-ORDER-QUERY==========================================================//
 
 const create = async function (req, res) {
     try {
@@ -44,7 +44,7 @@ const index = async function (req, res) {
     try {
         let data = req.query
 
-        const { queryId, orderId, userId, isRequest, isActive } = data
+        const { queryId, orderId, isRequest, isActive } = data
 
         if (Object.keys(req.query).length > 0) {
             let findOrderQueryByFilter = await Query.findAll({
@@ -52,7 +52,7 @@ const index = async function (req, res) {
                     [Op.or]: [
                         { queryId: { [Op.eq]: queryId } },
                         { orderId: { [Op.eq]: orderId } },
-                        { roleId: { [Op.eq]: userId } },
+
                         { isRequest: { [Op.eq]: isRequest } },
                         { isActive: { [Op.eq]: isActive } },
                     ],
