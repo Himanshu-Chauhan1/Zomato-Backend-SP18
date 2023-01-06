@@ -1,6 +1,6 @@
 require("dotenv").config();
 const db = require("../../models");
-const { Order, Customer } = db
+const { Order } = db
 
 
 //========================================POST /CREATE-A-ORDER==========================================================//

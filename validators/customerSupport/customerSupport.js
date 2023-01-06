@@ -416,6 +416,13 @@ const updateCustomerSupport = async function (req, res, next) {
 const getCustomerSupport = async function (req, res, next) {
     try {
 
+        const verifiedtoken = req.verifiedtoken
+        let userRoleFromToken = verifiedtoken.userRole
+
+        if (!(userRoleFromToken == "admin" || userRoleFromToken == "superadmin")) {
+            return res.status(401).send({ Status: 1010, message: "Unauthorized Access! You dont have correct privilege to perform this operation" });
+        }
+
         let data = req.query
 
         const { customerSupportId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data

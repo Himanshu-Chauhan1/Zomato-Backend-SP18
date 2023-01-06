@@ -393,7 +393,13 @@ const updateRestaurant = async function (req, res, next) {
 
 const getRestaurant = async function (req, res) {
     try {
+        
+        const verifiedtoken = req.verifiedtoken
+        let userRoleFromToken = verifiedtoken.userRole
 
+        if (!(userRoleFromToken == "admin" || userRoleFromToken == "superadmin" || userRoleFromToken == "customersupport")) {
+            return res.status(401).send({ Status: 1010, message: "Unauthorized Access! You dont have correct privilege to perform this operation" });
+        }
 
         const data = req.query
 
