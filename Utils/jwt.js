@@ -1,6 +1,5 @@
 require("dotenv").config();
 const JWT = require("jsonwebtoken")
-const nodeKey = process.env.NODE_KEY
 
 const signAccessToken = (userId, userRole) => {
     return new Promise((resolve, reject) => {

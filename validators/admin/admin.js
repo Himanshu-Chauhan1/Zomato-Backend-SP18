@@ -24,9 +24,14 @@ const isValidPhone = (phone) => {
     return /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/.test(phone);
 };
 
+//////////////// -FOR WORK-EMAIL- ///////////////////////
+const isValidWorkEmail = (email) => {
+    return /[a-z .]+@[zomato]+\.[a-z zomato-z]{2,3}/gm.test(email);
+};
+
 //////////////// -FOR EMAIL- ///////////////////////
 const isValidEmail = (email) => {
-    return /[a-z .]+@[zomato]+\.[a-z zomato-z]{2,3}/gm.test(email);
+    return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email);
 };
 
 

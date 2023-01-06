@@ -5,7 +5,7 @@ const nodeKey = process.env.NODE_KEY
 
 module.exports = (sequelize, DataTypes) => {
   class Admin extends Model {
-  
+
     static associate(models) {
       // define association here
       this.hasMany(models.query, {
@@ -51,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
     userRole: {
       type: DataTypes.STRING,
       defaultValue: "admin"
+    },
+    resetLink: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
   }, {
     sequelize,

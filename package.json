@@ -11,6 +11,7 @@
     "migrate": "npx sequelize-cli db:migrate",
     "make-migration": "npx sequelize-cli migration:create --name modify_users_add_new_fields.",
     "revert-all-migration": "npx sequelize-cli db:migrate:undo:all",
+    "revert-one-migration": "npx sequelize-cli db:migrate:undo --name 20221213045630-create-admin.js ",
     "swagger": "npx nodemon app/swagger/index.js"
   },
   "author": "Ankit Sathiya,Himanshu Chauhan",
@@ -18,10 +19,14 @@
   "dependencies": {
     "aws-sdk": "^2.1274.0",
     "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-jwt": "^8.3.0",
+    "express-validator": "^6.14.2",
     "is-valid-birthdate": "^0.1.0",
     "jsonwebtoken": "^9.0.0",
+    "mailgun-js": "^0.22.0",
     "moment": "^2.29.4",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.20",

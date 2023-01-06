@@ -29,6 +29,10 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue:"admin"
       },
+      resetLink: {
+        type: Sequelize.STRING,
+        allowNull:true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

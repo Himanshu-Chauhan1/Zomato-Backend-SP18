@@ -1,10 +1,15 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 const db = require("../../models");
 const { Admin } = db
 const { Op } = require("sequelize");
 const { signAccessToken } = require("../../Utils/jwt")
+const mailGun = require("mailgun-js")
+const DOMAIN = 'sandboxf26a5c38b52e4da68cd059e6c42daba.mailgun.org'
+const mg = mailGun({ apiKey: "12345", domain: DOMAIN })
 const nodeKey = process.env.NODE_KEY
+const passwordResetKey = process.env.RESET_PASSWORD_KEY
 
 
 //========================================POST /CREATE-A-ADMIN==========================================================//
@@ -39,7 +44,7 @@ let login = async (req, res) => {
                 return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
             }
 
-            let checkPassword = await bcrypt.compare(password + nodeKey, admin.password)
+            let checkPassword = await bcrypt.compareSync(password + nodeKey, admin.password)
             if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
 
             const token = await signAccessToken(admin.id, admin.userRole);
@@ -138,12 +143,96 @@ const destroy = async function (req, res) {
     }
 }
 
-//forgotpassword
+//========================================PUT/FORGOT-PASSWORD-FOR-A-ADMIN==========================================================//
+
+const forgot = async function (req, res) {
+    try {
+
+        let adminId = req.params.id
+
+        let data = req.body
+
+        let { email } = data
+
+        if (("phone" || "email" in data)) {
+
+            let admin = await Admin.findOne({ where: { [Op.or]: [{ email: { [Op.eq]: email } }] } })
+
+            if (!admin) {
+                return res.status(422).send({ status: 1003, message: "Invalid Email credentials" });
+            }
+
+            const token = await signAccessToken(admin.id, admin.userRole);
+
+            const linkData = { resetLink: token }
+
+            const values = linkData;
+            const condition = { where: { id: adminId } };
+            const options = { multi: true };
+
+            const updateDetails = await Admin.update(values, condition, options)
+
+            return res.status(200).send({ status: 1010, message: "Your reset link to change the password", data: linkData })
+        }
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//========================================PUT/RESET-PASSWORD-FOR-A-ADMIN==========================================================//
+
+const reset = async function (req, res) {
+    try {
+
+        let adminId = req.params.id
+
+        let data = req.body
+
+        let { resetLink, password } = data
+
+        if (resetLink) {
+            jwt.verify(resetLink, process.env.JWT_SECRET_KEY, async (err, next) => {
+                if (err) {
+                    return res.status(422).send({ status: 1003, message: "Invalid Token!" })
+                }
+            });
+        }
+
+        const findAdmin = await Admin.findOne({ where: { resetLink: resetLink, id: adminId } })
+
+        if (!findAdmin) {
+            return res.status(404).send({ status: 1006, message: "Admin with this token does not exists" });
+        }
+
+        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+
+        //once password changed resetLink will be a emptyString
+        data.resetLink = ''
+
+        const values = data
+        const condition = { where: { id: adminId } }
+        const options = { multi: true }
+
+        const updateDetails = await Admin.update(values, condition, options)
+
+        return res.status(200).send({ status: 1010, message: "Your password has been changed successfully", data: values })
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
 
 module.exports = {
     create,
     login,
     update,
     index,
-    destroy
+    destroy,
+    forgot,
+    reset
 }
