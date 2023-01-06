@@ -92,7 +92,7 @@ const index = async function (req, res) {
             let findAdminByFilter = await Admin.findAll({
                 where: {
                     [Op.or]: [
-                        { adminId: { [Op.eq]: adminId } },
+                        { id: { [Op.eq]: adminId } },
                         { fullName: { [Op.eq]: fullName } },
                         { email: { [Op.eq]: email } },
                         { phone: { [Op.eq]: phone } }
@@ -103,7 +103,7 @@ const index = async function (req, res) {
             if (!findAdminByFilter.length)
                 return res.status(404).send({ status: 1006, message: "No Admins found as per the filters applied" })
 
-            return res.status(200).send({ status: 1010, Menu: findAdminByFilter })
+            return res.status(200).send({ status: 1010, data: findAdminByFilter })
         } else {
 
             let findAllAdmins = await Admin.findAll()

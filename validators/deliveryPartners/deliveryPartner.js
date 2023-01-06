@@ -58,6 +58,11 @@ const isValidBikeAvailable = (bikeAvailable) => {
     return /^(true|false|True|False)$/.test(bikeAvailable);
 };
 
+//////////////// -FOR-ISAPPROVED/ISACTIVE-AVAILABLE- ///////////////////////
+const isValidBoolean = (isActive) => {
+    return /^(true|false|True|False)$/.test(isActive);
+};
+
 //////////////// -FOR BIKEAVAILAVBLE- ///////////////////////
 const isValidIndianLanguage = (languagesKnown) => {
     return /^(hindi|english|English|Hindi|other|Other)$/.test(languagesKnown);
@@ -455,14 +460,14 @@ const updateDeliveryPartner = async function (req, res, next) {
     }
 }
 
-//========================================Get-A-CustomerSupport====================================================================//
+//========================================Get-A-DeliveryPartner====================================================================//
 
 const getDeliveryPartner = async function (req, res, next) {
     try {
 
         let data = req.query
 
-        const { deliveryPartnerId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data
+        const { deliveryPartnerId, firstName, lastName, email, phone, joiningDate, bikeAvailable, isApproved, isActive } = data
 
         if ("deliveryPartnerId" in data) {
 
@@ -538,18 +543,18 @@ const getDeliveryPartner = async function (req, res, next) {
 
         }
 
-        if ("departmentName" in data) {
-            if
-                (!isValid(departmentName)) {
-                return res.status(422).send({ status: 1002, message: "departmentName is required" })
+        if ("bikeAvailable" in data) {
+
+
+            if (!isValid(bikeAvailable)) {
+                return res.status(422).send({ status: 1002, message: "bikeAvailable is required" })
             }
 
-            if (!isValidFullName(departmentName)) {
-                return res.status(422).send({ status: 1003, message: "Please enter a valid departmentName" })
+            if (!isValidBikeAvailable(bikeAvailable)) {
+                return res.status(422).send({ status: 1003, message: "Please provide bikeAvailable like True or false etc" })
             }
 
         }
-
         if ("isApproved" in data) {
 
 
@@ -557,7 +562,7 @@ const getDeliveryPartner = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "isApproved is required" })
             }
 
-            if (!isActiveRequest(isApproved)) {
+            if (!isValidBoolean(isApproved)) {
                 return res.status(422).send({ status: 1003, message: "Please provide isApproved like True or false etc" })
             }
 
@@ -570,7 +575,7 @@ const getDeliveryPartner = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "isRequest is required" })
             }
 
-            if (!isActiveRequest(isActive)) {
+            if (!isValidBoolean(isActive)) {
                 return res.status(422).send({ status: 1003, message: "Please provide isActive like True or false etc" })
             }
 

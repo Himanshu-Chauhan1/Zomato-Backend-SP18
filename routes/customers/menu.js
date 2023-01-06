@@ -1,12 +1,12 @@
 const express = require("express")
 const menuRouter = express.Router()
-const validate = require("../../validators/restaurants/menu")
+const validate = require("../../validators/customers/menu")
 const { authentication } = require("../../middlewares/authentication");
-const { index } = require("../../controllers/restaurants/menu");
+const { index } = require("../../controllers/customers/menu");
 const { authorization } = require("../../middlewares/authorization")
 
 
 
-menuRouter.get('/restaurants/:id/menu', [authentication, authorization, validate.getMenu], index);
+menuRouter.get('/customers/:id/menu', [authentication, authorization, validate.getMenu], index);
 
 module.exports = menuRouter

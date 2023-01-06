@@ -90,7 +90,7 @@ const index = async function (req, res) {
             let findCustomerByFilter = await Customer.findAll({
                 where: {
                     [Op.or]: [
-                        { customerId: { [Op.eq]: customerId } },
+                        { id: { [Op.eq]: customerId } },
                         { fullName: { [Op.eq]: fullName } },
                         { email: { [Op.eq]: email } },
                         { phone: { [Op.eq]: phone } }
@@ -101,7 +101,7 @@ const index = async function (req, res) {
             if (!findCustomerByFilter.length)
                 return res.status(404).send({ status: 1006, message: "No customers found as per the filters applied" })
 
-            return res.status(200).send({ status: 1010, Menu: findCustomerByFilter })
+            return res.status(200).send({ status: 1010, data: findCustomerByFilter })
         } else {
 
             let findAllCustomers = await Customer.findAll()

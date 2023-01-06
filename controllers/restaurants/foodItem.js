@@ -50,7 +50,7 @@ const index = async function (req, res) {
         let data = req.query
         let paramsRestaurantId = req.params.id
 
-        const { categoryName, itemName, itemPrice } = data
+        const { categoryName, itemName } = data
 
         if (Object.keys(req.query).length > 0) {
             let findFoodItemsByFilter = await FoodItem.findAll({
@@ -59,14 +59,6 @@ const index = async function (req, res) {
                     [Op.or]: [
                         { categoryName: categoryName },
                         { restaurantId: paramsRestaurantId },
-                        {
-                            itemPrice: {
-                                $gte: itemPrice,
-                                $lte: itemPrice,
-                                $gt: itemPrice,
-                                $lt: itemPrice
-                            }
-                        },
                         { itemName: itemName },
                     ],
                 }

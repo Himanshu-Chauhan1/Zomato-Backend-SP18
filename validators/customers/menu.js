@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Restaurant } = db
+const { Customer } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -24,25 +24,26 @@ const isActiveItem = (isActive) => {
 const getMenu = async function (req, res, next) {
     try {
 
-        const enteredRestaurantId = req.params.id
+        const enteredCustomerId = req.params.id
 
-        let checkRestaurantId = enteredRestaurantId.split('').length
+        let checkCustomerId = enteredCustomerId.split('').length
 
-        if (checkRestaurantId != 36) {
-            return res.status(422).send({ status: 1003, message: "Restaurant-Id is not valid" })
+        if (checkCustomerId != 36) {
+            return res.status(422).send({ status: 1003, message: "customer-Id is not valid" })
         }
 
-        let paramsRestaurantId = enteredRestaurantId
+        let paramsCustomerId = enteredCustomerId
 
-        const checkEnteredRestaurantId = await Restaurant.findOne({ where: { id: paramsRestaurantId } });
+        const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
 
-        if (!checkEnteredRestaurantId) {
-            return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
+        if (!checkEnteredCustomerId) {
+            return res.status(422).send({ status: 1006, message: "customer-ID does not exists" })
         }
 
         let data = req.query
 
         let { categoryName, itemName, itemPrice, isActive } = data
+
 
         if ("categoryName" in data) {
 
@@ -83,7 +84,6 @@ const getMenu = async function (req, res, next) {
             }
 
         }
-
 
         next()
     }

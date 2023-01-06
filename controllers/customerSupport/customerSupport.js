@@ -89,7 +89,7 @@ const index = async function (req, res) {
             let findCustomerSupportByFilter = await CustomerSupport.findAll({
                 where: {
                     [Op.or]: [
-                        { customerSupportId: { [Op.eq]: customerSupportId } },
+                        { id: { [Op.eq]: customerSupportId } },
                         { firstName: { [Op.eq]: firstName } },
                         { lastName: { [Op.eq]: lastName } },
                         { email: { [Op.eq]: email } },

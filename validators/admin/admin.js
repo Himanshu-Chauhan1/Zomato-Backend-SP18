@@ -304,7 +304,21 @@ const getAdmin = async function (req, res, next) {
 
         let data = req.query
 
-        const { fullName, email, phone } = data
+        const { adminId, fullName, email, phone } = data
+
+        if ("adminId" in data) {
+
+            if (!isValid(adminId)) {
+                return res.status(422).send({ status: 1002, message: "adminId is required" })
+            }
+
+            let checkAdminId = adminId.split('').length
+
+            if (checkAdminId != 36) {
+                return res.status(422).send({ status: 1003, message: "Please enter adminId in a valid format" })
+            }
+
+        }
 
         if ("fullName" in data) {
 

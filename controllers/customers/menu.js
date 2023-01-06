@@ -8,18 +8,17 @@ const { Op } = require("sequelize");
 const index = async function (req, res) {
     try {
 
-        let paramsRestaurantId = req.params.id
         let data = req.query
-        let { categoryName, itemName, isActive } = data
+        let { restaurantId, categoryName, itemName } = data
 
         if (Object.keys(req.query).length > 0) {
             let findMenuByFilter = await FoodItem.findAll({
                 where: {
-                    restaurantId: { [Op.eq]: paramsRestaurantId },
+                    isActive: { [Op.eq]: true },
                     [Op.or]: [
+                        { restaurantId: { [Op.eq]: restaurantId } },
                         { categoryName: { [Op.eq]: categoryName } },
                         { itemName: { [Op.eq]: itemName } },
-                        { isActive: { [Op.eq]: isActive } }
                     ],
                 }
             })
@@ -30,7 +29,7 @@ const index = async function (req, res) {
             return res.status(200).send({ status: 1010, data: findMenuByFilter })
         } else {
 
-            let findAllMenu = await FoodItem.findAll({ where: { restaurantId: paramsRestaurantId } })
+            let findAllMenu = await FoodItem.findAll({ where: { isActive: true } })
 
             if (!findAllMenu.length)
                 return res.status(404).send({ status: 1006, message: "No Food items found" })
@@ -44,4 +43,6 @@ const index = async function (req, res) {
     }
 };
 
-module.exports = { index }
+module.exports = {
+    index
+}

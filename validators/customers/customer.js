@@ -305,7 +305,21 @@ const getCustomer = async function (req, res, next) {
 
         let data = req.query
 
-        const { fullName, email, phone } = data
+        const { customerId, fullName, email, phone } = data
+
+        if ("customerId" in data) {
+
+            if (!isValid(customerId)) {
+                return res.status(422).send({ status: 1002, message: "customerId is required" })
+            }
+
+            let checkCustomerId = customerId.split('').length
+
+            if (checkCustomerId != 36) {
+                return res.status(422).send({ status: 1003, message: "Please enter customerId in a valid format" })
+            }
+
+        }
 
         if ("fullName" in data) {
 

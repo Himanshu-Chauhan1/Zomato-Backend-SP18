@@ -84,19 +84,19 @@ const index = async function (req, res) {
 
         const data = req.query
 
-        const { deliveryPartnerId, firstName, lastName, email, phone, joiningDate, departmentName, isApproved, isActive } = data
+        const { deliveryPartnerId, firstName, lastName, email, phone, joiningDate, bikeAvailable, isApproved, isActive } = data
 
         if (Object.keys(req.query).length > 0) {
             let findDeliveryPartnerByFilter = await DeliveryPartner.findAll({
                 where: {
                     [Op.or]: [
-                        { deliveryPartnerId: { [Op.eq]: deliveryPartnerId } },
+                        { id: { [Op.eq]: deliveryPartnerId } },
                         { firstName: { [Op.eq]: firstName } },
                         { lastName: { [Op.eq]: lastName } },
                         { email: { [Op.eq]: email } },
                         { phone: { [Op.eq]: phone } },
                         { joiningDate: { [Op.eq]: joiningDate } },
-                        { departmentName: { [Op.eq]: departmentName } },
+                        { bikeAvailable: { [Op.eq]: bikeAvailable } },
                         { isApproved: { [Op.eq]: isApproved } },
                         { isActive: { [Op.eq]: isActive } },
                     ]

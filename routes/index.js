@@ -3,7 +3,6 @@ const customerRouter = require("../routes/customers/customer");
 const customerSupportRouter = require("../routes/customerSupport/customerSupport");
 const deliveryPartnerRouter = require("../routes/deliveryPartners/deliveryPartner");
 const restaurantRouter = require("../routes/restaurants/restaurant");
-const menuRouter = require("../routes/restaurants/menu")
 const foodItemRouter = require("../routes/restaurants/foodItem")
 const foodCategoryRouter = require("../routes/restaurants/foodcategory")
 const cartRouter = require("../routes/customers/cart")
@@ -28,6 +27,8 @@ const customerAddressRouter = require("../routes/customers/address")
 const customerSupportAddressRouter = require("../routes/customerSupport/address")
 const deliveryPartnerAddressRouter = require("../routes/deliveryPartners/address")
 const restaurantAddressRouter = require("../routes/restaurants/address")
+const restaurantMenuRouter = require("../routes/restaurants/menu")
+const customerMenuRouter = require("../routes/customers/menu")
 
 
 module.exports = {
@@ -36,7 +37,6 @@ module.exports = {
     customerSupportRouter,
     deliveryPartnerRouter,
     restaurantRouter,
-    menuRouter,
     foodItemRouter,
     foodCategoryRouter,
     cartRouter,
@@ -60,5 +60,7 @@ module.exports = {
     customerAddressRouter,
     customerSupportAddressRouter,
     deliveryPartnerAddressRouter,
-    restaurantAddressRouter
+    restaurantAddressRouter,
+    restaurantMenuRouter,
+    customerMenuRouter
 }
