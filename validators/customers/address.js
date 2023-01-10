@@ -35,7 +35,7 @@ const isValidPincode = (pincode) => {
     return /^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$/.test(pincode);
 };
 
-//========================================Create-A-Address==========================================================//
+//==================================================Create-A-Address==========================================================//
 
 const createAddress = async function (req, res, next) {
     try {
@@ -109,7 +109,7 @@ const createAddress = async function (req, res, next) {
     }
 }
 
-//========================================Update-A-Address==========================================================//
+//==================================================Update-A-Address==========================================================//
 
 const updateAddress = async function (req, res, next) {
     try {
@@ -221,7 +221,7 @@ const updateAddress = async function (req, res, next) {
     }
 }
 
-//========================================Get-A-Address==========================================================//
+//==================================================Get-A-Address=============================================================//
 
 const getAddress = async function (req, res, next) {
     try {
@@ -340,7 +340,7 @@ const getAddress = async function (req, res, next) {
     }
 }
 
-//========================================Delete-A-Address==========================================================//
+//=================================================Delete-A-Address==========================================================//
 
 const deleteAddress = async function (req, res, next) {
     try {
@@ -389,7 +389,6 @@ const deleteAddress = async function (req, res, next) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
-
 
 module.exports = {
     createAddress,

@@ -14,7 +14,7 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-//========================================Create-A-OrderStatus==========================================================//
+//===============================================Create-A-OrderStatus===========================================================//
 
 const createOrderStatus = async function (req, res, next) {
     try {
@@ -67,7 +67,7 @@ const createOrderStatus = async function (req, res, next) {
     }
 }
 
-//========================================Update-A-OrderStatus==========================================================//
+//==============================================Update-A-OrderStatus===========================================================//
 
 const updateOrderStatus = async function (req, res, next) {
     try {
@@ -147,7 +147,7 @@ const updateOrderStatus = async function (req, res, next) {
     }
 }
 
-//========================================Get-A-OrderStatus==========================================================//
+//================================================Get-A-OrderStatus============================================================//
 
 const getOrderStatus = async function (req, res, next) {
     try {
@@ -201,7 +201,7 @@ const getOrderStatus = async function (req, res, next) {
     }
 }
 
-//========================================Delete-A-OrderStatus==========================================================//
+//===============================================Delete-A-OrderStatus==========================================================//
 
 const deleteOrderStatus = async function (req, res, next) {
     try {

@@ -24,7 +24,7 @@ const isActiveRequest = (isActive) => {
     return /^(true|false|True|False)$/.test(isActive);
 };
 
-//========================================Create-A-Order-Query==========================================================//
+//=============================================Create-A-Order-Query==========================================================//
 
 const createOrderQuery = async function (req, res, next) {
     try {
@@ -93,7 +93,7 @@ const createOrderQuery = async function (req, res, next) {
     }
 }
 
-//========================================Update-A-Order-Query==========================================================//
+//=============================================Update-A-Order-Query==========================================================//
 
 const updateOrderQuery = async function (req, res, next) {
     try {
@@ -200,7 +200,7 @@ const updateOrderQuery = async function (req, res, next) {
     }
 }
 
-//========================================Get-A-Order-Query==========================================================//
+//================================================Get-A-Order-Query==========================================================//
 
 const getOrderQuery = async function (req, res, next) {
     try {
@@ -315,7 +315,6 @@ const getOrderQuery = async function (req, res, next) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
-
 
 module.exports = {
     createOrderQuery,

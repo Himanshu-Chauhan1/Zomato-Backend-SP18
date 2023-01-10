@@ -3,7 +3,7 @@ const { OrderStatus } = db
 const { Op } = require("sequelize");
 
 
-//========================================POST /CREATE-A-ORDER-STATUS==========================================================//
+//=========================================POST /CREATE-A-ORDER-STATUS==========================================================//
 
 const create = async function (req, res) {
     try {
@@ -18,7 +18,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-ORDER-STATUS==========================================================//
+//=========================================POST/UPDATE-A-ORDER-STATUS==========================================================//
 
 const update = async function (req, res) {
     try {
@@ -39,7 +39,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-0RDER-STATUS==========================================================//
+//===========================================GET/GET-ALL-0RDER-STATUS==========================================================//
 
 const index = async function (req, res) {
     try {

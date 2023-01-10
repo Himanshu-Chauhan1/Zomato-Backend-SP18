@@ -21,7 +21,7 @@ const isValidNumber = function (value) {
     return true;
 };
 
-//========================================Create-A-Customer==========================================================//
+//==================================================Create-A-Customer==========================================================//
 
 const createCart = async function (req, res, next) {
     try {
@@ -138,7 +138,7 @@ const createCart = async function (req, res, next) {
     }
 }
 
-//========================================Update-A-Customer==========================================================//
+//=================================================Update-A-Customer==========================================================//
 
 const updateCart = async function (req, res, next) {
     try {
@@ -236,7 +236,7 @@ const updateCart = async function (req, res, next) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 }
-//========================================Update-A-Customer==========================================================//
+//================================================Update-A-Customer==========================================================//
 
 const getCart = async function (req, res, next) {
     try {
@@ -266,7 +266,7 @@ const getCart = async function (req, res, next) {
     }
 }
 
-//========================================Delete-A-Customer==========================================================//
+//================================================Delete-A-Customer==========================================================//
 
 const deleteCart = async function (req, res, next) {
     try {

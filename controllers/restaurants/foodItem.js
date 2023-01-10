@@ -5,7 +5,7 @@ const { FoodItem } = db
 const { Op } = require("sequelize");
 
 
-//========================================POST /CREATE-A-FOOD-ITEM==========================================================//
+//==========================================POST /CREATE-A-FOOD-ITEM==========================================================//
 
 const create = async function (req, res) {
     try {
@@ -20,7 +20,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-FOOD-ITEM==========================================================//
+//========================================POST/UPDATE-A-FOOD-ITEM=============================================================//
 
 const update = async function (req, res) {
     try {
@@ -42,7 +42,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-FOOD-ITEMS==========================================================//
+//============================================GET/GET-ALL-FOOD-ITEMS==========================================================//
 
 const index = async function (req, res) {
     try {
@@ -83,7 +83,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-FOOD-ITEM==========================================================//
+//=========================================DELETE/DELETE-A-FOOD-ITEM==========================================================//
 
 const destroy = async function (req, res) {
     try {
@@ -129,8 +129,6 @@ const upload = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
-
-
 
 module.exports = {
     create,

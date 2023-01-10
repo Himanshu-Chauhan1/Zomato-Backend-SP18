@@ -17,7 +17,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-CUSTOMER==========================================================//
+//============================================POST/UPDATE-A-CUSTOMER==========================================================//
 
 const update = async function (req, res) {
     try {
@@ -38,7 +38,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-0RDER-STATUS==========================================================//
+//=========================================GET/GET-ALL-0RDER-STATUS==========================================================//
 
 const index = async function (req, res) {
     try {
@@ -71,7 +71,6 @@ const index = async function (req, res) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 };
-
 
 module.exports = {
     create,

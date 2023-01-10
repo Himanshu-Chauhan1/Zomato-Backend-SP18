@@ -4,7 +4,7 @@ const { FoodCategory } = db
 const { Op } = require("sequelize");
 
 
-//========================================POST /CREATE-A-FOOD-CATEGORY==========================================================//
+//========================================POST /CREATE-A-FOOD-CATEGORY=========================================================//
 
 const create = async function (req, res) {
     try {
@@ -80,7 +80,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-FOOD-CATEGORY==========================================================//
+//========================================DELETE/DELETE-A-FOOD-CATEGORY=========================================================//
 
 const destroy = async function (req, res) {
     try {

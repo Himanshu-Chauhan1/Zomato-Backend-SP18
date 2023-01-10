@@ -5,12 +5,7 @@ const db = require("../../models");
 const { Admin } = db
 const { Op } = require("sequelize");
 const { signAccessToken } = require("../../Utils/jwt")
-const mailGun = require("mailgun-js")
-const DOMAIN = 'sandboxf26a5c38b52e4da68cd059e6c42daba.mailgun.org'
-const mg = mailGun({ apiKey: "12345", domain: DOMAIN })
 const nodeKey = process.env.NODE_KEY
-const passwordResetKey = process.env.RESET_PASSWORD_KEY
-
 
 //========================================POST /CREATE-A-ADMIN==========================================================//
 
@@ -27,7 +22,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-ADMIN==========================================================
+//========================================POST /LOGIN-FOR-A-ADMIN=======================================================//
 
 let login = async (req, res) => {
     try {
@@ -64,7 +59,7 @@ let login = async (req, res) => {
     }
 }
 
-//========================================POST/UPDATE-A-ADMIN==========================================================//
+//========================================POST/UPDATE-A-ADMIN===========================================================//
 
 const update = async function (req, res) {
     try {
@@ -85,7 +80,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-A-ADMIN==========================================================//
+//========================================GET/GET-A-ADMIN===============================================================//
 
 const index = async function (req, res) {
     try {
@@ -143,9 +138,9 @@ const destroy = async function (req, res) {
     }
 }
 
-//========================================PUT/FORGOT-PASSWORD-FOR-A-ADMIN==========================================================//
+//========================================PUT/FORGOT-PASSWORD-FOR-A-ADMIN================================================//
 
-const forgot = async function (req, res) {
+const change = async function (req, res) {
     try {
 
         let adminId = req.params.id
@@ -182,7 +177,7 @@ const forgot = async function (req, res) {
     }
 }
 
-//========================================PUT/RESET-PASSWORD-FOR-A-ADMIN==========================================================//
+//========================================PUT/RESET-PASSWORD-FOR-A-ADMIN=================================================//
 
 const reset = async function (req, res) {
     try {
@@ -233,6 +228,6 @@ module.exports = {
     update,
     index,
     destroy,
-    forgot,
+    change,
     reset
 }

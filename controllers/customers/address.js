@@ -2,7 +2,7 @@ const db = require("../../models");
 const { Address } = db
 const { Op } = require("sequelize");
 
-//========================================POST /CREATE-A-ADDRESS==========================================================//
+//========================================POST /CREATE-A-ADDRESS===========================================================//
 
 const create = async function (req, res) {
     try {
@@ -17,7 +17,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-ADDRESS==========================================================//
+//========================================POST/UPDATE-A-ADDRESS============================================================//
 
 const update = async function (req, res) {
     try {
@@ -38,7 +38,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-ADDRESS==========================================================//
+//========================================GET/GET-ALL-ADDRESS==============================================================//
 
 const index = async function (req, res) {
     try {

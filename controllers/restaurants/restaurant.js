@@ -7,7 +7,7 @@ const { signAccessToken } = require("../../Utils/jwt")
 const nodeKey = process.env.NODE_KEY
 
 
-//========================================POST /CREATE-A-RESTAURANT==========================================================//
+//=========================================POST /CREATE-A-RESTAURANT==========================================================//
 
 const create = async function (req, res) {
     try {
@@ -22,7 +22,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-RESTAURANT======================================================//
+//==========================================POST /LOGIN-FOR-A-RESTAURANT======================================================//
 
 let login = async (req, res) => {
     try {
@@ -59,7 +59,7 @@ let login = async (req, res) => {
     }
 }
 
-//========================================POST/UPDATE-A-RESTAURANT=========================================================//
+//===========================================POST/UPDATE-A-RESTAURANT=========================================================//
 
 const update = async function (req, res) {
     try {
@@ -80,7 +80,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-RESTAURANTS==========================================================//
+//===========================================GET/GET-ALL-RESTAURANTS==========================================================//
 
 const index = async function (req, res) {
     try {
@@ -125,7 +125,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-RESTAURANT=======================================================//
+//===========================================DELETE/DELETE-A-RESTAURANT=======================================================//
 
 const destroy = async function (req, res) {
     try {

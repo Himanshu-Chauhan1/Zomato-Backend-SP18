@@ -2,7 +2,7 @@ require("dotenv").config();
 const db = require("../../models");
 const { Cart, Customer, FoodItem } = db
 const { Op } = require("sequelize");
-const sequelize = require("sequelize");
+
 
 
 //========================================POST /CREATE-A-CART==========================================================//
@@ -19,7 +19,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-CART==========================================================//
+//========================================POST/UPDATE-A-CART============================================================//
 
 const update = async function (req, res) {
     try {
@@ -43,7 +43,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-A-CART==========================================================//
+//========================================GET/GET-A-CART================================================================//
 
 const index = async function (req, res) {
     try {

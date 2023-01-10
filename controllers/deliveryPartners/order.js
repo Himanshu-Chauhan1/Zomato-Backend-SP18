@@ -3,7 +3,7 @@ const db = require("../../models");
 const { Cart, Order, Customer } = db
 
 
-//========================================POST/UPDATE-A-ORDER==========================================================//
+//==============================================POST/UPDATE-A-ORDER==========================================================//
 
 const update = async function (req, res) {
     try {
@@ -24,7 +24,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-ORDERS==========================================================//
+//==============================================GET/GET-ALL-ORDERS==========================================================//
 
 const index = async function (req, res) {
     try {
@@ -59,7 +59,6 @@ const index = async function (req, res) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 };
-
 
 module.exports = {
     update,
