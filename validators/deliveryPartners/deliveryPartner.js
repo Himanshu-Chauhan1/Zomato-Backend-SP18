@@ -1,6 +1,8 @@
 const isvalidBirthdate = require("is-valid-birthdate")
 const db = require("../../models")
 const bcrypt = require("bcrypt")
+const JWT = require("jsonwebtoken")
+const nodeKey = process.env.NODE_KEY
 const { DeliveryPartner } = db
 
 
@@ -66,6 +68,11 @@ const isValidBoolean = (isActive) => {
 //////////////// -FOR BIKEAVAILAVBLE- ///////////////////////
 const isValidIndianLanguage = (languagesKnown) => {
     return /^(hindi|english|English|Hindi|other|Other)$/.test(languagesKnown);
+};
+
+//////////////// -FOR-JOINING-DATE- ///////////////////////
+const validateDate = (joiningDate) => {
+    return /^(?:(?:(?:0?[13578]|1[02])(\/|-|\.)31)\1|(?:(?:0?[1,3-9]|1[0-2])(\/|-|\.)(?:29|30)\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:0?2(\/|-|\.)29\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:(?:0?[1-9])|(?:1[0-2]))(\/|-|\.)(?:0?[1-9]|1\d|2[0-8])\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/.test(joiningDate);
 };
 
 //========================================Create-A-DeliveryPartner==========================================================//
@@ -180,7 +187,7 @@ const createDeliveryPartner = async function (req, res, next) {
         }
 
         if (!validateDate(joiningDate)) {
-            return res.status(422).send({ status: 1003, message: "Invalid Joining Date or Please enter date of joining in the correct format" })
+            return res.status(422).send({ status: 1003, message: "Invalid Joining Date or Please enter date of joining in the correct format like mm/dd/yyyy or mm-dd-yyyy or mm.dd.yyyy " })
         }
 
         if (!isValidArray(languagesKnown)) {
@@ -460,7 +467,7 @@ const updateDeliveryPartner = async function (req, res, next) {
     }
 }
 
-//========================================Get-A-DeliveryPartner====================================================================//
+//========================================Get-A-DeliveryPartner==============================================================//
 
 const getDeliveryPartner = async function (req, res, next) {
     try {
@@ -627,12 +634,181 @@ const deleteDeliveryPartner = async function (req, res, next) {
     }
 };
 
+//========================================Change-password-for-A-DeliveryPartner==============================================//
+
+const changePassword = async function (req, res, next) {
+    try {
+
+        const enteredId = req.params.id;
+
+        let checkDeliveryPartnerId = enteredId.split('').length
+
+        if (checkDeliveryPartnerId != 36) {
+            return res.status(422).send({ status: 1003, message: "DeliveryPartner-Id is not valid" })
+        }
+
+        let deliveryPartnerId = enteredId
+
+        const enteredDeliveryPartnerId = await DeliveryPartner.findOne({ where: { id: deliveryPartnerId } })
+
+        if (!enteredDeliveryPartnerId) {
+            return res.status(422).send({ status: 1006, message: "Provided Delivery-Partner-ID does not exists" })
+        }
+
+        let data = req.body
+
+        let { oldPassword, password, confirmPassword } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+        }
+
+        if (!isValid(oldPassword)) {
+            return res.status(422).send({ status: 1002, message: "oldPassword is required" })
+        }
+
+        let deliveryPartner = await DeliveryPartner.findOne({ where: { id: deliveryPartnerId } })
+
+        let checkPassword = await bcrypt.compare(oldPassword + nodeKey, deliveryPartner.password)
+        if (!checkPassword) {
+            return res.status(422).send({ status: 1008, message: "OldPassword is not correct please enter a correct password" })
+        }
+
+        if (!isValid(password)) {
+            return res.status(422).send({ status: 1002, message: "Password is required" })
+        }
+
+        if (!isValid(confirmPassword)) {
+            return res.status(422).send({ status: 1002, message: "confirm Password is required" })
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(422).send({ status: 1002, message: "Passwords does not match" })
+        }
+
+        if (password.length < 8) {
+            return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
+        }
+
+        if (password.length > 15) {
+            return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
+        }
+
+        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+
+        next()
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//============================================Reset-password-for-A-DeliveryPartner===========================================//
+
+const resetPassword = async function (req, res, next) {
+    try {
+
+        let data = req.body
+
+        let { email } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+        }
+
+        if (!isValid(email)) {
+            return res.status(422).send({ status: 1002, message: "Email is required" })
+        }
+
+        if (!isValidEmail(email)) {
+            return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+        }
+
+        const isRegisteredEmail = await DeliveryPartner.findOne({ where: { email: email } });
+
+        if (!isRegisteredEmail) {
+            return res.status(422).send({ status: 1008, message: "This Email-Id is not registered" })
+        }
+
+        next()
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//===========================================Verify-password-for-A-DeliveryPartner===========================================//
+
+const verifyPassword = async function (req, res, next) {
+    try {
+
+        let userToken = req.params.token
+
+        JWT.verify(userToken, process.env.RESET_PASSWORD_KEY, async (err) => {
+            if (err) {
+                return res.status(401).send({ status: 1003, message: 'InValid Token or session expired' })
+            }
+        });
+
+        let findUserToken = await DeliveryPartner.findOne({ where: { resetLink: userToken } })
+
+        if (!findUserToken) {
+            return res.status(404).send({ status: 1006, message: "deliveryPartner with this token does not exists" });
+        }
+
+        let data = req.body
+
+        let { resetLink, password, confirmPassword } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide some details" })
+        }
+
+        if (!isValid(password)) {
+            return res.status(422).send({ status: 1002, message: "Password is required" })
+        }
+
+        if (!isValid(confirmPassword)) {
+            return res.status(422).send({ status: 1002, message: "confirm Password is required" })
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(422).send({ status: 1002, message: "Passwords does not match" })
+        }
+
+        if (password.length < 8) {
+            return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
+        }
+
+        if (password.length > 15) {
+            return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
+        }
+
+        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+
+        //once password changed resetLink will be a emptyString
+        data.resetLink = ''
+
+        next()
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
 module.exports = {
     createDeliveryPartner,
     updateDeliveryPartner,
     getDeliveryPartner,
     deleteDeliveryPartner,
-    login
+    login,
+    changePassword,
+    resetPassword,
+    verifyPassword
 }
 
 

@@ -1,5 +1,7 @@
 const db = require("../../models")
 const bcrypt = require("bcrypt")
+const JWT = require("jsonwebtoken")
+const nodeKey = process.env.NODE_KEY
 const { Restaurant } = db
 
 
@@ -393,7 +395,7 @@ const updateRestaurant = async function (req, res, next) {
 
 const getRestaurant = async function (req, res) {
     try {
-        
+
         const verifiedtoken = req.verifiedtoken
         let userRoleFromToken = verifiedtoken.userRole
 
@@ -569,12 +571,181 @@ const deleteRestaurant = async function (req, res, next) {
     }
 };
 
+//============================================Change-password-for-A-Restaurant=================================================//
+
+const changePassword = async function (req, res, next) {
+    try {
+
+        const enteredId = req.params.id
+
+        let checkRestaurantId = enteredId.split('').length
+
+        if (checkRestaurantId != 36) {
+            return res.status(422).send({ status: 1003, message: "Restaurant-Id is not valid" })
+        }
+
+        let restaurantId = enteredId
+
+        const enteredRestaurantId = await Restaurant.findOne({ where: { id: restaurantId } })
+
+        if (!enteredRestaurantId) {
+            return res.status(422).send({ status: 1006, message: "Provided Restaurant-ID does not exists" })
+        }
+
+        let data = req.body
+
+        let { oldPassword, password, confirmPassword } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+        }
+
+        if (!isValid(oldPassword)) {
+            return res.status(422).send({ status: 1002, message: "oldPassword is required" })
+        }
+
+        let restaurant = await Restaurant.findOne({ where: { id: restaurantId } })
+
+        let checkPassword = await bcrypt.compare(oldPassword + nodeKey, restaurant.password)
+        if (!checkPassword) {
+            return res.status(422).send({ status: 1008, message: "OldPassword is not correct please enter a correct password" })
+        }
+
+        if (!isValid(password)) {
+            return res.status(422).send({ status: 1002, message: "Password is required" })
+        }
+
+        if (!isValid(confirmPassword)) {
+            return res.status(422).send({ status: 1002, message: "confirm Password is required" })
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(422).send({ status: 1002, message: "Passwords does not match" })
+        }
+
+        if (password.length < 8) {
+            return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
+        }
+
+        if (password.length > 15) {
+            return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
+        }
+
+        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+
+        next()
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//============================================Reset-password-for-A-Restaurant=================================================//
+
+const resetPassword = async function (req, res, next) {
+    try {
+
+        let data = req.body
+
+        let { email } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+        }
+
+        if (!isValid(email)) {
+            return res.status(422).send({ status: 1002, message: "Email is required" })
+        }
+
+        if (!isValidEmail(email)) {
+            return res.status(422).send({ status: 1003, message: "Email should be a valid email address" })
+        }
+
+        const isRegisteredEmail = await Restaurant.findOne({ where: { email: email } });
+
+        if (!isRegisteredEmail) {
+            return res.status(422).send({ status: 1008, message: "This Email-Id is not registered" })
+        }
+
+        next()
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//===========================================Verify-password-for-A-Restaurant=================================================//
+
+const verifyPassword = async function (req, res, next) {
+    try {
+
+        let userToken = req.params.token
+
+        JWT.verify(userToken, process.env.RESET_PASSWORD_KEY, async (err) => {
+            if (err) {
+                return res.status(401).send({ status: 1003, message: 'InValid Token or session expired' })
+            }
+        });
+
+        let findUserToken = await Restaurant.findOne({ where: { resetLink: userToken } })
+
+        if (!findUserToken) {
+            return res.status(404).send({ status: 1006, message: "restaurant with this token does not exists" });
+        }
+
+        let data = req.body
+
+        let { resetLink, password, confirmPassword } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide some details" })
+        }
+
+        if (!isValid(password)) {
+            return res.status(422).send({ status: 1002, message: "Password is required" })
+        }
+
+        if (!isValid(confirmPassword)) {
+            return res.status(422).send({ status: 1002, message: "confirm Password is required" })
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(422).send({ status: 1002, message: "Passwords does not match" })
+        }
+
+        if (password.length < 8) {
+            return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
+        }
+
+        if (password.length > 15) {
+            return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
+        }
+
+        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+
+        //once password changed resetLink will be a emptyString
+        data.resetLink = ''
+
+        next()
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
 module.exports = {
     createRestaurant,
     updateRestaurant,
     getRestaurant,
     deleteRestaurant,
-    login
+    login,
+    changePassword,
+    resetPassword,
+    verifyPassword
 }
 
 

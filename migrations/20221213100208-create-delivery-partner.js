@@ -62,6 +62,10 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: "deliverypartner"
       },
+      resetLink: {
+        type: Sequelize.STRING,
+        allowNull:true
+      },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: true,

@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
+const JWT = require("jsonwebtoken")
+const nodemailer = require("nodemailer")
 const db = require("../../models");
 const { Admin } = db
 const { Op } = require("sequelize");
@@ -138,38 +139,21 @@ const destroy = async function (req, res) {
     }
 }
 
-//========================================PUT/FORGOT-PASSWORD-FOR-A-ADMIN================================================//
+//========================================PUT/CHANGE-PASSWORD-FOR-A-ADMIN================================================//
 
 const change = async function (req, res) {
     try {
 
-        let adminId = req.params.id
-
+        const adminId = req.params.id;
         let data = req.body
 
-        let { email } = data
+        const values = data;
+        const condition = { where: { id: adminId } };
+        const options = { multi: true };
 
-        if (("phone" || "email" in data)) {
+        const updateDetails = await Admin.update(values, condition, options)
 
-            let admin = await Admin.findOne({ where: { [Op.or]: [{ email: { [Op.eq]: email } }] } })
-
-            if (!admin) {
-                return res.status(422).send({ status: 1003, message: "Invalid Email credentials" });
-            }
-
-            const token = await signAccessToken(admin.id, admin.userRole);
-
-            const linkData = { resetLink: token }
-
-            const values = linkData;
-            const condition = { where: { id: adminId } };
-            const options = { multi: true };
-
-            const updateDetails = await Admin.update(values, condition, options)
-
-            return res.status(200).send({ status: 1010, message: "Your reset link to change the password", data: linkData })
-        }
-
+        return res.status(200).send({ status: 1010, message: "The password has been changed Succesfully", updatedData: values })
     }
     catch (err) {
         console.log(err.message);
@@ -177,38 +161,78 @@ const change = async function (req, res) {
     }
 }
 
-//========================================PUT/RESET-PASSWORD-FOR-A-ADMIN=================================================//
+//========================================POST/RESET-LINK-PASSWORD-FOR-A-ADMIN===========================================//
 
 const reset = async function (req, res) {
     try {
 
-        let adminId = req.params.id
+        const admin = await Admin.findOne({ where: { email: req.body.email } })
 
-        let data = req.body
+        const token = JWT.sign({
+            userId: admin.id,
+            userRole: admin.userRole,
+            iat: Math.floor(Date.now() / 1000),
+            exp: Math.floor(Date.now() / 1000) + (600)
+        },
+            process.env.RESET_PASSWORD_KEY
+        );
 
-        let { resetLink, password } = data
+        let setResetLink = { resetLink: token }
 
-        if (resetLink) {
-            jwt.verify(resetLink, process.env.JWT_SECRET_KEY, async (err, next) => {
-                if (err) {
-                    return res.status(422).send({ status: 1003, message: "Invalid Token!" })
-                }
-            });
-        }
+        const values = setResetLink;
+        const condition = { where: { email: req.body.email } };
+        const options = { multi: true };
 
-        const findAdmin = await Admin.findOne({ where: { resetLink: resetLink, id: adminId } })
+        const updateDetails = await Admin.update(values, condition, options)
 
-        if (!findAdmin) {
-            return res.status(404).send({ status: 1006, message: "Admin with this token does not exists" });
-        }
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: 'jerrysingh587@gmail.com',
+                pass: 'dzgwmtzlgnjzkcfg'
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
 
-        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+        const mailOptions = {
+            from: 'jerrysingh587@gmail.com',
+            to: admin.email,
+            subject: "Account Activation Link",
+            html:
+                `<h1>Your link to reset the password is</h1>
+                 <p>${process.env.CLIENT_URL}+${token}</p>`
+        };
 
-        //once password changed resetLink will be a emptyString
-        data.resetLink = ''
+        transporter.sendMail(mailOptions, function (err, data) {
+            if (err) {
+                return res.status(200).send({ status: 1010, message: "Error " + err });
+            } else {
+                return res.status(200).send({ status: 1010, message: `Email has been sent successfully to ${admin.email} ` });
+            }
+        });
 
-        const values = data
-        const condition = { where: { id: adminId } }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+//========================================POST/RESET-PASSWORD-FOR-A-ADMIN=================================================//
+
+const verify = async function (req, res) {
+    try {
+
+        let userToken = req.params.token
+
+        let verifiedToken = await JWT.verify(userToken, process.env.RESET_PASSWORD_KEY)
+
+        const values = req.body
+        const condition = { where: { id: verifiedToken.userId } }
         const options = { multi: true }
 
         const updateDetails = await Admin.update(values, condition, options)
@@ -229,5 +253,6 @@ module.exports = {
     index,
     destroy,
     change,
-    reset
+    reset,
+    verify
 }

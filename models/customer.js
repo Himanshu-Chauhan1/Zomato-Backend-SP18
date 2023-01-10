@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       set: function trimValue(val) {
         this.setDataValue('phone', val.trim());
       },
-    }, 
+    },
     password: {
       type: DataTypes.STRING,
       set: function setPassword(val) {
@@ -62,11 +62,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: "customer"
     },
+    resetLink: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       default: true,
-    }
+    },
   }, {
     sequelize,
     modelName: 'customer',

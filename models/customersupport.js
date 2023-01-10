@@ -101,6 +101,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: "customersupport"
     },
+    resetLink: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,

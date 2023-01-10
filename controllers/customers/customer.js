@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt")
 const db = require("../../models");
+const JWT = require("jsonwebtoken")
 const nodemailer = require("nodemailer")
 const { Customer } = db
 const { Op } = require("sequelize");
@@ -137,38 +138,21 @@ const destroy = async function (req, res) {
     }
 }
 
-//========================================PUT/FORGOT-PASSWORD-FOR-A-CUSTOMER================================================//
+//========================================PUT/CHANGE-PASSWORD-FOR-A-CUSTOMER================================================//
 
 const change = async function (req, res) {
     try {
 
-        let adminId = req.params.id
-
+        const customerId = req.params.id;
         let data = req.body
 
-        let { email } = data
+        const values = data;
+        const condition = { where: { id: customerId } };
+        const options = { multi: true };
 
-        if (("phone" || "email" in data)) {
+        const updateDetails = await Customer.update(values, condition, options)
 
-            let admin = await Admin.findOne({ where: { [Op.or]: [{ email: { [Op.eq]: email } }] } })
-
-            if (!admin) {
-                return res.status(422).send({ status: 1003, message: "Invalid Email credentials" });
-            }
-
-            const token = await signAccessToken(admin.id, admin.userRole);
-
-            const linkData = { resetLink: token }
-
-            const values = linkData;
-            const condition = { where: { id: adminId } };
-            const options = { multi: true };
-
-            const updateDetails = await Admin.update(values, condition, options)
-
-            return res.status(200).send({ status: 1010, message: "Your reset link to change the password", data: linkData })
-        }
-
+        return res.status(200).send({ status: 1010, message: "The password has been changed Succesfully", updatedData: values })
     }
     catch (err) {
         console.log(err.message);
@@ -176,53 +160,83 @@ const change = async function (req, res) {
     }
 }
 
-//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER=================================================//
+//========================================PUT/RESET-LINK-PASSWORD-FOR-A-CUSTOMER=================================================//
 
-const reset1 = async function (req, res) {
+const reset = async function (req, res) {
     try {
 
-        console.log('object');
+        const customer = await Customer.findOne({ where: { email: req.body.email } })
 
-        let data = req.body
+        const token = JWT.sign({
+            userId: customer.id,
+            userRole: customer.userRole,
+            iat: Math.floor(Date.now() / 1000),
+            exp: Math.floor(Date.now() / 1000) + (600)
+        },
+            process.env.RESET_PASSWORD_KEY
+        );
 
-        let { email } = data
+        let setResetLink = { resetLink: token }
 
+        const values = setResetLink;
+        const condition = { where: { email: req.body.email } };
+        const options = { multi: true };
 
-        const customer = await Customer.findOne({ where: { email: email } })
+        const updateDetails = await Customer.update(values, condition, options)
 
-        if (!customer) {
-            return res.status(404).send({ status: 1006, message: "Customer with this email does not exists" });
-        }
-
-        var transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
             secure: false,
             requireTLS: true,
             auth: {
-                user: 'jerrysingh587@gmail.com', // generated ethereal user
-                pass: 'Himanshu@12345'  // generated ethereal password
+                user: 'jerrysingh587@gmail.com',
+                pass: 'dzgwmtzlgnjzkcfg'
             },
             tls: {
                 rejectUnauthorized: false
             }
         });
 
-        var mailOptions = {
-            from: 'jerrysingh587@gmail.com', // sender address
-            to: customer.email, // list of receivers
-            subject: "Your Password for ProjectMynt Admin",
-            html: "Your Password for ProjectMynt Admin is " + customer.password
+        const mailOptions = {
+            from: 'jerrysingh587@gmail.com',
+            to: customer.email,
+            subject: "Account Activation Link",
+            html:
+                `<h1>Your link to reset the password is</h1>
+                 <p>${process.env.CLIENT_URL}+${token}</p>`
         };
-
 
         transporter.sendMail(mailOptions, function (err, data) {
             if (err) {
-                console.log("Error " + err);
+                return res.status(200).send({ status: 1010, message: "Error " + err });
             } else {
-                console.log("Email sent successfully");
+                return res.status(200).send({ status: 1010, message: `Email has been sent successfully to ${customer.email} ` });
             }
         });
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER=================================================//
+
+const verify = async function (req, res) {
+    try {
+
+        let userToken = req.params.token
+
+        let verifiedToken = await JWT.verify(userToken, process.env.RESET_PASSWORD_KEY)
+
+        const values = req.body
+        const condition = { where: { id: verifiedToken.userId } }
+        const options = { multi: true }
+
+        const updateDetails = await Customer.update(values, condition, options)
+
+        return res.status(200).send({ status: 1010, message: "Your password has been changed successfully", data: values })
 
     }
     catch (err) {
@@ -238,5 +252,6 @@ module.exports = {
     index,
     destroy,
     change,
-    reset1
+    reset,
+    verify
 }
