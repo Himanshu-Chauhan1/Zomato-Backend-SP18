@@ -470,9 +470,9 @@ const changePassword = async function (req, res, next) {
     }
 }
 
-//============================================Reset-password-for-A-Customer=================================================//
+//============================================Reset-password-for-A-Customer-using-email=================================================//
 
-const resetPassword = async function (req, res, next) {
+const resetPasswordUsingEmail = async function (req, res, next) {
     try {
 
         let data = req.body
@@ -505,9 +505,9 @@ const resetPassword = async function (req, res, next) {
     }
 }
 
-//===========================================Verify-password-for-A-customer=================================================//
+//===========================================Verify-password-for-A-customer-using-email=================================================//
 
-const verifyPassword = async function (req, res, next) {
+const verifyPasswordUsingEmail = async function (req, res, next) {
     try {
 
         let userToken = req.params.token
@@ -566,6 +566,101 @@ const verifyPassword = async function (req, res, next) {
     }
 }
 
+//============================================Reset-password-for-A-Customer-using-phone=================================================//
+
+const resetPasswordUsingPhone = async function (req, res, next) {
+    try {
+
+        let data = req.body
+
+        let { phone } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+        }
+
+        if (!isValid(phone)) {
+            return res.status(422).send({ status: 1002, message: "Phone No. is required" })
+        }
+
+        if (!isValidPhone(phone)) {
+            return res.status(422).send({ status: 1003, message: "Please enter a valid Phone no" })
+        }
+
+        const isRegisteredPhone = await Customer.findOne({ where: { phone: phone } });
+
+        if (!isRegisteredPhone) {
+            return res.status(422).send({ status: 1008, message: "This Phone No. is not registered" })
+        }
+
+        next()
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//===========================================Verify-password-for-A-customer-using-phone=================================================//
+
+const verifyPasswordUsingPhone = async function (req, res, next) {
+    try {
+
+        let userToken = req.params.token
+
+        JWT.verify(userToken, process.env.RESET_PASSWORD_KEY, async (err) => {
+            if (err) {
+                return res.status(401).send({ status: 1003, message: 'InValid Token or session expired' })
+            }
+        });
+
+        let findUserToken = await Customer.findOne({ where: { resetLink: userToken } })
+
+        if (!findUserToken) {
+            return res.status(404).send({ status: 1006, message: "customer with this token does not exists" });
+        }
+
+        let data = req.body
+
+        let { resetLink, password, confirmPassword } = data
+
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide some details" })
+        }
+
+        if (!isValid(password)) {
+            return res.status(422).send({ status: 1002, message: "Password is required" })
+        }
+
+        if (!isValid(confirmPassword)) {
+            return res.status(422).send({ status: 1002, message: "confirm Password is required" })
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(422).send({ status: 1002, message: "Passwords does not match" })
+        }
+
+        if (password.length < 8) {
+            return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
+        }
+
+        if (password.length > 15) {
+            return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
+        }
+
+        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+
+        //once password changed resetLink will be a emptyString
+        data.resetLink = ''
+
+        next()
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
 
 module.exports = {
     createCustomer,
@@ -574,8 +669,10 @@ module.exports = {
     deleteCustomer,
     login,
     changePassword,
-    resetPassword,
-    verifyPassword
+    resetPasswordUsingEmail,
+    verifyPasswordUsingEmail,
+    resetPasswordUsingPhone,
+    verifyPasswordUsingPhone
 }
 
 

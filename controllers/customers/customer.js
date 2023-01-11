@@ -2,10 +2,13 @@ require("dotenv").config();
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const JWT = require("jsonwebtoken")
+const fast2sms = require('fast-two-sms')
+const Client = require('authy-client')
 const nodemailer = require("nodemailer")
 const { Customer } = db
 const { Op } = require("sequelize");
 const { signAccessToken } = require("../../Utils/jwt")
+const { generateOTP } = require("../../Utils/otp");
 const nodeKey = process.env.NODE_KEY
 
 //=========================================POST /CREATE-A-CUSTOMER==========================================================//
@@ -160,7 +163,7 @@ const change = async function (req, res) {
     }
 }
 
-//========================================PUT/RESET-LINK-PASSWORD-FOR-A-CUSTOMER=================================================//
+//========================================POST/RESET-LINK-PASSWORD-FOR-A-CUSTOMER=================================================//
 
 const reset = async function (req, res) {
     try {
@@ -221,9 +224,73 @@ const reset = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
+
 //========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER=================================================//
 
 const verify = async function (req, res) {
+    try {
+
+        let userToken = req.params.token
+
+        let verifiedToken = await JWT.verify(userToken, process.env.RESET_PASSWORD_KEY)
+
+        const values = req.body
+        const condition = { where: { id: verifiedToken.userId } }
+        const options = { multi: true }
+
+        const updateDetails = await Customer.update(values, condition, options)
+
+        return res.status(200).send({ status: 1010, message: "Your password has been changed successfully", data: values })
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//========================================POST/SEND-OTP-TO-A-CUSTOMER=================================================//
+
+const resetOtp = async function (req, res) {
+    try {
+
+        // const customer = await Customer.findOne({ where: { phone: req.body.phone } })
+
+        // // generate otp
+        // const otp = generateOTP(6);
+
+        // let setOtp = { otp: otp }
+
+        // const values = setOtp;
+        // const condition = { where: { phone: req.body.phone } };
+        // const options1 = { multi: true };
+
+        // const updateDetails = await Customer.update(values, condition, options1)
+
+        const options = {
+            authorization: "9CWRucrQJ3oie19ECGKMYiDmuuyHbiD3xkX0mDyRleSn1rQ4fj0AP20emwCP",
+            message: `Your Otp is 654`,
+            numbers: ['9258026266']
+        }
+
+        fast2sms.sendMessage(options, (err) => {
+            if (err) {
+                return res.status(422).send({ status: 1010, message: "Error " + err });
+            } else {
+                return res.status(200).send({ status: 1010, message: `OTP has been sent successfully` });
+            }
+        });
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER-USING-PHONE-OTP=================================================//
+
+const verifyOtp = async function (req, res) {
     try {
 
         let userToken = req.params.token
@@ -253,5 +320,7 @@ module.exports = {
     destroy,
     change,
     reset,
-    verify
+    verify,
+    resetOtp,
+    verifyOtp
 }

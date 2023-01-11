@@ -49,6 +49,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull:true
       },
+      otp: {
+        type: Sequelize.STRING,
+        allowNull:true
+      },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: true,

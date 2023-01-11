@@ -1,7 +1,7 @@
 const express = require("express")
 const customerRouter = express.Router()
 const validate = require("../../validators/customers/customer")
-const { create, update, destroy, login, index, change, reset, verify } = require("../../controllers/customers/customer");
+const { create, update, destroy, login, index, change, reset, verify, verifyOtp, resetOtp } = require("../../controllers/customers/customer");
 const { authentication } = require("../../middlewares/authentication");
 const { authorization } = require("../../middlewares/authorization");
 
@@ -13,7 +13,9 @@ customerRouter.get('/customers', [authentication, validate.getCustomer], index);
 customerRouter.delete('/customers/:id', [authentication, authorization, validate.deleteCustomer], destroy);
 customerRouter.post('/customers/login', [validate.login], login);
 customerRouter.put('/customers/:id/changepassword', [authentication, authorization, validate.changePassword], change);
-customerRouter.post('/customers/resetpassword', [validate.resetPassword], reset);
-customerRouter.post('/customers/:token/verifypassword', [validate.verifyPassword], verify);
+customerRouter.post('/customers/resetpassword', [validate.resetPasswordUsingEmail], reset);
+customerRouter.post('/customers/:token/verifypassword', [validate.verifyPasswordUsingEmail], verify);
+customerRouter.get('/customers/sendotp',  resetOtp);
+customerRouter.post('/customers/:otp/verifyotp', [validate.verifyPasswordUsingPhone], verifyOtp);
 
 module.exports = customerRouter

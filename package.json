@@ -17,10 +17,13 @@
   "author": "Ankit Sathiya,Himanshu Chauhan",
   "license": "ISC",
   "dependencies": {
+    "authy-client": "^1.1.4",
     "aws-sdk": "^2.1274.0",
     "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fast-two-sms": "^3.0.0",
     "is-valid-birthdate": "^0.1.0",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
@@ -30,8 +33,11 @@
     "nodemon": "^2.0.20",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
+    "sendotp": "^1.2.9",
     "sequelize": "^6.26.0",
     "sequelize-cli": "^6.5.2",
+    "telesignsdk": "^2.2.3",
+    "twilio": "^3.84.0",
     "valid-url": "^1.0.9"
   }
 }
