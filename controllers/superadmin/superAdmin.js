@@ -1,16 +1,17 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const db = require("../../models");
-const { Admin } = db
+const { SuperAdmin } = db
+const { Op } = require("sequelize");
+const { signAccessToken } = require("../../Utils/jwt")
+const nodeKey = process.env.NODE_KEY
 
-
-//========================================POST /CREATE-A-SUPER-ADMIN==========================================================//
+//=====================================POST /CREATE-A-SUPER-ADMIN==================================================//
 
 const create = async function (req, res) {
     try {
 
-        const accountCreated = await Admin.create(req.body)
+        const accountCreated = await SuperAdmin.create(req.body)
 
         res.status(201).send({ status: 1009, message: "You have been registered successfully", data: accountCreated })
 
@@ -20,69 +21,32 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-SUPER-ADMIN=======================================================//
+//====================================POST /LOGIN-FOR-A-SUPER-ADMIN===============================================//
 
 let login = async (req, res) => {
     try {
 
         let data = req.body
 
-        let { email, phone, password } = data
+        let { email, password } = data
 
-        if ("email" in data) {
-            let admin = await Admin.findOne({ where: { email: email } })
-            if (!admin) {
-                return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
-            }
+        let superAdmin = await SuperAdmin.findOne({ where: { email: email } })
 
-            let checkPassword = await bcrypt.compare(password, admin.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
-
-            const payload = {
-                adminId: admin.id,
-                issuer: "sparkeighteen.com",
-                role: "admin",
-                exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-            };
-
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
-
-            const data = {
-                token: token,
-                role: "admin"
-            }
-
-            return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
-
+        if (!superAdmin) {
+            return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
         }
-        if ("phone" in data) {
-            let admin = await Admin.findOne({ where: { phone: phone } })
-            if (!admin) {
-                return res.status(422).send({ status: 1003, message: "Invalid Email or Phone credentials" });
-            }
 
-            let checkPassword = await bcrypt.compare(password, admin.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
+        let checkPassword = await bcrypt.compareSync(password + nodeKey, superAdmin.password)
+        if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
 
-            const payload = {
-                adminId: admin.id,
-                issuer: "sparkeighteen.com",
-                role: "admin",
-                exp: Math.floor(Date.now() / 1000) + (8.64e+7)
-            };
+        const token = await signAccessToken(superAdmin.id, superAdmin.userRole);
 
-            const token = jwt.sign({ payload }, process.env.SECRET_KEY)
-
-            console.log(token.role);
-
-            const data = {
-                token: token,
-                role: "admin"
-            }
-
-            return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
-
+        const userData = {
+            token: token,
+            role: superAdmin.userRole
         }
+
+        return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: userData })
 
     } catch (error) {
         console.log(error.message);
@@ -90,7 +54,71 @@ let login = async (req, res) => {
     }
 }
 
+//====================================POST/UPDATE-A-SUPER-ADMIN===================================================//
+
+const update = async function (req, res) {
+    try {
+        const superAdminId = req.params.id;
+        let data = req.body
+
+        const values = data;
+        const condition = { where: { id: superAdminId } };
+        const options = { multi: true };
+
+        const updateDetails = await SuperAdmin.update(values, condition, options)
+
+        return res.status(200).send({ status: 1010, message: "The entered details has been Updated Succesfully", updatedData: values })
+    }
+    catch (err) {
+        console.log(err.message)
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+};
+
+//=====================================GET/GET-A-SUPER-ADMIN=====================================================//
+
+const index = async function (req, res) {
+    try {
+
+        let data = req.query
+        const { superAdminId, fullName, email, phone } = data
+
+        if (Object.keys(req.query).length > 0) {
+            let findSuperAdminByFilter = await Admin.findAll({
+                where: {
+                    [Op.or]: [
+                        { id: { [Op.eq]: superAdminId } },
+                        { fullName: { [Op.eq]: fullName } },
+                        { email: { [Op.eq]: email } },
+                        { phone: { [Op.eq]: phone } }
+                    ]
+                }
+            })
+
+            if (!findSuperAdminByFilter.length)
+                return res.status(404).send({ status: 1006, message: "No superAdmins found as per the filters applied" })
+
+            return res.status(200).send({ status: 1010, data: findSuperAdminByFilter })
+        } else {
+
+            let findAllSuperAdmins = await SuperAdmin.findAll()
+
+            if (!findAllSuperAdmins.length)
+                return res.status(404).send({ status: 1006, message: "No SuperAdmins found" })
+
+            return res.status(200).send({ status: 1010, data: findAllSuperAdmins })
+        }
+
+    }
+    catch (err) {
+        console.log(err.message)
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+};
+
 module.exports = {
     create,
-    login
+    login,
+    update,
+    index
 }

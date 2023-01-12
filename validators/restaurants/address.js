@@ -217,7 +217,7 @@ const updateAddress = async function (req, res, next) {
     }
 }
 
-//========================================Get-A-Address==========================================================//
+//========================================Get-A-Address============================================================//
 
 const getAddress = async function (req, res, next) {
     try {
@@ -250,12 +250,6 @@ const getAddress = async function (req, res, next) {
             if (userId.length != 36) {
                 return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
             }
-
-            const isRegisteredUserId = await Address.findOne({ where: { id: paramsRestaurantId, userRole: { [Op.eq]: 'restaurant' } } });
-
-            if (!isRegisteredUserId) {
-                return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the restaurants" })
-            }
         }
 
         if ("streetName" in data) {
@@ -266,12 +260,6 @@ const getAddress = async function (req, res, next) {
 
             if (!isValidStreetName(streetName)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid streetName" })
-            }
-
-            const isRegisteredStreetName = await Address.findOne({ where: { streetName: streetName, userRole: { [Op.eq]: 'restaurant' } } });
-
-            if (!isRegisteredStreetName) {
-                return res.status(422).send({ status: 1008, message: "This streetName does not belongs to any of the restaurants" })
             }
         }
 
@@ -284,12 +272,6 @@ const getAddress = async function (req, res, next) {
             if (!isValidCityName(cityName)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid cityName" })
             }
-
-            const isRegisteredCityName = await Address.findOne({ where: { cityName: cityName, userRole: { [Op.eq]: 'restaurant' } } });
-
-            if (!isRegisteredCityName) {
-                return res.status(422).send({ status: 1008, message: "This cityName does not belongs to any of the restaurants" })
-            }
         }
 
         if ("stateName" in data) {
@@ -301,12 +283,6 @@ const getAddress = async function (req, res, next) {
             if (!isValidStateName(stateName)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid stateName" })
             }
-
-            const isRegisteredStateName = await Address.findOne({ where: { stateName: stateName, userRole: { [Op.eq]: 'restaurant' } } });
-
-            if (!isRegisteredStateName) {
-                return res.status(422).send({ status: 1008, message: "This stateName does not belongs to any of the restaurants" })
-            }
         }
 
         if ("pincode" in data) {
@@ -317,12 +293,6 @@ const getAddress = async function (req, res, next) {
 
             if (!isValidPincode(pincode)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid pincode" })
-            }
-
-            const isRegisteredPincode = await Address.findOne({ where: { pincode: pincode, userRole: { [Op.eq]: 'restaurant' } } });
-
-            if (!isRegisteredPincode) {
-                return res.status(422).send({ status: 1008, message: "This pincode does not belongs to any of the restaurants" })
             }
         }
 

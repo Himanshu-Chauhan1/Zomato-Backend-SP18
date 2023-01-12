@@ -17,10 +17,10 @@ const foodItemModel = require('./fooditem')
 const foodCategoryModel = require('./foodcategory')
 const cartModel = require('./cart')
 const offerModel = require('./offer')
-const orderStatusModel = require('./orderstatus')
 const queryModel = require('./query')
 const addressModel = require('./address')
 const orderModel = require('./order')
+const superAdminModel = require('./superadmin')
 
 
 let sequelize;
@@ -55,10 +55,10 @@ const FoodItem = foodItemModel(sequelize, Sequelize)
 const FoodCategory = foodCategoryModel(sequelize, Sequelize)
 const Cart = cartModel(sequelize, Sequelize)
 const Offer = offerModel(sequelize, Sequelize)
-const OrderStatus = orderStatusModel(sequelize, Sequelize)
 const Query = queryModel(sequelize, Sequelize)
 const Address = addressModel(sequelize, Sequelize)
 const Order = orderModel(sequelize, Sequelize)
+const SuperAdmin = superAdminModel(sequelize, Sequelize)
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -74,8 +74,8 @@ module.exports = {
   FoodCategory,
   Cart,
   Offer,
-  OrderStatus,
   Query,
   Address,
-  Order
+  Order,
+  SuperAdmin
 };

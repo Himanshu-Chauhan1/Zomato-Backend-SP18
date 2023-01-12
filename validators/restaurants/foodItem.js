@@ -1,8 +1,6 @@
 const db = require("../../models")
 const validUrl = require('valid-url');
 const { FoodItem, FoodCategory, Restaurant } = db
-const { Op } = require("sequelize");
-
 
 ////////////////////////// -GLOBAL- //////////////////////
 const isValid = function (value) {
@@ -36,11 +34,6 @@ const isValidItemPrice = (itemPrice) => {
 //////////////// -FOR ITEM-AVILABLE- ///////////////////////
 const isActiveItem = (isActive) => {
     return /^(true|false|True|False)$/.test(isActive);
-};
-
-//////////////// -FOR CATEGORY-AVAILABLE- ///////////////////////
-const isValidFutureDate = (dateCreated) => {
-    return /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/.test(dateCreated);
 };
 
 //========================================Create-A-FoodItem==========================================================//
@@ -316,12 +309,6 @@ const getFoodItem = async function (req, res, next) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid categoryName" })
             }
 
-            const isRegisteredCategory = await FoodItem.findOne({ where: { categoryName: categoryName, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredCategory) {
-                return res.status(422).send({ status: 1008, message: "There is no category with this name, Please enter a new one" })
-            }
-
         }
 
         if ("itemName" in data) {
@@ -329,23 +316,18 @@ const getFoodItem = async function (req, res, next) {
             if (!isValid(itemName)) {
                 return res.status(422).send({ status: 1002, message: "itemName is required" })
             }
-
-            const isRegisteredItemName = await FoodItem.findOne({ where: { itemName: itemName, categoryName: categoryName, restaurantId: paramsRestaurantId } });
-
-            if (isRegisteredItemName) {
-                return res.status(422).send({ status: 1008, message: "This are no items with this name in this category, Please try a new one" })
-            }
         }
 
         if ("itemPrice" in data) {
+            
+            if (!isValidNumber(itemPrice)) {
+                return res.status(422).send({ status: 1002, message: "itemPrice is required" })
+            }
 
             if (!isValidItemPrice(itemPrice)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })
             }
 
-            // if (!isValid(itemImage)) {
-            //     return res.status(422).send({ status: 1002, message: "itemImage is required" })
-            // }
         }
 
         if ("isActive" in data) {
@@ -357,13 +339,6 @@ const getFoodItem = async function (req, res, next) {
             if (!isActiveCategory(isActive)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a category isActive like True or false etc" })
             }
-
-            const isRegisteredActiveCategory = await FoodItem.findOne({ where: { isActive: isActive, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredActiveCategory) {
-                return res.status(422).send({ status: 1008, message: "There is no active or inactive items with this name in the category, Please enter a new one" })
-            }
-
         }
 
         next()

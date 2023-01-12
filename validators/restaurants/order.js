@@ -1,9 +1,5 @@
 const db = require("../../models")
-const { Order, Restaurant } = db
-const moment = require('moment');
-const { Op } = require("sequelize");
-const sequelize = require("sequelize");
-
+const { Restaurant } = db
 
 ////////////////////////// -GLOBAL- //////////////////////
 const isValid = function (value) {
@@ -11,12 +7,6 @@ const isValid = function (value) {
         return false;
     return true;
 };
-
-//////////////// -FOR EMPTY BODY- ///////////////////////
-const isValidRequestBody = function (requestBody) {
-    return Object.keys(requestBody).length > 0;
-};
-
 
 //========================================Update-A-Order==========================================================//
 

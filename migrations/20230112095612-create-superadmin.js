@@ -2,25 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('orderstatus', {
+    await queryInterface.createTable('superadmins', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         primaryKey: true
       },
-      orderId: {
+      fullName: {
         type: Sequelize.STRING,
-        allowNull: true,
-      },
-      orderStatus: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      isActive: {
-        type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue:true
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      phone: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      userRole: {
+        type: Sequelize.STRING,
+        defaultValue: "superadmin"
       },
       createdAt: {
         allowNull: false,
@@ -33,6 +40,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('orderstatus');
+    await queryInterface.dropTable('superadmins');
   }
 };

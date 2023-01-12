@@ -416,9 +416,8 @@ const getRestaurant = async function (req, res) {
             let checkRestaurantId = restaurantId.split('').length
 
             if (checkRestaurantId != 36) {
-                return res.status(422).send({ status: 1003, message: "restaurant-Id is not valid" })
+                return res.status(422).send({ status: 1003, message: "restaurant-Id is not valid please enter in a valid format" })
             }
-
         }
 
         if ("name" in data) {
@@ -508,8 +507,7 @@ const getRestaurant = async function (req, res) {
         }
 
         if ("isApproved" in data) {
-
-
+            
             if (!isValid(isApproved)) {
                 return res.status(422).send({ status: 1002, message: "isApproved is required" })
             }

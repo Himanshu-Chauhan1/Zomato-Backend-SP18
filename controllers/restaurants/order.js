@@ -1,10 +1,10 @@
 require("dotenv").config();
 const db = require("../../models");
-const { Cart, Order, Restaurant } = db
+const { Order } = db
 const { Op } = require("sequelize");
 
 
-//================================================POST/UPDATE-A-ORDER==========================================================//
+//===========================================POST/UPDATE-A-ORDER==========================================================//
 
 const update = async function (req, res) {
     try {
@@ -17,7 +17,7 @@ const update = async function (req, res) {
         if (!findCustomerId) {
             return res.status(422).send({ status: 1006, message: "Please enter a correct orderId or this id does not belongs to this customer" })
         }
-        
+
         const customerId = findCustomerId.customerId
 
         const values = data;
@@ -34,7 +34,7 @@ const update = async function (req, res) {
     }
 };
 
-//=================================================GET/GET-ALL-ORDERS==========================================================//
+//===========================================GET/GET-ALL-ORDERS==========================================================//
 
 const index = async function (req, res) {
     try {
@@ -60,7 +60,6 @@ const index = async function (req, res) {
         return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
 };
-
 
 module.exports = {
     update,

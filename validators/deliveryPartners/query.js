@@ -204,11 +204,10 @@ const getOrderQuery = async function (req, res, next) {
             if (!isValid(orderId)) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
+            let checkOrderId = orderId.split('').length
 
-            const isRegisteredOrderId = await DeliveryPartner.findOne({ where: { id: orderId } });
-
-            if (!isRegisteredOrderId) {
-                return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
+            if (checkOrderId != 36) {
+                return res.status(422).send({ status: 1003, message: "order-Id is not valid please enter in a valid format" })
             }
         }
 
@@ -218,10 +217,10 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "userId is required" })
             }
 
-            const isRegistereduserId = await DeliveryPartner.findOne({ where: { id: userId } });
+            let checkUserId = userId.split('').length
 
-            if (!isRegistereduserId) {
-                return res.status(422).send({ status: 1008, message: "This orderId does not exists for any delivery partners" })
+            if (checkUserId != 36) {
+                return res.status(422).send({ status: 1003, message: "user-Id is not valid please enter in a valid format" })
             }
 
         }

@@ -1,5 +1,5 @@
 const db = require("../../models")
-const { Query, OrderStatus, CustomerSupport } = db
+const { Query, CustomerSupport } = db
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -258,10 +258,10 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
-            const isRegisteredOrderId = await OrderStatus.findOne({ where: { id: orderId } });
+            let checkOrderId = orderId.split('').length
 
-            if (!isRegisteredOrderId) {
-                return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
+            if (checkOrderId != 36) {
+                return res.status(422).send({ status: 1003, message: "order-Id is not valid please enter in a valid format" })
             }
         }
 
@@ -271,10 +271,10 @@ const getOrderQuery = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "userId is required" })
             }
 
-            const isRegistereduserId = await CustomerSupport.findOne({ where: { id: userId } });
+            let checkUserId = userId.split('').length
 
-            if (!isRegistereduserId) {
-                return res.status(422).send({ status: 1008, message: "This orderId does not exists for any customer support" })
+            if (checkUserId != 36) {
+                return res.status(422).send({ status: 1003, message: "user-Id is not valid please enter in a valid format" })
             }
 
         }

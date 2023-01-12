@@ -207,12 +207,6 @@ const getFoodCategory = async function (req, res, next) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid categoryName" })
             }
 
-            const isRegisteredCategory = await FoodCategory.findOne({ where: { categoryName: categoryName, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredCategory) {
-                return res.status(422).send({ status: 1008, message: "There is no category with this name, Please enter a new one" })
-            }
-
         }
 
         if ("isActive" in data) {
@@ -224,13 +218,6 @@ const getFoodCategory = async function (req, res, next) {
             if (!isActiveCategory(isActive)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a category isActive like True or false etc" })
             }
-
-            const isRegisteredActiveCategory = await FoodCategory.findOne({ where: { isActive: isActive, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredActiveCategory) {
-                return res.status(422).send({ status: 1008, message: "There is no active or inactive category with this name, Please enter a new one" })
-            }
-
         }
 
         next()

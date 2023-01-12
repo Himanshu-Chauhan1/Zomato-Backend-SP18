@@ -2,8 +2,6 @@ require("dotenv").config();
 const bcrypt = require("bcrypt")
 const db = require("../../models");
 const JWT = require("jsonwebtoken")
-const fast2sms = require('fast-two-sms')
-const Client = require('authy-client')
 const nodemailer = require("nodemailer")
 const { Customer } = db
 const { Op } = require("sequelize");
@@ -188,13 +186,13 @@ const reset = async function (req, res) {
         const updateDetails = await Customer.update(values, condition, options)
 
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
+            host: process.env.HOST_NAME,
+            port: process.env.HOST_PORT_NUMBER,
             secure: false,
             requireTLS: true,
             auth: {
-                user: 'jerrysingh587@gmail.com',
-                pass: 'dzgwmtzlgnjzkcfg'
+                user: process.env.MAIL_USERNAME,
+                pass: process.env.MAIL_PASSWORD
             },
             tls: {
                 rejectUnauthorized: false
@@ -202,12 +200,12 @@ const reset = async function (req, res) {
         });
 
         const mailOptions = {
-            from: 'jerrysingh587@gmail.com',
+            from: process.env.MAIL_FROM,
             to: customer.email,
             subject: "Account Activation Link",
             html:
                 `<h1>Your link to reset the password is</h1>
-                 <p>${process.env.CLIENT_URL}+${token}</p>`
+                 <p>${process.env.CLIENT_URL}${token}</p>`
         };
 
         transporter.sendMail(mailOptions, function (err, data) {

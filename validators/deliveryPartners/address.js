@@ -2,7 +2,6 @@ const db = require("../../models")
 const { Address, DeliveryPartner } = db
 const { Op } = require("sequelize");
 
-
 ////////////////////////// -GLOBAL- //////////////////////
 const isValid = function (value) {
     if (!value || typeof value != "string" || value.trim().length == 0)
@@ -255,12 +254,6 @@ const getAddress = async function (req, res, next) {
             if (userId.length != 36) {
                 return res.status(422).send({ status: 1003, message: "Please enter userId in a correct format" })
             }
-
-            const isRegisteredUserId = await Address.findOne({ where: { id: paramsDeliveryPartnerId, userRole: { [Op.eq]: 'deliverypartner' } } });
-
-            if (!isRegisteredUserId) {
-                return res.status(422).send({ status: 1008, message: "This userId does not belongs to any of the deliverypartner" })
-            }
         }
 
         if ("streetName" in data) {
@@ -271,12 +264,6 @@ const getAddress = async function (req, res, next) {
 
             if (!isValidStreetName(streetName)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid streetName" })
-            }
-
-            const isRegisteredStreetName = await Address.findOne({ where: { streetName: streetName, userRole: { [Op.eq]: 'deliverypartner' } } });
-
-            if (!isRegisteredStreetName) {
-                return res.status(422).send({ status: 1008, message: "This streetName does not belongs to any of the deliverypartners" })
             }
         }
 
@@ -289,12 +276,6 @@ const getAddress = async function (req, res, next) {
             if (!isValidCityName(cityName)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid cityName" })
             }
-
-            const isRegisteredCityName = await Address.findOne({ where: { cityName: cityName, userRole: { [Op.eq]: 'deliverypartner' } } });
-
-            if (!isRegisteredCityName) {
-                return res.status(422).send({ status: 1008, message: "This cityName does not belongs to any of the deliverypartners" })
-            }
         }
 
         if ("stateName" in data) {
@@ -306,12 +287,6 @@ const getAddress = async function (req, res, next) {
             if (!isValidStateName(stateName)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid stateName" })
             }
-
-            const isRegisteredStateName = await Address.findOne({ where: { stateName: stateName, userRole: { [Op.eq]: 'deliverypartner' } } });
-
-            if (!isRegisteredStateName) {
-                return res.status(422).send({ status: 1008, message: "This stateName does not belongs to any of the deliverypartners" })
-            }
         }
 
         if ("pincode" in data) {
@@ -322,12 +297,6 @@ const getAddress = async function (req, res, next) {
 
             if (!isValidPincode(pincode)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid pincode" })
-            }
-
-            const isRegisteredPincode = await Address.findOne({ where: { pincode: pincode, userRole: { [Op.eq]: 'deliverypartner' } } });
-
-            if (!isRegisteredPincode) {
-                return res.status(422).send({ status: 1008, message: "This pincode does not belongs to any of the deliverypartners" })
             }
         }
 

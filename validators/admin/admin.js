@@ -26,16 +26,10 @@ const isValidPhone = (phone) => {
     return /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/.test(phone);
 };
 
-//////////////// -FOR WORK-EMAIL- ///////////////////////
-const isValidWorkEmail = (email) => {
-    return /[a-z .]+@[zomato]+\.[a-z zomato-z]{2,3}/gm.test(email);
-};
-
 //////////////// -FOR EMAIL- ///////////////////////
 const isValidEmail = (email) => {
     return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email);
 };
-
 
 //====================================================Create-A-Admin==========================================================//
 
@@ -203,7 +197,7 @@ const updateAdmin = async function (req, res, next) {
 
         const data = req.body
 
-        const { fullName, email, phone, oldPassword, newPassword, password } = data
+        const { fullName, email, phone } = data
 
         const dataObject = {};
 
@@ -261,38 +255,6 @@ const updateAdmin = async function (req, res, next) {
             }
 
             dataObject['phone'] = phone
-        }
-
-        if ("oldPassword" in data) {
-
-            if (!isValid(oldPassword)) {
-                return res.status(422).send({ status: 1002, message: "oldPassword is required" })
-            }
-
-            if (!isValid(newPassword)) {
-                return res.status(422).send({ status: 1002, message: "newPassword is required" })
-            }
-            let customer = await Admin.findOne({ where: { id: customerId } })
-
-            let checkPassword = await bcrypt.compare(oldPassword, Admin.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
-        }
-
-        if ("oldPassword" && "newPassword" in data) {
-
-            if (newPassword.length < 8) {
-                return res.status(422).send({ status: 1003, message: "Your password must be at least 8 characters" })
-            }
-            if (newPassword.length > 15) {
-                return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
-            }
-            let customer = await Admin.findOne({ where: { id: customerId } })
-            let checkOldPassword = await bcrypt.compare(newPassword, Admin.password)
-            if (checkOldPassword) {
-                return res.status(422).send({ status: 1003, msg: "oldPassword and newPassword cannot be same" })
-            }
-
-            dataObject['password'] = newPassword
         }
 
         next()

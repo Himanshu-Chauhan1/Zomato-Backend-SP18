@@ -9,6 +9,13 @@ const isValid = function (value) {
     return true;
 };
 
+////////////////////////// -GLOBAL- //////////////////////
+const isValidNumber = function (value) {
+    if (!value || typeof value != "number")
+        return false;
+    return true;
+};
+
 //////////////// -FOR ITEMPRICE- ///////////////////////
 const isValidItemPrice = (itemPrice) => {
     return /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(itemPrice);
@@ -62,7 +69,7 @@ const getMenu = async function (req, res, next) {
 
         if ("itemPrice" in data) {
 
-            if (!isValid(itemPrice)) {
+            if (!isValidNumber(itemPrice)) {
                 return res.status(422).send({ status: 1002, message: "itemPrice is required" })
             }
 

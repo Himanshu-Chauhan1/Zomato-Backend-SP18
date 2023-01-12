@@ -7,11 +7,6 @@ const foodItemRouter = require("../routes/restaurants/foodItem")
 const foodCategoryRouter = require("../routes/restaurants/foodcategory")
 const cartRouter = require("../routes/customers/cart")
 const offerRouter = require("../routes/restaurants/offer")
-const adminOrderStatusRouter = require("../routes/admin/orderStatus")
-const customerOrderStatus = require("../routes/customerSupport/orderStatus")
-const restaurantOrderStatus = require("../routes/restaurants/orderStatus")
-const customerSupportOrderStatus = require("../routes/customerSupport/orderStatus")
-const deliveryPartnerOrderStatus = require("../routes/deliveryPartners/orderStatus")
 const adminQueryRouter = require("../routes/admin/query")
 const customerQueryRouter = require("../routes/customers/query")
 const customerSupportQueryRouter = require("../routes/customerSupport/query")
@@ -29,6 +24,7 @@ const deliveryPartnerAddressRouter = require("../routes/deliveryPartners/address
 const restaurantAddressRouter = require("../routes/restaurants/address")
 const restaurantMenuRouter = require("../routes/restaurants/menu")
 const customerMenuRouter = require("../routes/customers/menu")
+const superAdminRouter=require("../routes/superAdmin/superAdmin")
 
 
 module.exports = {
@@ -41,11 +37,6 @@ module.exports = {
     foodCategoryRouter,
     cartRouter,
     offerRouter,
-    adminOrderStatusRouter,
-    customerOrderStatus,
-    restaurantOrderStatus,
-    customerSupportOrderStatus,
-    deliveryPartnerOrderStatus,
     adminQueryRouter,
     customerQueryRouter,
     customerSupportQueryRouter,
@@ -62,5 +53,6 @@ module.exports = {
     deliveryPartnerAddressRouter,
     restaurantAddressRouter,
     restaurantMenuRouter,
-    customerMenuRouter
+    customerMenuRouter,
+    superAdminRouter
 }

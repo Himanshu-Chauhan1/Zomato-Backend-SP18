@@ -3,7 +3,7 @@ const db = require("../../models");
 const { FoodItem } = db
 const { Op } = require("sequelize");
 
-//==================================================GET/GET-ALL-MENU==========================================================//
+//=============================================GET/GET-ALL-MENU==========================================================//
 
 const index = async function (req, res) {
     try {

@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require("express")
 const cors = require("cors");
-const { adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, foodItemRouter, foodCategoryRouter, cartRouter, offerRouter, adminOrderStatusRouter, customerOrderStatus, restaurantOrderStatus, customerSupportOrderStatus, deliveryPartnerOrderStatus, adminQueryRouter, customerQueryRouter, customerSupportQueryRouter, deliveryPartnerQueryRouter, restaurantQueryRouter, adminOrderRouter, customerOrderRouter, customerSupportOrderRouter, deliveryPartnerOrderRouter, restaurantOrderRouter, adminAddressRouter, customerAddressRouter, customerSupportAddressRouter, deliveryPartnerAddressRouter, restaurantAddressRouter, restaurantMenuRouter, customerMenuRouter } = require('./routes/index')
+const { adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, foodItemRouter, foodCategoryRouter, cartRouter, offerRouter, adminQueryRouter, customerQueryRouter, customerSupportQueryRouter, deliveryPartnerQueryRouter, restaurantQueryRouter, adminOrderRouter, customerOrderRouter, customerSupportOrderRouter, deliveryPartnerOrderRouter, restaurantOrderRouter, adminAddressRouter, customerAddressRouter, customerSupportAddressRouter, deliveryPartnerAddressRouter, restaurantAddressRouter, restaurantMenuRouter, customerMenuRouter, superAdminRouter } = require('./routes/index')
 const app = express()
 const multer = require('multer')
 
@@ -19,7 +19,7 @@ const port = process.env.PORT
 
 
 //Load Routes
-app.use("/", adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, foodItemRouter, foodCategoryRouter, cartRouter, offerRouter, adminOrderStatusRouter, customerOrderStatus, restaurantOrderStatus, customerSupportOrderStatus, deliveryPartnerOrderStatus, adminQueryRouter, customerQueryRouter, customerSupportQueryRouter, deliveryPartnerQueryRouter, restaurantQueryRouter, adminOrderRouter, customerOrderRouter, customerSupportOrderRouter, deliveryPartnerOrderRouter, restaurantOrderRouter, adminAddressRouter, customerAddressRouter, customerSupportAddressRouter, deliveryPartnerAddressRouter, restaurantAddressRouter, restaurantMenuRouter, customerMenuRouter)
+app.use("/", adminRouter, customerRouter, customerSupportRouter, deliveryPartnerRouter, restaurantRouter, foodItemRouter, foodCategoryRouter, cartRouter, offerRouter, adminQueryRouter, customerQueryRouter, customerSupportQueryRouter, deliveryPartnerQueryRouter, restaurantQueryRouter, adminOrderRouter, customerOrderRouter, customerSupportOrderRouter, deliveryPartnerOrderRouter, restaurantOrderRouter, adminAddressRouter, customerAddressRouter, customerSupportAddressRouter, deliveryPartnerAddressRouter, restaurantAddressRouter, restaurantMenuRouter, customerMenuRouter, superAdminRouter)
 
 app.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`);

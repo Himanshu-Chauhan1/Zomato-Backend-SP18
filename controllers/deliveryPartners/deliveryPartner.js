@@ -125,7 +125,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-DELIVERY-PARTNER==================================================//
+//========================================DELETE/DELETE-A-DELIVERY-PARTNER=================================================//
 
 const destroy = async function (req, res) {
     try {
@@ -142,7 +142,7 @@ const destroy = async function (req, res) {
     }
 }
 
-//========================================PUT/CHANGE-PASSWORD-FOR-A-DELIVERY-PARTNER================================================//
+//===================================PUT/CHANGE-PASSWORD-FOR-A-DELIVERY-PARTNER============================================//
 
 const change = async function (req, res) {
     try {
@@ -164,7 +164,7 @@ const change = async function (req, res) {
     }
 }
 
-//========================================POST/RESET-LINK-PASSWORD-FOR-A-DELIVERY-PARTNER===========================================//
+//===================================POST/RESET-LINK-PASSWORD-FOR-A-DELIVERY-PARTNER======================================//
 
 const reset = async function (req, res) {
     try {
@@ -189,13 +189,13 @@ const reset = async function (req, res) {
         const updateDetails = await DeliveryPartner.update(values, condition, options)
 
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
+            host: process.env.HOST_NAME,
+            port: process.env.HOST_PORT_NUMBER,
             secure: false,
             requireTLS: true,
             auth: {
-                user: 'jerrysingh587@gmail.com',
-                pass: 'dzgwmtzlgnjzkcfg'
+                user: process.env.MAIL_USERNAME,
+                pass: process.env.MAIL_PASSWORD
             },
             tls: {
                 rejectUnauthorized: false
@@ -203,12 +203,12 @@ const reset = async function (req, res) {
         });
 
         const mailOptions = {
-            from: 'jerrysingh587@gmail.com',
+            from: process.env.MAIL_FROM,
             to: delievryPartner.email,
             subject: "Account Activation Link",
             html:
                 `<h1>Your link to reset the password is</h1>
-                 <p>${process.env.CLIENT_URL}+${token}</p>`
+                 <p>${process.env.CLIENT_URL}${token}</p>`
         };
 
         transporter.sendMail(mailOptions, function (err, data) {
@@ -225,7 +225,7 @@ const reset = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
-//========================================POST/RESET-PASSWORD-FOR-A-DELIVERY-PARTNER=================================================//
+//==================================POST/RESET-PASSWORD-FOR-A-DELIVERY-PARTNER===========================================//
 
 const verify = async function (req, res) {
     try {

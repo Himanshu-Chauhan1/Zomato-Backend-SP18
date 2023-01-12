@@ -2,7 +2,7 @@ const db = require("../../models");
 const { Query } = db
 const { Op } = require("sequelize");
 
-//========================================POST /CREATE-A-ORDER-QUERY==========================================================//
+//======================================POST /CREATE-A-ORDER-QUERY========================================================//
 
 const create = async function (req, res) {
     try {
@@ -17,7 +17,7 @@ const create = async function (req, res) {
     }
 }
 
-//========================================POST/UPDATE-A-ORDER-QUERY==========================================================//
+//======================================POST/UPDATE-A-ORDER-QUERY========================================================//
 
 const update = async function (req, res) {
     try {
@@ -38,7 +38,7 @@ const update = async function (req, res) {
     }
 };
 
-//==========================================GET/GET-ALL-0RDER-QUERY==========================================================//
+//======================================GET/GET-ALL-0RDER-QUERY==========================================================//
 
 const index = async function (req, res) {
     try {

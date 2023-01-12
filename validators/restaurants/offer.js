@@ -345,24 +345,12 @@ const getOffer = async function (req, res, next) {
                 return res.status(422).send({ status: 1003, message: "Please provide a valid categoryName" })
             }
 
-            const isRegisteredCategory = await Offer.findOne({ where: { categoryName: categoryName, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredCategory) {
-                return res.status(422).send({ status: 1008, message: "There is no category with this name, Please enter a new one" })
-            }
-
         }
 
         if ("offerName" in data) {
 
             if (!isValid(offerName)) {
                 return res.status(422).send({ status: 1002, message: "offerName is required" })
-            }
-
-            const isRegisteredOfferName = await Offer.findOne({ where: { offerName: offerName, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredOfferName) {
-                return res.status(422).send({ status: 1008, message: "This is no offerName with this name , Please try a new one" })
             }
 
         }
@@ -381,14 +369,6 @@ const getOffer = async function (req, res, next) {
 
         if ("dateActiveTo" in data) {
 
-            function isFutureDate(idate) {
-                var today = new Date().getTime(),
-                    idate = idate.split("/");
-
-                idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
-                return (today - idate) < 0;
-            }
-
             if (!isValidDateFormat(dateActiveTo)) {
                 return res.status(422).send({ status: 1002, message: "dateActiveTo can only be in a format like mm/dd/yyyy or mm-dd-yyyy or mm.dd.yyyy format" })
             }
@@ -403,12 +383,6 @@ const getOffer = async function (req, res, next) {
 
             if (!isActiveCategory(isActive)) {
                 return res.status(422).send({ status: 1003, message: "Please provide a category isActive like True or false etc" })
-            }
-
-            const isRegisteredActiveCategory = await Offer.findOne({ where: { isActive: isActive, restaurantId: paramsRestaurantId } });
-
-            if (!isRegisteredActiveCategory) {
-                return res.status(422).send({ status: 1008, message: "There is no active or inactive offers with this name, Please try a new one" })
             }
 
         }

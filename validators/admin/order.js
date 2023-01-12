@@ -247,7 +247,8 @@ const getOrder = async function (req, res, next) {
 
         let data = req.query
 
-        const { customerId, orderId, placedTime, deliveryAddress, restaurantId, orderStatus } = data
+        
+        const { customerId, orderId, placedTime, deliveryAddressId, restaurantId, orderStatus } = data
 
         if ("orderId" in data) {
 
@@ -255,10 +256,10 @@ const getOrder = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "orderId is required" })
             }
 
-            const isRegisteredOrderId = await Order.findOne({ where: { id: orderId } });
+            let checkOrderId = orderId.split('').length
 
-            if (!isRegisteredOrderId) {
-                return res.status(422).send({ status: 1008, message: "This orderId does not exists" })
+            if (checkOrderId != 36) {
+                return res.status(422).send({ status: 1003, message: "order-Id is not valid please enter in a valid format" })
             }
         }
 
@@ -268,10 +269,10 @@ const getOrder = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "customerId is required" })
             }
 
-            const isRegisteredCustomerId = await Order.findOne({ where: { customerId: customerId } });
+            let checkCustomerId = customerId.split('').length
 
-            if (!isRegisteredCustomerId) {
-                return res.status(422).send({ status: 1008, message: "This customerId does not exists" })
+            if (checkCustomerId != 36) {
+                return res.status(422).send({ status: 1003, message: "customer-Id is not valid please enter in a valid format" })
             }
         }
 
@@ -281,10 +282,10 @@ const getOrder = async function (req, res, next) {
                 return res.status(422).send({ status: 1002, message: "restaurantId is required" })
             }
 
-            const isRegisteredRestaurantId = await Order.findOne({ where: { restaurantId: restaurantId } });
+            let checkRestaurantId = restaurantId.split('').length
 
-            if (!isRegisteredRestaurantId) {
-                return res.status(422).send({ status: 1008, message: "This restaurantId does not exists" })
+            if (checkRestaurantId != 36) {
+                return res.status(422).send({ status: 1003, message: "restaurant-Id is not valid please enter in a valid format" })
             }
         }
 
@@ -295,18 +296,17 @@ const getOrder = async function (req, res, next) {
             }
         }
 
-        if ("deliveryAddress" in data) {
+        if ("deliveryAddressId" in data) {
 
             if (!isValid(deliveryAddress)) {
                 return res.status(422).send({ status: 1002, message: "deliveryAddress is required" })
             }
 
-            const isRegisteredDeliveryAddress = await Order.findOne({ where: { deliveryAddress: deliveryAddress } });
+            let checkDeliveryAddressId = deliveryAddressId.split('').length
 
-            if (!isRegisteredDeliveryAddress) {
-                return res.status(422).send({ status: 1008, message: "This deliveryAddress does not exists" })
+            if (checkDeliveryAddressId != 36) {
+                return res.status(422).send({ status: 1003, message: "user-Id is not valid please enter in a valid format" })
             }
-
         }
 
         if ("orderStatus" in data) {
