@@ -6,8 +6,9 @@ const nodemailer = require("nodemailer")
 const { Customer } = db
 const { Op } = require("sequelize");
 const { signAccessToken } = require("../../Utils/jwt")
-const { generateOTP } = require("../../Utils/otp");
+const { generateOTP, verifyOTP } = require("../../Utils/otp");
 const nodeKey = process.env.NODE_KEY
+const otpKey = process.env.OTP_KEY
 
 //=========================================POST /CREATE-A-CUSTOMER==========================================================//
 
@@ -60,7 +61,7 @@ let login = async (req, res) => {
     }
 }
 
-//========================================POST/UPDATE-A-CUSTOMER============================================================//
+//========================================POST/UPDATE-A-CUSTOMER===========================================================//
 
 const update = async function (req, res) {
     try {
@@ -81,7 +82,7 @@ const update = async function (req, res) {
     }
 };
 
-//========================================GET/GET-ALL-CUSTOMERS=============================================================//
+//========================================GET/GET-ALL-CUSTOMERS============================================================//
 
 const index = async function (req, res) {
     try {
@@ -122,7 +123,7 @@ const index = async function (req, res) {
     }
 };
 
-//========================================DELETE/DELETE-A-CUSTOMER==========================================================//
+//========================================DELETE/DELETE-A-CUSTOMER=========================================================//
 
 const destroy = async function (req, res) {
     try {
@@ -139,7 +140,7 @@ const destroy = async function (req, res) {
     }
 }
 
-//========================================PUT/CHANGE-PASSWORD-FOR-A-CUSTOMER================================================//
+//========================================PUT/CHANGE-PASSWORD-FOR-A-CUSTOMER===============================================//
 
 const change = async function (req, res) {
     try {
@@ -161,7 +162,7 @@ const change = async function (req, res) {
     }
 }
 
-//========================================POST/RESET-LINK-PASSWORD-FOR-A-CUSTOMER=================================================//
+//=======================================POST/RESET-LINK-PASSWORD-FOR-A-CUSTOMER==========================================//
 
 const reset = async function (req, res) {
     try {
@@ -223,7 +224,7 @@ const reset = async function (req, res) {
     }
 }
 
-//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER=================================================//
+//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER===============================================//
 
 const verify = async function (req, res) {
     try {
@@ -247,35 +248,43 @@ const verify = async function (req, res) {
     }
 }
 
-//========================================POST/SEND-OTP-TO-A-CUSTOMER=================================================//
+//========================================POST/SEND-OTP-TO-A-CUSTOMER=====================================================//
 
 const resetOtp = async function (req, res) {
     try {
 
-        // const customer = await Customer.findOne({ where: { phone: req.body.phone } })
+        let data = req.body
+        let { phone } = data
 
-        // // generate otp
-        // const otp = generateOTP(6);
+        const customer = await Customer.findOne({ where: { phone: phone } })
 
-        // let setOtp = { otp: otp }
+        const otp = generateOTP()
 
-        // const values = setOtp;
-        // const condition = { where: { phone: req.body.phone } };
-        // const options1 = { multi: true };
+        let setOtp = { otp: otp }
 
-        // const updateDetails = await Customer.update(values, condition, options1)
+        const values = setOtp;
+        const condition = { where: { phone: customer.phone } };
+        const options1 = { multi: true };
+        console.log(values)
+
+        const updateDetails = await Customer.update(values, condition, options1)
+        console.log(updateDetails)
+
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const client = require('twilio')(accountSid, authToken);
 
         const options = {
-            authorization: "9CWRucrQJ3oie19ECGKMYiDmuuyHbiD3xkX0mDyRleSn1rQ4fj0AP20emwCP",
-            message: `Your Otp is 654`,
-            numbers: ['9258026266']
+            body: `Dear ${customer.fullName}, ${otp} is the One Time Password(OTP) to reset the password for your account with Zomato. Please note that this OTP is valid for next 10 minutes only. OTPs are secret. DO NOT disclose it to anyone. Zomato never asks for OTP.`,
+            from: '+13854816259',
+            to: "+91" + customer.phon
         }
 
-        fast2sms.sendMessage(options, (err) => {
+        client.messages.create(options, (err) => {
             if (err) {
                 return res.status(422).send({ status: 1010, message: "Error " + err });
             } else {
-                return res.status(200).send({ status: 1010, message: `OTP has been sent successfully` });
+                return res.status(200).send({ status: 1010, message: `OTP has been sent successfully ${customer.phone} with messege- "${options.body}"` });
             }
         });
 
@@ -286,14 +295,63 @@ const resetOtp = async function (req, res) {
     }
 }
 
-//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER-USING-PHONE-OTP=================================================//
+//========================================PUT/RESET-PASSWORD-FOR-A-CUSTOMER-USING-PHONE-OTP==============================//
 
 const verifyOtp = async function (req, res) {
     try {
 
+        let customerId = req.params.id
+        let data = req.body
+        let { otp } = data
+
+        let verifiedToken = verifyOTP(otp)
+
+        // if (!verifiedToken) {
+        //     return res.status(200).send({ status: 1003, message: "Incorrect OTP" })
+        // }
+
+        const customer = await Customer.findOne({ where: { otp: otp, id: customerId } })
+
+        if (!customer) {
+            return res.status(200).send({ status: 1003, message: "OTP does not exists" })
+        }
+
+        const token = JWT.sign({
+            userId: customer.id,
+            userRole: customer.userRole,
+            iat: Math.floor(Date.now() / 1000),
+            exp: Math.floor(Date.now() / 1000) + (60)
+        },
+            process.env.RESET_OTP_KEY
+        );
+
+        let setData = {
+            otp: token,
+        }
+
+        const values = setData
+        const condition = { where: { id: customerId } }
+        const options = { multi: true }
+
+        const updateDetails = await Customer.update(values, condition, options)
+
+        return res.status(200).send({ status: 1010, message: "Your have loggedIn successfully", data: values })
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//========================================PUT/SET-PASSWORD-FOR-A-CUSTOMER===============================================//
+
+const set = async function (req, res) {
+    try {
+
         let userToken = req.params.token
 
-        let verifiedToken = await JWT.verify(userToken, process.env.RESET_PASSWORD_KEY)
+        let verifiedToken = await JWT.verify(userToken, process.env.RESET_OTP_KEY)
 
         const values = req.body
         const condition = { where: { id: verifiedToken.userId } }
@@ -320,5 +378,6 @@ module.exports = {
     reset,
     verify,
     resetOtp,
-    verifyOtp
+    verifyOtp,
+    set
 }

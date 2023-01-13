@@ -1,12 +1,36 @@
 require("dotenv").config();
+const speakeasy=require("speakeasy")
 
-const generateOTP = function (otp_length) {
-    var digits = "0123456789";
-    let OTP = "";
-    for (let i = 0; i < otp_length; i++) {
-        OTP += digits[Math.floor(Math.random() * 10)];
+const generateOTP = function generateOtp() {
+    try {
+        let token = speakeasy.totp({
+            secret:process.env.OTP_KEY,
+            encoding: 'base32',
+            digits:6,
+            step: 60,
+            window:10
+        });
+       return token
+        
+    } catch (error) {
+        console.log(error.message)
     }
-    return OTP;
 }
 
-module.exports = { generateOTP}
+const verifyOTP = function verifyOtp(token){
+    try {
+        let expiry = speakeasy.totp.verifyDelta({
+            secret:process.env.OTP_KEY,
+            encoding: 'base32',
+            token: token,
+            step: 60,
+            window:10
+        });
+        console.log(expiry)
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+module.exports = { generateOTP, verifyOTP}

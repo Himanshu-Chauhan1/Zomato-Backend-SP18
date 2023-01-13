@@ -36,6 +36,7 @@
     "sendotp": "^1.2.9",
     "sequelize": "^6.26.0",
     "sequelize-cli": "^6.5.2",
+    "speakeasy": "^2.0.0",
     "telesignsdk": "^2.2.3",
     "twilio": "^3.84.0",
     "valid-url": "^1.0.9"

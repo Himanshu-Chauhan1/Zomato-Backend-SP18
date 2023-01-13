@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt")
 const JWT = require("jsonwebtoken")
 const nodeKey = process.env.NODE_KEY
 const { Customer } = db
+const otpKey = process.env.OTP_KEY
 
 
 ////////////////////////// -GLOBAL- //////////////////////
@@ -606,9 +607,22 @@ const resetPasswordUsingPhone = async function (req, res, next) {
 const verifyPasswordUsingPhone = async function (req, res, next) {
     try {
 
+        next()
+
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+//===========================================set-password-for-A-customer-using-phone=================================================//
+
+const setPasswordUsingPhone = async function (req, res, next) {
+    try {
         let userToken = req.params.token
 
-        JWT.verify(userToken, process.env.RESET_PASSWORD_KEY, async (err) => {
+        JWT.verify(userToken, process.env.RESET_OTP_KEY, async (err) => {
             if (err) {
                 return res.status(401).send({ status: 1003, message: 'InValid Token or session expired' })
             }
@@ -622,7 +636,7 @@ const verifyPasswordUsingPhone = async function (req, res, next) {
 
         let data = req.body
 
-        let { resetLink, password, confirmPassword } = data
+        let { otp, password, confirmPassword } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide some details" })
@@ -648,10 +662,10 @@ const verifyPasswordUsingPhone = async function (req, res, next) {
             return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
         }
 
-        let changeNewPassword = await bcrypt.hashSync(((password + nodeKey)), 10)
+        let changeNewPassword = await bcrypt.hashSync(((password + otpKey)), 10)
 
         //once password changed resetLink will be a emptyString
-        data.resetLink = ''
+        data.otp = ''
 
         next()
 
@@ -672,7 +686,8 @@ module.exports = {
     resetPasswordUsingEmail,
     verifyPasswordUsingEmail,
     resetPasswordUsingPhone,
-    verifyPasswordUsingPhone
+    verifyPasswordUsingPhone,
+    setPasswordUsingPhone
 }
 
 
