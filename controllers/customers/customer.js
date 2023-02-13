@@ -88,7 +88,7 @@ const index = async function (req, res) {
     try {
 
         let data = req.query
-        const { customerId, fullName, email, phone } = data
+        const { customerId, fullName, email, phone, resetLink } = data
 
         if (Object.keys(req.query).length > 0) {
             let findCustomerByFilter = await Customer.findAll({
@@ -108,7 +108,7 @@ const index = async function (req, res) {
             return res.status(200).send({ status: 1010, data: findCustomerByFilter })
         } else {
 
-            let findAllCustomers = await Customer.findAll()
+            let findAllCustomers = await Customer.findAll({attributes:['id', 'fullName', 'email', 'phone']})
 
             if (!findAllCustomers.length)
                 return res.status(404).send({ status: 1006, message: "No customers found" })
