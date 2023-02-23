@@ -7,12 +7,14 @@ const multer = require('multer')
 
 app.use(express.json())
 app.use(multer().any())
-var corsOption = {
+
+const corsOption = {
     origin: "*",
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     exposedHeaders: ['x-auth-token']
 };
+
 app.use(cors(corsOption));
 
 const port = process.env.PORT

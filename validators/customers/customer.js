@@ -43,7 +43,7 @@ const createCustomer = async function (req, res, next) {
         const { fullName, email, phone, confirmPassword, password } = data
 
         if (!isValidRequestBody(data)) {
-            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+            return res.status(422).send({ status: 1002, message: "Please Provide some Details" })
         }
 
         if (!isValid(fullName)) {

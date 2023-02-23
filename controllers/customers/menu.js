@@ -17,8 +17,8 @@ const index = async function (req, res) {
                     isActive: { [Op.eq]: true },
                     [Op.or]: [
                         { restaurantId: { [Op.eq]: restaurantId } },
-                        { categoryName: { [Op.eq]: categoryName } },
-                        { itemName: { [Op.eq]: itemName } },
+                        { categoryName: { [Op.eq]: categoryName } }, 
+                        { itemName: { [Op.eq]: itemName } }, 
                     ],
                 }
             })
