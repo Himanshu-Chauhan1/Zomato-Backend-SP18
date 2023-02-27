@@ -9,6 +9,7 @@ const { signAccessToken } = require("../../Utils/jwt")
 const { generateOTP, verifyOTP } = require("../../Utils/otp");
 const nodeKey = process.env.NODE_KEY
 const otpKey = process.env.OTP_KEY
+const jwt = require("jsonwebtoken")
 
 //=========================================POST /CREATE-A-CUSTOMER==========================================================//
 
@@ -27,7 +28,7 @@ const create = async function (req, res) {
 
 //========================================POST /LOGIN-FOR-A-CUSTOMER========================================================//
 
-let login = async (req, res) => {
+const login = async (req, res) => {
     try {
 
         const data = req.body
@@ -42,7 +43,7 @@ let login = async (req, res) => {
             }
 
             let checkPassword = await bcrypt.compare(password + nodeKey, customer.password)
-            if (!checkPassword) return res.status(422).send({ status: 1003, msg: " Invalid Password credentials" })
+            if (!checkPassword) return res.status(422).send({ status: 1003, message: " Invalid Password credentials" })
 
             const token = await signAccessToken(customer.id, customer.userRole);
 
@@ -52,8 +53,28 @@ let login = async (req, res) => {
             }
 
             return res.status(200).send({ status: 1010, message: "You have been successfully logged in", data: data })
-
         }
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
+
+//========================================POST /LOGIN-FOR-A-CUSTOMER========================================================//
+
+const logout = async (req, res) => {
+    try {
+
+        let token = req.header('Authorization', 'Bearer');
+
+        if (!token) return res.status(401).send({ status: 1009, message: 'Customer is already logged out' });
+
+        let splitToken = token.split(" ")
+
+        let verifiedtoken = jwt.verify(splitToken[1], process.env.JWT_SECRET_KEY)
+        verifiedtoken.exp = 0
+
+        return res.status(200).send({ status: 1010, message: "You have been successfully logged out", data: verifiedtoken })
 
     } catch (error) {
         console.log(error.message);
@@ -108,7 +129,7 @@ const index = async function (req, res) {
             return res.status(200).send({ status: 1010, data: findCustomerByFilter })
         } else {
 
-            let findAllCustomers = await Customer.findAll({attributes:['id', 'fullName', 'email', 'phone']})
+            let findAllCustomers = await Customer.findAll({ attributes: ['id', 'fullName', 'email', 'phone'] })
 
             if (!findAllCustomers.length)
                 return res.status(404).send({ status: 1006, message: "No customers found" })
@@ -373,6 +394,7 @@ const set = async function (req, res) {
 module.exports = {
     create,
     login,
+    logout,
     update,
     index,
     destroy,

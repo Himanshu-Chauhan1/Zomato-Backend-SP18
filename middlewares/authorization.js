@@ -15,7 +15,6 @@ const authorization = async function (req, res, next) {
         }
 
     } catch (error) {
-        console.log(error.message);
         res.status(401).send({ status: 1010, message: "Something is wrong please check back again after sometime" });
     }
 }
