@@ -24,7 +24,11 @@ const deliveryPartnerAddressRouter = require("../routes/deliveryPartners/address
 const restaurantAddressRouter = require("../routes/restaurants/address")
 const restaurantMenuRouter = require("../routes/restaurants/menu")
 const customerMenuRouter = require("../routes/customers/menu")
-const superAdminRouter=require("../routes/superAdmin/superAdmin")
+const superAdminRouter = require("../routes/superAdmin/superAdmin")
+const adminIssueRouter = require("../routes/admin/issue")
+const customerIssueRouter = require("../routes/customers/issue")
+const customerSupportIssueRouter = require("../routes/customerSupport/issue")
+const restaurantIssueRouter = require("../routes/restaurants/issue")
 
 
 module.exports = {
@@ -54,5 +58,9 @@ module.exports = {
     restaurantAddressRouter,
     restaurantMenuRouter,
     customerMenuRouter,
-    superAdminRouter
+    superAdminRouter,
+    adminIssueRouter,
+    customerIssueRouter,
+    customerSupportIssueRouter,
+    restaurantIssueRouter
 }
