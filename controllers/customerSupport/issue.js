@@ -44,16 +44,17 @@ const index = async function (req, res) {
     try {
         let data = req.query
 
-        const { issueId, fullName, emailAddress, phone } = data
+        const { issueId, fullName, email, phone, isActive } = data
 
         if (Object.keys(req.query).length > 0) {
-            let findissueByFilter = await Query.findAll({
+            let findissueByFilter = await Issue.findAll({
                 where: {
                     [Op.or]: [
-                        { issueId: { [Op.eq]: issueId } },
+                        { id: { [Op.eq]: issueId } },
                         { fullName: { [Op.eq]: fullName } },
-                        { emailAddress: { [Op.eq]: emailAddress } },
+                        { email: { [Op.eq]: email } },
                         { phone: { [Op.eq]: phone } },
+                        { isActive: { [Op.eq]: isActive } },
                     ],
                 }
             })
