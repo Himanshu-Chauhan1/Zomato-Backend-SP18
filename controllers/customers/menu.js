@@ -16,12 +16,14 @@ const index = async function (req, res) {
                 where: {
                     isActive: { [Op.eq]: true },
                     [Op.or]: [
-                        { restaurantId: { [Op.eq]: restaurantId } },
-                        { categoryName: { [Op.eq]: categoryName } }, 
-                        { itemName: { [Op.eq]: itemName } }, 
+                        { restaurantId: { [Op.like]: `%${restaurantId}%` } },
+                        { categoryName: { [Op.like]: `%${categoryName}%` } },
+                        { itemName: { [Op.like]: `%${itemName}%` } },
+
                     ],
                 }
-            })
+            }
+            )
 
             if (!findMenuByFilter.length)
                 return res.status(404).send({ status: 1006, message: "No Food items found as per the filters applied" })

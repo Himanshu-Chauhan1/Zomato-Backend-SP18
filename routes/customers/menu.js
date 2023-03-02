@@ -7,6 +7,6 @@ const { authorization } = require("../../middlewares/authorization")
 
 
 
-menuRouter.get('/customers/:id/menu', [authentication, authorization, validate.getMenu], index);
+menuRouter.get('/customers/menu', [validate.getMenu], index);
 
 module.exports = menuRouter

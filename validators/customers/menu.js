@@ -24,25 +24,25 @@ const isActiveItem = (isActive) => {
 const getMenu = async function (req, res, next) {
     try {
 
-        const enteredCustomerId = req.params.id
+        // const enteredCustomerId = req.params.id
 
-        let checkCustomerId = enteredCustomerId.split('').length
+        // let checkCustomerId = enteredCustomerId.split('').length
 
-        if (checkCustomerId != 36) {
-            return res.status(422).send({ status: 1003, message: "customer-Id is not valid" })
-        }
+        // if (checkCustomerId != 36) {
+        //     return res.status(422).send({ status: 1003, message: "customer-Id is not valid" })
+        // }
 
-        let paramsCustomerId = enteredCustomerId
+        // let paramsCustomerId = enteredCustomerId
 
-        const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
+        // const checkEnteredCustomerId = await Customer.findOne({ where: { id: paramsCustomerId } });
 
-        if (!checkEnteredCustomerId) {
-            return res.status(422).send({ status: 1006, message: "customer-ID does not exists" })
-        }
+        // if (!checkEnteredCustomerId) {
+        //     return res.status(422).send({ status: 1006, message: "customer-ID does not exists" })
+        // }
 
         let data = req.query
 
-        let { categoryName, itemName, itemPrice, isActive } = data
+        let { restaurantId,categoryName, itemName } = data
 
 
         if ("categoryName" in data) {
@@ -61,33 +61,10 @@ const getMenu = async function (req, res, next) {
 
         }
 
-        if ("itemPrice" in data) {
-
-            if (!isValid(itemPrice)) {
-                return res.status(422).send({ status: 1002, message: "itemPrice is required" })
-            }
-
-            if (!isValidItemPrice(itemPrice)) {
-                return res.status(422).send({ status: 1003, message: "Please provide a valid itemPrice" })
-            }
-
-        }
-
-        if ("isActive" in data) {
-
-            if (!isValid(isActive)) {
-                return res.status(422).send({ status: 1002, message: "isActive is required" })
-            }
-
-            if (!isActiveItem(isActive)) {
-                return res.status(422).send({ status: 1003, message: "Please provide a item isActive like True or false etc" })
-            }
-
-        }
-
         next()
     }
     catch (err) {
+        console.log(err.message)
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 };
