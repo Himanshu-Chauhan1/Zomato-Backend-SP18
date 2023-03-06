@@ -1,9 +1,9 @@
 const express = require("express")
 const customerSupportRouter = express.Router()
 const validate = require("../../validators/customerSupport/customerSupport")
-const { create, update, destroy, login, index, change, reset, verify } = require("../../controllers/customerSupport/customerSupport");
+const { create, update, destroy, login, logout, index, change, reset, verify } = require("../../controllers/customerSupport/customerSupport");
 const { authentication } = require("../../middlewares/authentication")
-const { authorization } = require("../../middlewares/authorization")
+const { authorization } = require("../../middlewares/authorization");
 
 
 
@@ -12,6 +12,7 @@ customerSupportRouter.put('/customersupports/:id', [authentication, authorizatio
 customerSupportRouter.get('/customersupports', [authentication, validate.getCustomerSupport], index);
 customerSupportRouter.delete('/customersupports/:id', [authentication, authorization, validate.deleteCustomerSupport], destroy);
 customerSupportRouter.post('/customersupports/login', [validate.login], login);
+customerSupportRouter.post('/customersupports/logout', logout);
 customerSupportRouter.put('/customersupports/:id/changepassword', [authentication, authorization, validate.changePassword], change);
 customerSupportRouter.post('/customersupports/resetpassword', [validate.resetPassword], reset);
 customerSupportRouter.post('/customersupports/:token/verifypassword', [validate.verifyPassword], verify);

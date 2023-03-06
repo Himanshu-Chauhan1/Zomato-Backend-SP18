@@ -60,6 +60,28 @@ let login = async (req, res) => {
     }
 }
 
+//========================================POST /LOGOUT-FOR-A-ADMIN========================================================//
+
+const logout = async (req, res) => {
+    try {
+
+        let token = req.header('Authorization', 'Bearer');
+
+        if (!token) return res.status(401).send({ status: 1009, message: 'Admin is already logged out' });
+
+        let splitToken = token.split(" ")
+
+        let verifiedtoken = JWT.verify(splitToken[1], process.env.JWT_SECRET_KEY)
+        verifiedtoken.exp = 0
+
+        return res.status(200).send({ status: 1010, message: "You have been successfully logged out", data: verifiedtoken })
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
+    }
+}
+
 //========================================POST/UPDATE-A-ADMIN===========================================================//
 
 const update = async function (req, res) {
@@ -250,6 +272,7 @@ const verify = async function (req, res) {
 module.exports = {
     create,
     login,
+    logout,
     update,
     index,
     destroy,

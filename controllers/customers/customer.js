@@ -9,7 +9,6 @@ const { signAccessToken } = require("../../Utils/jwt")
 const { generateOTP, verifyOTP } = require("../../Utils/otp");
 const nodeKey = process.env.NODE_KEY
 const otpKey = process.env.OTP_KEY
-const jwt = require("jsonwebtoken")
 
 //=========================================POST /CREATE-A-CUSTOMER==========================================================//
 
@@ -60,7 +59,7 @@ const login = async (req, res) => {
     }
 }
 
-//========================================POST /LOGIN-FOR-A-CUSTOMER========================================================//
+//========================================POST /LOGOUT-FOR-A-CUSTOMER========================================================//
 
 const logout = async (req, res) => {
     try {
@@ -71,7 +70,7 @@ const logout = async (req, res) => {
 
         let splitToken = token.split(" ")
 
-        let verifiedtoken = jwt.verify(splitToken[1], process.env.JWT_SECRET_KEY)
+        let verifiedtoken = JWT.verify(splitToken[1], process.env.JWT_SECRET_KEY)
         verifiedtoken.exp = 0
 
         return res.status(200).send({ status: 1010, message: "You have been successfully logged out", data: verifiedtoken })
