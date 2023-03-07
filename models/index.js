@@ -22,6 +22,7 @@ const addressModel = require('./address')
 const orderModel = require('./order')
 const superAdminModel = require('./superadmin')
 const issueModel=require('./issue')
+const locationModel=require('./location')
 
 
 let sequelize;
@@ -61,6 +62,7 @@ const Address = addressModel(sequelize, Sequelize)
 const Order = orderModel(sequelize, Sequelize)
 const SuperAdmin = superAdminModel(sequelize, Sequelize)
 const Issue = issueModel(sequelize, Sequelize)
+const Location = locationModel(sequelize, Sequelize)
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
@@ -80,5 +82,6 @@ module.exports = {
   Address,
   Order,
   SuperAdmin,
-  Issue
+  Issue,
+  Location
 };

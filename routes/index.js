@@ -29,6 +29,7 @@ const adminIssueRouter = require("../routes/admin/issue")
 const customerIssueRouter = require("../routes/customers/issue")
 const customerSupportIssueRouter = require("../routes/customerSupport/issue")
 const restaurantIssueRouter = require("../routes/restaurants/issue")
+const restaurantLocationRouter = require("../routes/restaurants/location")
 
 
 module.exports = {
@@ -62,5 +63,6 @@ module.exports = {
     adminIssueRouter,
     customerIssueRouter,
     customerSupportIssueRouter,
-    restaurantIssueRouter
+    restaurantIssueRouter,
+    restaurantLocationRouter
 }
