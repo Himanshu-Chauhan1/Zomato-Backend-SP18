@@ -15,11 +15,23 @@ module.exports = {
           model: "restaurants",
           key: 'id'
         },
-        allowNull: false
+        allowNull: true
       },
       coordinates: {
         type: Sequelize.GEOMETRY('POINT'),
-        allowNull:false
+        allowNull: false
+      },
+      longitude: {
+        type: Sequelize.DECIMAL,
+        allowNull: true,
+      },
+      latitude: {
+        type: Sequelize.DECIMAL,
+        allowNull: true
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       isActive: {
         type: Sequelize.BOOLEAN,

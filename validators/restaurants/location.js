@@ -41,27 +41,51 @@ const createLocation = async function (req, res, next) {
             return res.status(422).send({ status: 1006, message: "Restaurant-ID does not exists" })
         }
 
-        const data = req.body
+        let data = req.body
 
-        const point = { type: 'Point', coordinates: [70, 80] }; // GeoJson format: [lng, lat]
+        const { longitude, latitude } = data;
 
-        // User.create({ username: 'username', geometry: point });
+        if (!isValidRequestBody(data)) {
+            return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+        }
 
-        // const { longitude, latitude } = req.body
+        if (!isValidNumber(longitude)) {
+            return res.status(422).send({ status: 1002, message: "longitude is required" })
+        }
 
-        // data.restaurantId = paramsRestaurantId
+        if ((longitude < -180 || longitude > 180)) {
+            return res.status(422).send({ status: 1002, message: "Invalid longitude!, Longitude must be between -180 and 180 degrees inclusive" })
+        }
 
-        // if (!isValidRequestBody(data)) {
-        //     return res.status(422).send({ status: 1002, message: "Please Provide Details" })
-        // }
+        if (!isValidNumber(latitude)) {
+            return res.status(422).send({ status: 1002, message: "latitude is required" })
+        }
 
-        // if (!isValidNumber(longitude)) {
-        //     return res.status(422).send({ status: 1002, message: "longitude is required" })
-        // }
+        if ((latitude < -90 || latitude > 90)) {
+            return res.status(422).send({ status: 1002, message: "Invalid latitude!, Latitude must be between -90 and 90 degrees inclusive" })
+        }
 
-        // if (!isValidNumber(latitude)) {
-        //     return res.status(422).send({ status: 1002, message: "latitude is required" })
-        // }
+        let coordinates = { type: 'Point', coordinates: [longitude, latitude] }
+
+
+        const checkForEmptyLocation = await Location.findAll({ where: { restaurantId: paramsRestaurantId } })
+
+        if (checkForEmptyLocation.length > 0) {
+
+            const checkForSameLocation = await Location.findOne({
+                limit: 1,
+                where: {
+                    restaurantId: paramsRestaurantId
+                },
+                attributes: ['coordinates'],
+                order: [['createdAt', 'DESC']]
+            });
+
+            if (checkForSameLocation.coordinates.coordinates.toString() === coordinates.coordinates.toString()) {
+                return res.status(422).send({ status: 1006, message: "This location is already saved, Please enter a new one" })
+            }
+        }
+
 
         next()
 
@@ -121,8 +145,12 @@ const updateLocation = async function (req, res, next) {
 
         if ("longitude" in data) {
 
-            if (!isValid(longitude)) {
+            if (!isValidNumber(longitude)) {
                 return res.status(422).send({ status: 1002, message: "longitude is required" })
+            }
+
+            if ((longitude < -180 || longitude > 180)) {
+                return res.status(422).send({ status: 1002, message: "Invalid longitude!, Longitude must be between -180 and 180 degrees inclusive" })
             }
 
             dataObject['longitude'] = longitude
@@ -130,8 +158,12 @@ const updateLocation = async function (req, res, next) {
 
         if ("latitude" in data) {
 
-            if (!isValid(latitude)) {
+            if (!isValidNumber(latitude)) {
                 return res.status(422).send({ status: 1002, message: "latitude is required" })
+            }
+
+            if ((latitude < -90 || latitude > 90)) {
+                return res.status(422).send({ status: 1002, message: "Invalid latitude!, Latitude must be between -90 and 90 degrees inclusive" })
             }
 
             dataObject['latitude'] = latitude
@@ -239,7 +271,7 @@ const deleteLocation = async function (req, res, next) {
 
         let locationId = enteredId
 
-        const enteredLocationId = await FoodItem.findOne({ where: { id: locationId, restaurantId: paramsRestaurantId } })
+        const enteredLocationId = await Location.findOne({ where: { id: locationId, restaurantId: paramsRestaurantId } })
 
         if (!enteredLocationId) {
             return res.status(422).send({ status: 1006, message: "Provided Location-ID does not exists" })

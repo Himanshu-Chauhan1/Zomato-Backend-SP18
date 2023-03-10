@@ -30,6 +30,7 @@ const customerIssueRouter = require("../routes/customers/issue")
 const customerSupportIssueRouter = require("../routes/customerSupport/issue")
 const restaurantIssueRouter = require("../routes/restaurants/issue")
 const restaurantLocationRouter = require("../routes/restaurants/location")
+const customerLocationRouter = require("../routes/customers/location")
 
 
 module.exports = {
@@ -64,5 +65,6 @@ module.exports = {
     customerIssueRouter,
     customerSupportIssueRouter,
     restaurantIssueRouter,
-    restaurantLocationRouter
+    restaurantLocationRouter,
+    customerLocationRouter
 }

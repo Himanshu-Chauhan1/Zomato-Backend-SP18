@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     otp: {
       type: DataTypes.STRING,
-      allowNull:true
+      allowNull: true
     },
     isActive: {
       type: DataTypes.BOOLEAN,

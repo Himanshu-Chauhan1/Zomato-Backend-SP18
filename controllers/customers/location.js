@@ -1,34 +1,15 @@
 const db = require("../../models");
-const { Location, Restaurant } = db
+const { Location } = db
 const { Op } = require("sequelize");
-const sequelize = require("sequelize")
-const axios = require("axios")
-
 
 //======================================POST /CREATE-A-LOCATION====================================================//
 
 const create = async function (req, res) {
     try {
 
-        let data = req.body
-        let { longitude, latitude } = data
-        const coordinates = { longitude: longitude, latitude: latitude };
-
-        // const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-        //     params: {
-        //         latlng: `${coordinates.latitude},${coordinates.longitude}`,
-        //         key: 'YOUR_API_KEY'
-        //     }
-        // });
-
-        // const address = response.data.results[0].formatted_address;
-
         const locationCreated = await Location.create({
-            restaurantId: req.params.id,
-            coordinates: { type: 'Point', coordinates: [longitude, latitude] },
-            longitude: await sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
-            latitude: await sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
-            address: "address"
+            restaurantId: undefined,
+            coordinates: { type: 'Point', coordinates: [req.body.longitude, req.body.latitude] }
         })
 
         res.status(201).send({ status: 1009, message: "Your location has been saved successfully", data: locationCreated })
@@ -39,40 +20,59 @@ const create = async function (req, res) {
     }
 }
 
-//======================================POST/UPDATE-A-LOCATION====================================================//
+//======================================POST /GET-A-LOCATION====================================================//
 
-const update = async function (req, res) {
+const getLocation = async function (req, res) {
     try {
-        const locationId = req.params.locationId
-        let data = req.body
 
-        const values = data;
-        const condition = { where: { id: locationId } };
-        const options = { multi: true };
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const userLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    };
 
-        const updateDetails = await Location.update(values, condition, options)
+                    // Save the user's location to the database
+                    const locationCreated = await Location.create({
+                        restaurantId: undefined,
+                        userLocation
+                    })
 
-        return res.status(200).send({ status: 1010, message: "The entered location details has been Updated Succesfully", updatedData: values })
+
+                    res.status(201).send({ status: 1009, message: "Your location has been saved successfully", data: locationCreated })
+                },
+
+            );
+
+            // const locationCreated = await Location.create({
+            //     restaurantId: undefined,
+            //     coordinates: { type: 'Point', coordinates: [req.body.longitude, req.body.latitude] }
+            // })
+
+            // res.status(201).send({ status: 1009, message: "Your location has been saved successfully", data: locationCreated })
+        }
+    } catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, msg: "Something went wrong Please check back again" })
     }
-    catch (err) {
-        console.log(err.message)
-        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-    }
-};
+}
 
 //======================================GET/GET-ALL-LOCATION======================================================//
 
 const index = async function (req, res) {
     try {
         let data = req.query
-        const { locationId, restaurantId, coordinates } = data
+        const { locationId } = data
 
         if (Object.keys(req.query).length > 0) {
             let findLocationByFilter = await Location.findAll({
+                attributes: ['coordinates'],
                 where: {
+                    restaurantId: null,
+                    attributes: ['coordinates'],
                     [Op.or]: [
                         { locationId: { [Op.eq]: locationId } },
-                        { restaurantId: { [Op.eq]: restaurantId } },
                     ],
                 }
             })
@@ -104,11 +104,9 @@ const index = async function (req, res) {
 const destroy = async function (req, res) {
     try {
 
-
-        let paramsRestaurantId = req.params.id
         let locationId = req.params.locationId
 
-        let deleteLocation = await Location.destroy({ where: { id: locationId, restaurantId: paramsRestaurantId } })
+        let deleteLocation = await Location.destroy({ where: { id: locationId } })
 
         return res.status(200).send({ status: 1010, message: "The location has been deleted Successfully", data: deleteLocation })
     }
@@ -120,7 +118,7 @@ const destroy = async function (req, res) {
 
 module.exports = {
     create,
-    update,
+    getLocation,
     index,
     destroy
 }

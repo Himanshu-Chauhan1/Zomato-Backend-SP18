@@ -29,11 +29,23 @@ module.exports = (sequelize, DataTypes) => {
         model: "restaurant",
         key: 'id'
       },
-      allowNull: false
+      allowNull: true
     },
     coordinates: {
       type: DataTypes.GEOMETRY('POINT'),
-      allowNull:false
+      allowNull: false
+    },
+    longitude: {
+      type: DataTypes.DECIMAL,
+      allowNull: true,
+    },
+    latitude: {
+      type: DataTypes.DECIMAL,
+      allowNull: true,
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
