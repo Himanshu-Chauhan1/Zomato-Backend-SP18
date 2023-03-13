@@ -41,6 +41,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      coordinates: {
+        type: Sequelize.GEOMETRY('POINT'),
+        allowNull: true
+      },
+      longitude: {
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+      },
+      latitude: {
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+      },
+      restaurantAddress: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       userRole: {
         type: Sequelize.STRING,
         defaultValue: "restaurant"

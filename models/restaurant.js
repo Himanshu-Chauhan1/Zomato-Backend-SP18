@@ -95,6 +95,22 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('password', bcrypt.hashSync(((val + nodeKey)), 10).trim());
       },
     },
+    coordinates: {
+      type: DataTypes.GEOMETRY('POINT'),
+      allowNull: true
+    },
+    longitude: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    latitude: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    restaurantAddress: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     userRole: {
       type: DataTypes.STRING,
       defaultValue: "restaurant"

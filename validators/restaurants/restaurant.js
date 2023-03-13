@@ -42,6 +42,12 @@ const isValidEmail = (email) => {
     return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email);
 };
 
+////////////////////////// -GLOBAL- //////////////////////
+const isValidNumber = function (value) {
+    if (!value || typeof value != "number")
+        return false;
+    return true;
+};
 
 //========================================Create-A-Restaurant=============================================================//
 
@@ -49,7 +55,7 @@ const createRestaurant = async function (req, res, next) {
     try {
         const data = req.body
 
-        const { name, email, phone, landline, ownerFullName, ownerEmail, confirmPassword, password } = req.body
+        const { name, email, phone, landline, ownerFullName, ownerEmail, confirmPassword, password, longitude, latitude, restaurantAddress } = req.body
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
@@ -144,6 +150,22 @@ const createRestaurant = async function (req, res, next) {
 
         if (password.length > 15) {
             return res.status(422).send({ status: 1003, message: "Password cannot be more than 15 characters" })
+        }
+
+        if (!isValidNumber(longitude)) {
+            return res.status(422).send({ status: 1002, message: "longitude is required" })
+        }
+
+        if ((longitude < -180 || longitude > 180)) {
+            return res.status(422).send({ status: 1002, message: "Invalid longitude!, Longitude must be between -180 and 180 degrees inclusive" })
+        }
+
+        if (!isValidNumber(latitude)) {
+            return res.status(422).send({ status: 1002, message: "latitude is required" })
+        }
+
+        if ((latitude < -90 || latitude > 90)) {
+            return res.status(422).send({ status: 1002, message: "Invalid latitude!, Latitude must be between -90 and 90 degrees inclusive" })
         }
 
         next()
@@ -507,7 +529,7 @@ const getRestaurant = async function (req, res) {
         }
 
         if ("isApproved" in data) {
-            
+
             if (!isValid(isApproved)) {
                 return res.status(422).send({ status: 1002, message: "isApproved is required" })
             }

@@ -20,7 +20,7 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0;
 };
 
-//========================================Create-A-FoodItem==========================================================//
+//========================================Create-A-Location==========================================================//
 
 const createLocation = async function (req, res, next) {
     try {
@@ -43,30 +43,29 @@ const createLocation = async function (req, res, next) {
 
         let data = req.body
 
-        const { longitude, latitude } = data;
+        let { restaurantLongitude, restaurantLatitude } = data
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
 
-        if (!isValidNumber(longitude)) {
+        if (!isValidNumber(restaurantLongitude)) {
             return res.status(422).send({ status: 1002, message: "longitude is required" })
         }
 
-        if ((longitude < -180 || longitude > 180)) {
+        if ((restaurantLongitude < -180 || restaurantLongitude > 180)) {
             return res.status(422).send({ status: 1002, message: "Invalid longitude!, Longitude must be between -180 and 180 degrees inclusive" })
         }
 
-        if (!isValidNumber(latitude)) {
+        if (!isValidNumber(restaurantLatitude)) {
             return res.status(422).send({ status: 1002, message: "latitude is required" })
         }
 
-        if ((latitude < -90 || latitude > 90)) {
+        if ((restaurantLatitude < -90 || restaurantLatitude > 90)) {
             return res.status(422).send({ status: 1002, message: "Invalid latitude!, Latitude must be between -90 and 90 degrees inclusive" })
         }
 
-        let coordinates = { type: 'Point', coordinates: [longitude, latitude] }
-
+        const restaurantCoordinates = { type: 'Point', restaurantCoordinates: [restaurantLongitude, restaurantLatitude] }
 
         const checkForEmptyLocation = await Location.findAll({ where: { restaurantId: paramsRestaurantId } })
 
@@ -77,11 +76,11 @@ const createLocation = async function (req, res, next) {
                 where: {
                     restaurantId: paramsRestaurantId
                 },
-                attributes: ['coordinates'],
+                attributes: ['restaurantCoordinates'],
                 order: [['createdAt', 'DESC']]
             });
 
-            if (checkForSameLocation.coordinates.coordinates.toString() === coordinates.coordinates.toString()) {
+            if (checkForSameLocation.restaurantCoordinates.coordinates.toString() === restaurantCoordinates.restaurantCoordinates.toString()) {
                 return res.status(422).send({ status: 1006, message: "This location is already saved, Please enter a new one" })
             }
         }

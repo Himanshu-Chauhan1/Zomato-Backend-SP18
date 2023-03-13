@@ -3,6 +3,9 @@ const { Location, Restaurant } = db
 const { Op } = require("sequelize");
 const sequelize = require("sequelize")
 const axios = require("axios")
+const GoogleMapsAPI = require('googlemaps');
+const { promisify } = require('util');
+const { GOOGLE_MAPS_API_KEY } = process.env;
 
 
 //======================================POST /CREATE-A-LOCATION====================================================//
@@ -11,27 +14,27 @@ const create = async function (req, res) {
     try {
 
         let data = req.body
-        let { longitude, latitude } = data
-        const coordinates = { longitude: longitude, latitude: latitude };
+        let { restaurantLongitude, restaurantLatitude } = data
+        const restaurantCoordinates = { restaurantLongitude: restaurantLongitude, restaurantLatitude: restaurantLatitude };
 
         // const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         //     params: {
-        //         latlng: `${coordinates.latitude},${coordinates.longitude}`,
+        //         latlng: `${restaurantCoordinates.restaurantLatitude},${restaurantCoordinates.restaurantLongitude}`,
         //         key: 'YOUR_API_KEY'
         //     }
         // });
 
-        // const address = response.data.results[0].formatted_address;
+        // const restaurantAddress = response.data.results[0].formatted_address;
 
         const locationCreated = await Location.create({
             restaurantId: req.params.id,
-            coordinates: { type: 'Point', coordinates: [longitude, latitude] },
-            longitude: await sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
-            latitude: await sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
-            address: "address"
+            restaurantCoordinates: { type: 'Point', coordinates: [restaurantLongitude, restaurantLatitude] },
+            restaurantLongitude: sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${restaurantCoordinates.restaurantLongitude}, ${restaurantCoordinates.restaurantLatitude}), 4326), 4326))`),
+            restaurantLatitude: sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${restaurantCoordinates.restaurantLongitude}, ${restaurantCoordinates.restaurantLatitude}), 4326), 4326))`),
+            restaurantAddress: "address"
         })
 
-        res.status(201).send({ status: 1009, message: "Your location has been saved successfully", data: locationCreated })
+        res.status(201).send({ status: 1009, message: "Restaurant location has been saved successfully", data: locationCreated })
 
     } catch (err) {
         console.log(err.message);
@@ -118,9 +121,50 @@ const destroy = async function (req, res) {
     }
 }
 
+//=======================================GET/GET-ALL-PLACES-WITHIN-THE-GIVEN-RADIUS====================================================//
+
+const places = async function (req, res) {
+    try {
+
+        let data = req.body
+        let { customerLongitude, customerLatitude, restaurantLatitude, restaurantLongitude } = data
+
+        let findCoordinates=await Location.findOne()
+
+        const customerCoordinates = { customerLatitude: customerLatitude, customerLongitude: customerLongitude };
+        const restaurantCoordinates = { restaurantLatitude: restaurantLatitude, restaurantLongitude: restaurantLongitude };
+
+        // Create a Google Maps client
+        const googleMaps = new GoogleMapsAPI({
+            key: GOOGLE_MAPS_API_KEY,
+            secure: true
+        });
+
+        // Get places between coordinates
+        const params = {
+            location: `${(customerCoordinates.customerLatitude + restaurantCoordinates.restaurantLatitude) / 2},${(customerCoordinates.customerLongitude + restaurantCoordinates.restaurantLongitude) / 2}`,
+            radius: Math.max(
+                googleMaps.distance(customerCoordinates.customerLatitude, restaurantCoordinates.restaurantLongitude, restaurantCoordinates.restaurantLatitude, restaurantCoordinates.restaurantLongitude) / 2,
+                500 // minimum radius of 500 meters
+            ),
+            key: GOOGLE_MAPS_API_KEY
+        };
+        const places = await promisify(googleMaps.places.bind(googleMaps))(params);
+
+        return res.status(200).send({ status: 1010, message: "All places between the entered radius:", data: places })
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+    }
+}
+
+
+
 module.exports = {
     create,
     update,
     index,
-    destroy
+    destroy,
+    places
 }

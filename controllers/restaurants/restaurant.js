@@ -7,14 +7,42 @@ const { Restaurant } = db
 const { Op } = require("sequelize");
 const { signAccessToken } = require("../../Utils/jwt")
 const nodeKey = process.env.NODE_KEY
+const sequelize = require("sequelize")
+const axios = require("axios")
 
 
 //=======================================POST /CREATE-A-RESTAURANT=====================================================//
 
 const create = async function (req, res) {
     try {
+        let data = req.body
 
-        const accountCreated = await Restaurant.create(req.body)
+        const { name, email, phone, landline, ownerFullName, ownerEmail, confirmPassword, password, longitude, latitude } = data
+        const coordinates = { longitude: longitude, latitude: latitude };
+
+        // const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        //     params: {
+        //         latlng: `${coordinates.latitude},${coordinates.longitude}`,
+        //         key: 'AIzaSyBdJ88HN7LTGkHHK5whfaVv8a5ozlx2E_k'
+        //     }
+        // });
+
+        // const restaurantAddress = response.data.results[0].formatted_address;
+        // console.log(restaurantAddress)
+
+        const accountCreated = await Restaurant.create({
+            name: name,
+            email: email,
+            phone: phone,
+            landline: landline,
+            ownerFullName: ownerFullName,
+            ownerEmail: ownerEmail,
+            password: password,
+            coordinates: { type: 'Point', coordinates: [longitude, latitude] },
+            longitude: sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
+            latitude: sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
+            restaurantAddress: "restaurantAddress"
+        })
 
         res.status(201).send({ status: 1009, message: "You have been registered successfully", data: accountCreated })
 

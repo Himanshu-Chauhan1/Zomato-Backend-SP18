@@ -1,18 +1,35 @@
 const db = require("../../models");
 const { Location } = db
 const { Op } = require("sequelize");
+const axios = require("axios")
+const sequelize = require("sequelize")
 
 //======================================POST /CREATE-A-LOCATION====================================================//
 
 const create = async function (req, res) {
     try {
+        let data = req.body
+        let { customerLongitude, customerLatitude } = data
+        const customerCoordinates = { customerLongitude: customerLongitude, customerLatitude: customerLatitude };
+
+        // const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        //     params: {
+        //         latlng: `${customerCoordinates.customerLatitude},${customerCoordinates.customerLongitude}`,
+        //         key: 'YOUR_API_KEY'
+        //     }
+        // });
+
+        // const customerAddress = response.data.results[0].formatted_address;
 
         const locationCreated = await Location.create({
             restaurantId: undefined,
-            coordinates: { type: 'Point', coordinates: [req.body.longitude, req.body.latitude] }
+            customerCoordinates: { type: 'Point', coordinates: [customerLongitude, customerLatitude] },
+            customerLongitude: sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${customerCoordinates.customerLongitude}, ${customerCoordinates.customerLatitude}), 4326), 4326))`),
+            customerLatitude: sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${customerCoordinates.customerLongitude}, ${customerCoordinates.customerLatitude}), 4326), 4326))`),
+            customerAddress: "address"
         })
 
-        res.status(201).send({ status: 1009, message: "Your location has been saved successfully", data: locationCreated })
+        res.status(201).send({ status: 1009, message: "Customer location has been saved successfully", data: locationCreated })
 
     } catch (err) {
         console.log(err.message);

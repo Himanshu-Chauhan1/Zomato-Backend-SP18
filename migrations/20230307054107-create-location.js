@@ -9,6 +9,22 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
+      customerCoordinates: {
+        type: Sequelize.GEOMETRY('POINT'),
+        allowNull: true
+      },
+      customerLongitude: {
+        type: Sequelize.DECIMAL,
+        allowNull: true,
+      },
+      customerLatitude: {
+        type: Sequelize.DECIMAL,
+        allowNull: true,
+      },
+      customerAddress: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       restaurantId: {
         type: Sequelize.UUID,
         references: {
@@ -17,19 +33,19 @@ module.exports = {
         },
         allowNull: true
       },
-      coordinates: {
+      restaurantCoordinates: {
         type: Sequelize.GEOMETRY('POINT'),
-        allowNull: false
+        allowNull: true
       },
-      longitude: {
+      restaurantLongitude: {
         type: Sequelize.DECIMAL,
         allowNull: true,
       },
-      latitude: {
+      restaurantLatitude: {
         type: Sequelize.DECIMAL,
-        allowNull: true
+        allowNull: true,
       },
-      address: {
+      restaurantAddress: {
         type: Sequelize.STRING,
         allowNull: true,
       },

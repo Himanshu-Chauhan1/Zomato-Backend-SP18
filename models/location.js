@@ -23,6 +23,22 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true
     },
+    customerCoordinates: {
+      type: DataTypes.GEOMETRY('POINT'),
+      allowNull: true
+    },
+    customerLongitude: {
+      type: DataTypes.DECIMAL,
+      allowNull: true,
+    },
+    customerLatitude: {
+      type: DataTypes.DECIMAL,
+      allowNull: true,
+    },
+    customerAddress: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     restaurantId: {
       type: DataTypes.UUID,
       references: {
@@ -31,19 +47,19 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: true
     },
-    coordinates: {
+    restaurantCoordinates: {
       type: DataTypes.GEOMETRY('POINT'),
-      allowNull: false
+      allowNull: true
     },
-    longitude: {
+    restaurantLongitude: {
       type: DataTypes.DECIMAL,
       allowNull: true,
     },
-    latitude: {
+    restaurantLatitude: {
       type: DataTypes.DECIMAL,
       allowNull: true,
     },
-    address: {
+    restaurantAddress: {
       type: DataTypes.STRING,
       allowNull: true,
     },

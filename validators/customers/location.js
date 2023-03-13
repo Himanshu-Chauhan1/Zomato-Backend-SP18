@@ -27,40 +27,40 @@ const createLocation = async function (req, res, next) {
 
         let data = req.body
 
-        const { longitude, latitude } = data;
+        const { customerLongitude, customerLatitude } = data;
 
         if (!isValidRequestBody(data)) {
             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
         }
 
-        if (!isValidNumber(longitude)) {
-            return res.status(422).send({ status: 1002, message: "longitude is required" })
+        if (!isValidNumber(customerLongitude)) {
+            return res.status(422).send({ status: 1002, message: "customerLongitude is required" })
         }
 
-        if ((longitude < -180 || longitude > 180)) {
-            return res.status(422).send({ status: 1002, message: "Invalid longitude!, Longitude must be between -180 and 180 degrees inclusive" })
+        if ((customerLongitude < -180 || customerLongitude > 180)) {
+            return res.status(422).send({ status: 1002, message: "Invalid customerLongitude!, Longitude must be between -180 and 180 degrees inclusive" })
         }
 
-        if (!isValidNumber(latitude)) {
+        if (!isValidNumber(customerLatitude)) {
             return res.status(422).send({ status: 1002, message: "latitude is required" })
         }
 
-        if ((latitude < -90 || latitude > 90)) {
-            return res.status(422).send({ status: 1002, message: "Invalid latitude!, Latitude must be between -90 and 90 degrees inclusive" })
+        if ((customerLatitude < -90 || customerLatitude > 90)) {
+            return res.status(422).send({ status: 1002, message: "Invalid customerLatitude!, Latitude must be between -90 and 90 degrees inclusive" })
         }
 
-        let coordinates = { type: 'Point', coordinates: [longitude, latitude] }
+        const customerCoordinates = { type: 'Point', coordinates: [customerLongitude, customerLatitude] }
 
         const checkForEmptyLocation = await Location.findAll()
 
         if (checkForEmptyLocation.length > 0) {
             const checkForSameLocation = await Location.findOne({
                 limit: 1,
-                attributes: ['coordinates'],
+                attributes: ['customerCoordinates'],
                 order: [['createdAt', 'DESC']]
             });
 
-            if ((checkForSameLocation.coordinates.coordinates.toString() === coordinates.coordinates.toString())) {
+            if ((checkForSameLocation.customerCoordinates.coordinates.toString() === customerCoordinates.coordinates.toString())) {
                 return res.status(422).send({ status: 1006, message: "This location is already saved, Please enter a new one" })
             }
         }
