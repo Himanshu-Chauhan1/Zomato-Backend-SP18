@@ -107,6 +107,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
+    radiusInKM: {
+      type: DataTypes.DECIMAL,
+      allowNull: true,
+      defaultValue: 5
+    },
     restaurantAddress: {
       type: DataTypes.STRING,
       allowNull: true,

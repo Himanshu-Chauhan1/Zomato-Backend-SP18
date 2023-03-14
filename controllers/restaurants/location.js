@@ -3,10 +3,9 @@ const { Location, Restaurant } = db
 const { Op } = require("sequelize");
 const sequelize = require("sequelize")
 const axios = require("axios")
-const GoogleMapsAPI = require('googlemaps');
-const { promisify } = require('util');
 const { GOOGLE_MAPS_API_KEY } = process.env;
-
+// const LocalStorage = require('node-localstorage').LocalStorage;
+// const localStorage = new LocalStorage('./scratch');
 
 //======================================POST /CREATE-A-LOCATION====================================================//
 
@@ -17,21 +16,35 @@ const create = async function (req, res) {
         let { restaurantLongitude, restaurantLatitude } = data
         const restaurantCoordinates = { restaurantLongitude: restaurantLongitude, restaurantLatitude: restaurantLatitude };
 
-        // const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-        //     params: {
-        //         latlng: `${restaurantCoordinates.restaurantLatitude},${restaurantCoordinates.restaurantLongitude}`,
-        //         key: 'YOUR_API_KEY'
-        //     }
-        // });
+        const response = await axios.get('https://trueway-geocoding.p.rapidapi.com/ReverseGeocode', {
+            params: { location: `${restaurantLatitude},${restaurantLongitude}`, language: 'en' },
+            headers: {
+                'X-RapidAPI-Key': '0cedc2b70emshe393ecb4154f8a6p13efa6jsn6fcdaa4205ce',
+                'X-RapidAPI-Host': 'trueway-geocoding.p.rapidapi.com'
+            }
+        });
 
         // const restaurantAddress = response.data.results[0].formatted_address;
+
+
+        // const options = {
+        //     method: 'GET',
+        //     url: 'https://trueway-geocoding.p.rapidapi.com/ReverseGeocode',
+        //     params: { location: `${restaurantLatitude},${restaurantLongitude}`, language: 'en' },
+        //     headers: {
+        //         'X-RapidAPI-Key': '0cedc2b70emshe393ecb4154f8a6p13efa6jsn6fcdaa4205ce',
+        //         'X-RapidAPI-Host': 'trueway-geocoding.p.rapidapi.com'
+        //     }
+        // };
+        // const response = await axios.request(options)
+        console.log(response)
 
         const locationCreated = await Location.create({
             restaurantId: req.params.id,
             restaurantCoordinates: { type: 'Point', coordinates: [restaurantLongitude, restaurantLatitude] },
             restaurantLongitude: sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${restaurantCoordinates.restaurantLongitude}, ${restaurantCoordinates.restaurantLatitude}), 4326), 4326))`),
             restaurantLatitude: sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${restaurantCoordinates.restaurantLongitude}, ${restaurantCoordinates.restaurantLatitude}), 4326), 4326))`),
-            restaurantAddress: "address"
+            restaurantAddress: response
         })
 
         res.status(201).send({ status: 1009, message: "Restaurant location has been saved successfully", data: locationCreated })
@@ -126,38 +139,90 @@ const destroy = async function (req, res) {
 const places = async function (req, res) {
     try {
 
-        let data = req.body
-        let { customerLongitude, customerLatitude, restaurantLatitude, restaurantLongitude } = data
+        const axios = require("axios");
 
-        let findCoordinates=await Location.findOne()
-
-        const customerCoordinates = { customerLatitude: customerLatitude, customerLongitude: customerLongitude };
-        const restaurantCoordinates = { restaurantLatitude: restaurantLatitude, restaurantLongitude: restaurantLongitude };
-
-        // Create a Google Maps client
-        const googleMaps = new GoogleMapsAPI({
-            key: GOOGLE_MAPS_API_KEY,
-            secure: true
+        const options = {
+          method: 'GET',
+          url: 'https://trueway-geocoding.p.rapidapi.com/ReverseGeocode',
+          params: {location: '37.7879493,-122.3961974', language: 'en'},
+          headers: {
+            'X-RapidAPI-Key': '0cedc2b70emshe393ecb4154f8a6p13efa6jsn6fcdaa4205ce',
+            'X-RapidAPI-Host': 'trueway-geocoding.p.rapidapi.com'
+          }
+        };
+        
+        axios.request(options).then(function (response) {
+            console.log(response.data);
+        }).catch(function (error) {
+            console.error(error);
         });
 
-        // Get places between coordinates
-        const params = {
-            location: `${(customerCoordinates.customerLatitude + restaurantCoordinates.restaurantLatitude) / 2},${(customerCoordinates.customerLongitude + restaurantCoordinates.restaurantLongitude) / 2}`,
-            radius: Math.max(
-                googleMaps.distance(customerCoordinates.customerLatitude, restaurantCoordinates.restaurantLongitude, restaurantCoordinates.restaurantLatitude, restaurantCoordinates.restaurantLongitude) / 2,
-                500 // minimum radius of 500 meters
-            ),
-            key: GOOGLE_MAPS_API_KEY
-        };
-        const places = await promisify(googleMaps.places.bind(googleMaps))(params);
-
-        return res.status(200).send({ status: 1010, message: "All places between the entered radius:", data: places })
     }
     catch (err) {
         console.log(err.message);
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
+
+// //=======================================GET/GET-ALL-PLACES-WITHIN-THE-GIVEN-RADIUS====================================================//
+
+// const places = async function (req, res) {
+//     try {
+
+//         let data = req.body
+//         let { customerLatitude, customerLongitude, radiusInKM } = data
+
+//         if (!isValidRequestBody(data)) {
+//             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
+//         }
+
+//         if (!isValidNumber(customerLatitude)) {
+//             return res.status(422).send({ status: 1002, message: "customerLatitude is required" })
+//         }
+
+//         if ((customerLatitude < -90 || customerLatitude > 90)) {
+//             return res.status(422).send({ status: 1002, message: "Invalid customerLatitude!, Latitude must be between -90 and 90 degrees inclusive" })
+//         }
+
+//         if (!isValidNumber(customerLongitude)) {
+//             return res.status(422).send({ status: 1002, message: "customerLongitude is required" })
+//         }
+
+//         if ((restaurantLongitude < -180 || restaurantLongitude > 180)) {
+//             return res.status(422).send({ status: 1002, message: "Invalid customerLongitude!, Longitude must be between -180 and 180 degrees inclusive" })
+//         }
+
+//         function toRadians(degrees) {
+//             return degrees * (Math.PI / 180);
+//         }
+
+//         const degrees = Number(customerLongitude);
+
+//         let minLatitude = customerLatitude - (radiusInKM / 111.12)
+//         let maxLatitude = customerLatitude + (radiusInKM / 111.12)
+//         let minLongitude = customerLongitude - (radiusInKM) / Math.abs(Math.cos(toRadians(customerLongitude)) * 111.12)
+//         let maxLongitude = customerLongitude + (radiusInKM) / Math.abs(Math.cos(toRadians(customerLongitude)) * 111.12);
+
+//         console.log(minLatitude, maxLatitude, minLongitude, maxLongitude)
+
+//         const restaurantNearby = await Restaurant.findAndCountAll({
+//             where: {
+//                 latitude: {
+//                     [Op.between]: [minLatitude, maxLatitude]
+//                 },
+//                 longitude: {
+//                     [Op.between]: [minLongitude, maxLongitude]
+//                 }
+//             }
+//         })
+
+//         return res.status(200).send({ status: 1010, message: "All Restaurants as per the location:", data: restaurantNearby })
+//     }
+//     catch (err) {
+//         console.log(err.message);
+//         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
+//     }
+// }
 
 
 

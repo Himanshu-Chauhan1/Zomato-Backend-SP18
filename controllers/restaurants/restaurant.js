@@ -9,7 +9,8 @@ const { signAccessToken } = require("../../Utils/jwt")
 const nodeKey = process.env.NODE_KEY
 const sequelize = require("sequelize")
 const axios = require("axios")
-
+const geoLocationApiKey=process.env.X_RapidAPI_Key
+const geoLocationApiKeyHost=process.env.X_RapidAPI_Host
 
 //=======================================POST /CREATE-A-RESTAURANT=====================================================//
 
@@ -30,6 +31,16 @@ const create = async function (req, res) {
         // const restaurantAddress = response.data.results[0].formatted_address;
         // console.log(restaurantAddress)
 
+        const response = await axios.get('https://trueway-geocoding.p.rapidapi.com/ReverseGeocode', {
+            params: { location: `${latitude},${longitude}`, language: 'en' },
+            headers: {
+                'X-RapidAPI-Key': geoLocationApiKey,
+                'X-RapidAPI-Host': geoLocationApiKeyHost
+            }
+        });
+
+        console.log(response.data.results[0])
+
         const accountCreated = await Restaurant.create({
             name: name,
             email: email,
@@ -41,7 +52,7 @@ const create = async function (req, res) {
             coordinates: { type: 'Point', coordinates: [longitude, latitude] },
             longitude: sequelize.literal(`ST_X(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
             latitude: sequelize.literal(`ST_Y(ST_Transform(ST_SetSRID(ST_MakePoint(${coordinates.longitude}, ${coordinates.latitude}), 4326), 4326))`),
-            restaurantAddress: "restaurantAddress"
+            restaurantAddress: response.data.results[0].address
         })
 
         res.status(201).send({ status: 1009, message: "You have been registered successfully", data: accountCreated })

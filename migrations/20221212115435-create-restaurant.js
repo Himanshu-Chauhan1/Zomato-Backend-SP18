@@ -53,6 +53,11 @@ module.exports = {
         type: Sequelize.DECIMAL,
         allowNull: false,
       },
+      radiusInKM: {
+        type: Sequelize.DECIMAL,
+        allowNull: true,
+        defaultValue: 5
+      },
       restaurantAddress: {
         type: Sequelize.STRING,
         allowNull: true,
