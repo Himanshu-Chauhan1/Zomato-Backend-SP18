@@ -394,8 +394,6 @@ const deleteFoodItem = async function (req, res, next) {
     }
 };
 
-
-
 module.exports = {
     createFoodItem,
     updateFoodItem,

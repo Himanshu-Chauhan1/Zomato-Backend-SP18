@@ -4,8 +4,6 @@ const { Op } = require("sequelize");
 const sequelize = require("sequelize")
 const axios = require("axios")
 const { GOOGLE_MAPS_API_KEY } = process.env;
-// const LocalStorage = require('node-localstorage').LocalStorage;
-// const localStorage = new LocalStorage('./scratch');
 
 //======================================POST /CREATE-A-LOCATION====================================================//
 
@@ -163,68 +161,6 @@ const places = async function (req, res) {
         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
     }
 }
-
-// //=======================================GET/GET-ALL-PLACES-WITHIN-THE-GIVEN-RADIUS====================================================//
-
-// const places = async function (req, res) {
-//     try {
-
-//         let data = req.body
-//         let { customerLatitude, customerLongitude, radiusInKM } = data
-
-//         if (!isValidRequestBody(data)) {
-//             return res.status(422).send({ status: 1002, message: "Please Provide Details" })
-//         }
-
-//         if (!isValidNumber(customerLatitude)) {
-//             return res.status(422).send({ status: 1002, message: "customerLatitude is required" })
-//         }
-
-//         if ((customerLatitude < -90 || customerLatitude > 90)) {
-//             return res.status(422).send({ status: 1002, message: "Invalid customerLatitude!, Latitude must be between -90 and 90 degrees inclusive" })
-//         }
-
-//         if (!isValidNumber(customerLongitude)) {
-//             return res.status(422).send({ status: 1002, message: "customerLongitude is required" })
-//         }
-
-//         if ((restaurantLongitude < -180 || restaurantLongitude > 180)) {
-//             return res.status(422).send({ status: 1002, message: "Invalid customerLongitude!, Longitude must be between -180 and 180 degrees inclusive" })
-//         }
-
-//         function toRadians(degrees) {
-//             return degrees * (Math.PI / 180);
-//         }
-
-//         const degrees = Number(customerLongitude);
-
-//         let minLatitude = customerLatitude - (radiusInKM / 111.12)
-//         let maxLatitude = customerLatitude + (radiusInKM / 111.12)
-//         let minLongitude = customerLongitude - (radiusInKM) / Math.abs(Math.cos(toRadians(customerLongitude)) * 111.12)
-//         let maxLongitude = customerLongitude + (radiusInKM) / Math.abs(Math.cos(toRadians(customerLongitude)) * 111.12);
-
-//         console.log(minLatitude, maxLatitude, minLongitude, maxLongitude)
-
-//         const restaurantNearby = await Restaurant.findAndCountAll({
-//             where: {
-//                 latitude: {
-//                     [Op.between]: [minLatitude, maxLatitude]
-//                 },
-//                 longitude: {
-//                     [Op.between]: [minLongitude, maxLongitude]
-//                 }
-//             }
-//         })
-
-//         return res.status(200).send({ status: 1010, message: "All Restaurants as per the location:", data: restaurantNearby })
-//     }
-//     catch (err) {
-//         console.log(err.message);
-//         return res.status(422).send({ status: 1001, message: "Something went wrong Please check back again" })
-//     }
-// }
-
-
 
 module.exports = {
     create,
