@@ -1,12 +1,12 @@
 'use strict';
-
+require('dotenv').config()
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 const customerModel = require('./customer')
 const restaurantModel = require('./restaurant')
@@ -28,9 +28,12 @@ const locationModel=require('./location')
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  console.log("PostgreSQL is connected successfully...")
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(config.database, config.username, config.password, config)
+  console.log("PostgreSQL is connected successfully...")
 }
+
 
 fs
   .readdirSync(__dirname)
